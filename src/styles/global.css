@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/* 1. Define our Custom Brand Colors */
+@theme {
+  --color-paper: #fdfcf8;
+  --color-ink: #1c1917;
+  --color-marker: #fef08a; /* Soft highlighter yellow */
+  --color-accent: #0f766e; /* Calming Teal */
+}
+
+/* 2. The Dotted Notebook Background */
+.bg-dots {
+  background-color: var(--color-paper);
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* 3. The Ali Abdaal Marker Highlight Effect */
+.highlight-text {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  font-weight: 900;
+}
+
+.highlight-text::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: -4px;
+  right: -8px;
+  height: 40%;
+  background-color: var(--color-marker);
+  z-index: -1;
+  transform: rotate(-2deg);
+  border-radius: 4px;
+}
