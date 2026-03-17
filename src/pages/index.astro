@@ -8,180 +8,288 @@ import '../styles/global.css';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <title>GK360 | Pakistan's Premium CSS, PMS & General Knowledge Academy</title>
-    <meta name="description" content="Master PPSC, FPSC, and NTS exams with GK360. Access solved past papers with logical explanations, topic-wise MCQs, and premium video lectures." />
-    <meta name="keywords" content="PPSC past papers, FPSC preparation, CSS MCQs, PMS notes, NTS past papers, Pakistan government jobs" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+    <title>GK360 | Pakistan's Premium CSS, PMS & Govt Exam Academy</title>
+    <meta name="description" content="Master PPSC, FPSC, and NTS exams with GK360. Access thousands of solved past papers with detailed logical explanations, topic-wise MCQs, and downloadable PDF notes." />
+    <meta name="keywords" content="PPSC past papers, FPSC preparation, CSS MCQs, PMS notes, NTS past papers, Pakistan government jobs, Tehsildar past papers" />
     <link rel="canonical" href="https://gk360.pk" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gk360.pk" />
-    <meta property="og:title" content="GK360 | Master Your PPSC & FPSC Exams" />
+    <meta property="og:title" content="GK360 | Study Smarter for PPSC & FPSC" />
     <meta property="og:description" content="Stop memorizing blindly. Get solved past papers with detailed logical explanations and secure your government job." />
     <meta property="og:image" content="https://gk360.pk/social-preview.jpg" />
-
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="GK360 | Master Your PPSC & FPSC Exams" />
-    <meta property="twitter:description" content="Stop memorizing blindly. Get solved past papers with detailed logical explanations." />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "GK360",
-        "url": "https://gk360.pk",
-        "logo": "https://gk360.pk/logo.png",
-        "description": "Pakistan's premium online academy for PPSC, FPSC, and CSS preparation featuring solved past papers and conceptual MCQs.",
-        "sameAs": [
-          "https://facebook.com/gk360",
-          "https://youtube.com/gk360"
+        "@graph": [
+          {
+            "@type": "EducationalOrganization",
+            "@id": "https://gk360.pk/#organization",
+            "name": "GK360",
+            "url": "https://gk360.pk",
+            "logo": "https://gk360.pk/logo.webp",
+            "description": "Pakistan's premium online academy for PPSC, FPSC, and CSS preparation."
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://gk360.pk/#website",
+            "url": "https://gk360.pk",
+            "name": "GK360",
+            "publisher": {"@id": "https://gk360.pk/#organization"}
+          }
         ]
       }
     </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   </head>
   
-  <body class="bg-dots text-ink min-h-screen flex flex-col" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+  <body class="bg-dots text-ink min-h-screen flex flex-col antialiased selection:bg-yellow-200 selection:text-ink" style="font-family: 'Plus Jakarta Sans', sans-serif;">
     
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm transition-all duration-300">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
-          <div class="flex-shrink-0 flex items-center cursor-pointer">
-            <span class="text-3xl font-extrabold tracking-tight text-slate-900">GK360<span class="text-accent">.pk</span></span>
-          </div>
+          
+          <a href="/" class="flex items-center gap-3 cursor-pointer group">
+            <img src="/logo.webp" alt="GK360 Logo" class="h-10 w-10 object-contain bg-slate-100 rounded-lg p-1 group-hover:scale-105 transition" onerror="this.style.display='none'" />
+            <span class="text-3xl font-black tracking-tight text-slate-900 group-hover:text-accent transition">GK360<span class="text-accent">.pk</span></span>
+          </a>
+          
           <div class="hidden md:flex space-x-8 items-center font-bold text-slate-600">
-            <a href="/papers" class="hover:text-accent transition">Past Papers</a>
-            <a href="/notes" class="hover:text-accent transition">Study Notes</a>
+            <a href="#papers" class="hover:text-accent transition">Past Papers</a>
+            <a href="#features" class="hover:text-accent transition">Features</a>
+            <a href="#notes" class="hover:text-accent transition">Study Notes</a>
             <a href="/blog" class="hover:text-accent transition">Blog</a>
           </div>
-          <div class="hidden md:flex items-center space-x-4">
-            <a href="#" class="font-bold text-slate-600 hover:text-ink transition">Sign In</a>
-            <a href="#" class="bg-ink text-paper px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition duration-200">Join Free</a>
+          
+          <div class="hidden md:flex items-center">
+            <button class="bg-ink text-paper px-8 py-2.5 rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 hover:bg-slate-800 transition duration-200">
+              Login
+            </button>
           </div>
+
         </div>
       </div>
     </nav>
 
     <main class="flex-grow">
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
-        <div class="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-xs md:text-sm font-bold tracking-widest uppercase text-slate-600 mb-8 shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Complete 2026 Syllabus Setup
+      
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center flex flex-col items-center">
+        
+        <div class="inline-flex items-center gap-2 border border-slate-200 bg-white px-5 py-2 rounded-full text-xs md:text-sm font-extrabold tracking-widest uppercase text-slate-600 mb-10 shadow-sm hover:border-slate-300 transition cursor-default">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
+          Syllabus Updated for 2026
         </div>
-        <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-8 leading-tight tracking-tight text-slate-900">
+        
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-slate-900 max-w-5xl">
           Crack Any Govt Exam. <br class="hidden md:block"/> 
           Study <span class="highlight-text text-slate-900">Smarter</span>, Not Harder.
         </h1>
-        <p class="text-lg md:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed font-medium px-4">
-          The ultimate productivity-focused preparation hub for <strong class="text-slate-900">FPSC, PPSC, SPSC, KPPSC, BPSC,</strong> and <strong class="text-slate-900">NTS</strong>. Stop blindly memorizing. Master concepts with logical explanations.
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4 px-4">
-          <a href="#papers" class="bg-accent text-white px-8 py-4 rounded-xl font-bold hover:bg-teal-800 transition shadow-lg shadow-teal-900/20 text-lg sm:w-auto w-full text-center hover:-translate-y-1">Start Practicing Free</a>
-        </div>
-      </section>
-
-      <section id="papers" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="flex justify-between items-end mb-10">
-          <div>
-            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">Latest Past Papers</h2>
-            <p class="text-slate-600 font-medium">Fully solved with detailed logical breakdowns.</p>
-          </div>
-          <a href="/papers" class="hidden sm:inline-block font-bold text-accent hover:text-teal-800 transition">View All Papers &rarr;</a>
-        </div>
         
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-          <a href="#" class="block bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-[4px_4px_0px_0px_rgba(226,232,240,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(226,232,240,1)] transition-all">
-            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">PPSC</span>
-            <h3 class="text-lg font-bold mt-4 mb-2 text-slate-900">Tehsildar (BS-16) - 2023</h3>
-            <p class="text-slate-500 text-sm font-medium">100 MCQs • English & General Knowledge</p>
-          </a>
-          <a href="#" class="block bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-[4px_4px_0px_0px_rgba(226,232,240,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(226,232,240,1)] transition-all">
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">FPSC</span>
-            <h3 class="text-lg font-bold mt-4 mb-2 text-slate-900">Inspector Customs (BS-16) - 2024</h3>
-            <p class="text-slate-500 text-sm font-medium">100 MCQs • Everyday Science & Math</p>
-          </a>
-          <a href="#" class="block bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-[4px_4px_0px_0px_rgba(226,232,240,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(226,232,240,1)] transition-all">
-            <span class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">PPSC</span>
-            <h3 class="text-lg font-bold mt-4 mb-2 text-slate-900">Lecturer Education (BS-17) - 2022</h3>
-            <p class="text-slate-500 text-sm font-medium">100 MCQs • Subject Specialist</p>
-          </a>
+        <p class="text-lg md:text-2xl text-slate-600 mb-12 max-w-3xl leading-relaxed font-medium">
+          Pakistan's most productive preparation platform. Stop memorizing blindly. Master concepts with <strong class="text-slate-900">logical explanations</strong> and secure your dream job.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-5 w-full sm:w-auto">
+          <a href="#papers" class="bg-accent text-white px-10 py-4 rounded-2xl font-bold hover:bg-teal-800 transition-all shadow-[0_8px_30px_rgb(15,118,110,0.3)] text-lg hover:-translate-y-1">Explore Past Papers</a>
+          <button class="bg-white text-slate-800 border-2 border-slate-200 px-10 py-4 rounded-2xl font-bold hover:border-slate-300 hover:bg-slate-50 transition-all text-lg hover:-translate-y-1">View Demo Notes</button>
         </div>
-        <a href="/papers" class="sm:hidden block text-center bg-slate-100 text-slate-700 font-bold py-3 rounded-xl">View All Papers</a>
+
+        <div class="mt-20 pt-10 border-t border-slate-200/60 w-full max-w-4xl">
+          <p class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6">Comprehensive Preparation For All Major Commissions</p>
+          <div class="flex flex-wrap justify-center gap-4 md:gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+            <span class="text-2xl font-black text-slate-800">PPSC</span>
+            <span class="text-2xl font-black text-slate-800">FPSC</span>
+            <span class="text-2xl font-black text-slate-800">SPSC</span>
+            <span class="text-2xl font-black text-slate-800">KPPSC</span>
+            <span class="text-2xl font-black text-slate-800">BPSC</span>
+            <span class="text-2xl font-black text-slate-800">NTS</span>
+          </div>
+        </div>
       </section>
 
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="bg-slate-900 rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden">
-          <div class="relative z-10 md:w-2/3">
-            <span class="bg-yellow-400 text-yellow-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block">Free Resources</span>
-            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">Download High-Yield Cheat Sheets</h2>
-            <p class="text-slate-300 font-medium mb-8 text-lg">We condensed massive textbooks into 2-page PDF summaries. Download our most popular timeline maps and vocabulary lists for rapid revision.</p>
-            <div class="flex flex-col sm:flex-row gap-4">
-              <a href="#" class="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-100 transition">
-                📄 Pak Affairs Timeline (1857-1947)
-              </a>
-              <a href="#" class="bg-white/10 text-white border border-slate-700 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/20 transition">
-                📄 Everyday Science Formulas
-              </a>
+      <section id="features" class="bg-white border-y border-slate-200 py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">Everything You Need to Top the Merit List</h2>
+            <p class="text-xl text-slate-600 font-medium max-w-2xl mx-auto">We reverse-engineered the syllabus of top competitive exams to build a study system that guarantees retention.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-blue-50/50 hover:border-blue-100 transition duration-300 group">
+              <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">📚</div>
+              <h3 class="text-2xl font-bold mb-3 text-slate-900">Solved Past Papers</h3>
+              <p class="text-slate-600 font-medium leading-relaxed">Thousands of MCQs from previous Assistant Director and Tehsildar exams, cleanly formatted without annoying ads.</p>
+            </div>
+
+            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 hover:border-emerald-100 transition duration-300 group">
+              <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🧠</div>
+              <h3 class="text-2xl font-bold mb-3 text-slate-900">Logical Explanations</h3>
+              <p class="text-slate-600 font-medium leading-relaxed">We don't just provide the answer key. Every question features a detailed explanation so you actually learn the concept.</p>
+            </div>
+
+            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-purple-50/50 hover:border-purple-100 transition duration-300 group">
+              <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🎯</div>
+              <h3 class="text-2xl font-bold mb-3 text-slate-900">Topic-Wise Quizzes</h3>
+              <p class="text-slate-600 font-medium leading-relaxed">Filter questions by General Knowledge, Everyday Science, Pakistan Affairs, Islamiat, or specific degree subjects.</p>
             </div>
           </div>
-          <div class="absolute right-0 bottom-0 text-[15rem] leading-none opacity-5 transform translate-x-1/4 translate-y-1/4 select-none pointer-events-none">📘</div>
         </div>
       </section>
 
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 mb-12">
-        <div class="flex justify-between items-end mb-10">
-          <div>
-            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">Study Strategy & Updates</h2>
-            <p class="text-slate-600 font-medium">Science-backed techniques to clear competitive exams.</p>
+      <section id="papers" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div class="max-w-2xl">
+            <span class="text-accent font-extrabold tracking-widest uppercase text-sm mb-2 block">Live Database</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Latest Past Papers</h2>
+            <p class="text-xl text-slate-600 font-medium">Fully solved, beautifully formatted, and ready for you to practice.</p>
           </div>
-          <a href="/blog" class="hidden sm:inline-block font-bold text-accent hover:text-teal-800 transition">Read All Articles &rarr;</a>
+          <button class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition whitespace-nowrap">View All Papers &rarr;</button>
         </div>
         
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-          <a href="#" class="block bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
-            <div class="h-48 bg-slate-100 rounded-xl mb-4 overflow-hidden flex items-center justify-center text-4xl group-hover:scale-105 transition duration-300">⏰</div>
-            <p class="text-accent font-bold text-sm mb-2">Productivity</p>
-            <h3 class="text-xl font-bold text-slate-900 mb-2 leading-tight">How to Study for PPSC with a Full-Time Government Job</h3>
-            <p class="text-slate-500 text-sm font-medium line-clamp-2">Learn the time-blocking methods used by active officers to prepare for their next promotion exams without burning out.</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-[4px_4px_0px_0px_#1c1917] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#1c1917] transition-all cursor-pointer flex flex-col h-full">
+            <div class="flex justify-between items-start mb-6">
+              <span class="bg-blue-100 text-blue-800 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest">PPSC</span>
+              <span class="text-slate-400 font-bold text-sm">2023</span>
+            </div>
+            <h3 class="text-2xl font-black mb-3 text-slate-900 leading-tight">Tehsildar (BS-16)</h3>
+            <p class="text-slate-500 font-medium mb-6 flex-grow">100 MCQs • English & General Knowledge</p>
+            <div class="text-accent font-bold group flex items-center gap-2">Start Practicing <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></div>
+          </div>
+
+          <div class="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-[4px_4px_0px_0px_#1c1917] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#1c1917] transition-all cursor-pointer flex flex-col h-full">
+            <div class="flex justify-between items-start mb-6">
+              <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest">FPSC</span>
+              <span class="text-slate-400 font-bold text-sm">2024</span>
+            </div>
+            <h3 class="text-2xl font-black mb-3 text-slate-900 leading-tight">Inspector Customs / Intelligence Officer</h3>
+            <p class="text-slate-500 font-medium mb-6 flex-grow">100 MCQs • Everyday Science & Math</p>
+            <div class="text-accent font-bold group flex items-center gap-2">Start Practicing <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></div>
+          </div>
+
+          <div class="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-[4px_4px_0px_0px_#1c1917] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#1c1917] transition-all cursor-pointer flex flex-col h-full">
+            <div class="flex justify-between items-start mb-6">
+              <span class="bg-purple-100 text-purple-800 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest">PPSC</span>
+              <span class="text-slate-400 font-bold text-sm">2022</span>
+            </div>
+            <h3 class="text-2xl font-black mb-3 text-slate-900 leading-tight">Lecturer Education (BS-17)</h3>
+            <p class="text-slate-500 font-medium mb-6 flex-grow">100 MCQs • Subject Specialist</p>
+            <div class="text-accent font-bold group flex items-center gap-2">Start Practicing <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-slate-900 py-24 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-black mb-4">Trusted by Future Officers</h2>
+            <p class="text-xl text-slate-400 font-medium max-w-2xl mx-auto">Join thousands of aspirants who ditched the old books and started studying smarter.</p>
+          </div>
+          
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-3xl">
+              <div class="flex gap-1 text-yellow-400 mb-4 text-xl">★★★★★</div>
+              <p class="text-lg text-slate-300 font-medium mb-6 leading-relaxed">"The logical explanations under the Everyday Science MCQs are a game changer. I finally understand WHY the answer is correct instead of just memorizing a letter."</p>
+              <div class="font-bold">Ali Raza</div>
+              <div class="text-slate-500 text-sm">Qualified PPSC Tehsildar 2023</div>
+            </div>
+             <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-3xl">
+              <div class="flex gap-1 text-yellow-400 mb-4 text-xl">★★★★★</div>
+              <p class="text-lg text-slate-300 font-medium mb-6 leading-relaxed">"The UI is so clean. It feels like I'm using a premium app, not a clunky 10-year-old forum. Studying on my phone during my commute is finally easy."</p>
+              <div class="font-bold">Ayesha T.</div>
+              <div class="text-slate-500 text-sm">FPSC Aspirant</div>
+            </div>
+             <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-3xl">
+              <div class="flex gap-1 text-yellow-400 mb-4 text-xl">★★★★★</div>
+              <p class="text-lg text-slate-300 font-medium mb-6 leading-relaxed">"The downloadable timeline cheat sheets for Pak Affairs saved me weeks of making my own notes. Absolutely brilliant platform."</p>
+              <div class="font-bold">Usman Khan</div>
+              <div class="text-slate-500 text-sm">PMS Officer</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div class="max-w-2xl">
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Study Strategy Hub</h2>
+            <p class="text-xl text-slate-600 font-medium">Science-backed techniques and syllabus guides to clear competitive exams.</p>
+          </div>
+          <button class="bg-white border-2 border-slate-200 text-slate-800 px-6 py-3 rounded-xl font-bold hover:border-slate-300 transition whitespace-nowrap">Read All Articles</button>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <a href="#" class="group flex flex-col sm:flex-row gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="w-full sm:w-48 h-48 bg-slate-100 rounded-2xl flex-shrink-0 flex items-center justify-center text-5xl group-hover:scale-[1.02] transition-transform">🗺️</div>
+            <div class="flex flex-col justify-center">
+              <span class="text-accent font-black text-xs uppercase tracking-widest mb-2 block">Syllabus Guide</span>
+              <h3 class="text-2xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-accent transition-colors">The 80/20 Rule for Pakistan Studies</h3>
+              <p class="text-slate-500 font-medium line-clamp-2">Stop reading entire history books. Here are the exact eras and events that make up 80% of all commission questions.</p>
+            </div>
           </a>
-          <a href="#" class="block bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
-            <div class="h-48 bg-slate-100 rounded-xl mb-4 overflow-hidden flex items-center justify-center text-4xl group-hover:scale-105 transition duration-300">🗺️</div>
-            <p class="text-accent font-bold text-sm mb-2">Syllabus Guide</p>
-            <h3 class="text-xl font-bold text-slate-900 mb-2 leading-tight">The 80/20 Rule for Pakistan Studies: What to Actually Read</h3>
-            <p class="text-slate-500 text-sm font-medium line-clamp-2">Stop reading entire history books. Here are the exact eras and events that make up 80% of all commission questions.</p>
-          </a>
-          <a href="#" class="block bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
-            <div class="h-48 bg-slate-100 rounded-xl mb-4 overflow-hidden flex items-center justify-center text-4xl group-hover:scale-105 transition duration-300">🧠</div>
-            <p class="text-accent font-bold text-sm mb-2">Memory Science</p>
-            <h3 class="text-xl font-bold text-slate-900 mb-2 leading-tight">Using Spaced Repetition for Everyday Science MCQs</h3>
-            <p class="text-slate-500 text-sm font-medium line-clamp-2">How to use the forgetting curve to your advantage and permanently memorize vitamins, planets, and chemical formulas.</p>
+
+          <a href="#" class="group flex flex-col sm:flex-row gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="w-full sm:w-48 h-48 bg-slate-100 rounded-2xl flex-shrink-0 flex items-center justify-center text-5xl group-hover:scale-[1.02] transition-transform">🧠</div>
+            <div class="flex flex-col justify-center">
+              <span class="text-accent font-black text-xs uppercase tracking-widest mb-2 block">Memory Science</span>
+              <h3 class="text-2xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-accent transition-colors">Using Spaced Repetition for Everyday Science</h3>
+              <p class="text-slate-500 font-medium line-clamp-2">How to use the forgetting curve to your advantage and permanently memorize vitamins, planets, and formulas.</p>
+            </div>
           </a>
         </div>
-        <a href="/blog" class="sm:hidden block text-center bg-slate-100 text-slate-700 font-bold py-3 rounded-xl">Read All Articles</a>
       </section>
     </main>
 
     <footer class="bg-white border-t border-slate-200 mt-auto">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div class="text-center md:text-left">
-            <span class="text-2xl font-extrabold tracking-tight text-slate-900">GK360<span class="text-accent">.pk</span></span>
-            <p class="text-slate-500 font-medium text-sm mt-2">Pakistan's Premium Preparation Platform.</p>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 border-b border-slate-100 pb-12">
+          
+          <div class="md:col-span-2">
+            <div class="flex items-center gap-3 mb-4">
+              <img src="/logo.webp" alt="GK360 Logo" class="h-8 w-8 object-contain bg-slate-100 rounded-md p-1" onerror="this.style.display='none'" />
+              <span class="text-2xl font-black tracking-tight text-slate-900">GK360<span class="text-accent">.pk</span></span>
+            </div>
+            <p class="text-slate-500 font-medium text-lg max-w-sm mb-6">Pakistan's most advanced preparation platform. Join the new generation of smart aspirants.</p>
           </div>
-          <div class="flex space-x-6 text-sm font-bold text-slate-500">
-            <a href="#" class="hover:text-ink transition">Privacy Policy</a>
-            <a href="#" class="hover:text-ink transition">Terms of Service</a>
-            <a href="#" class="hover:text-ink transition">Contact Us</a>
+
+          <div>
+            <h4 class="font-black text-slate-900 mb-4 uppercase tracking-widest text-sm">Resources</h4>
+            <ul class="space-y-3 font-medium text-slate-500">
+              <li><a href="#" class="hover:text-accent transition">Solved Past Papers</a></li>
+              <li><a href="#" class="hover:text-accent transition">Topic MCQs</a></li>
+              <li><a href="#" class="hover:text-accent transition">PDF Study Notes</a></li>
+              <li><a href="#" class="hover:text-accent transition">Blog & Strategy</a></li>
+            </ul>
           </div>
+
+          <div>
+            <h4 class="font-black text-slate-900 mb-4 uppercase tracking-widest text-sm">Company</h4>
+            <ul class="space-y-3 font-medium text-slate-500">
+              <li><a href="#" class="hover:text-accent transition">About Us</a></li>
+              <li><a href="#" class="hover:text-accent transition">Contact Support</a></li>
+              <li><a href="#" class="hover:text-accent transition">Privacy Policy</a></li>
+              <li><a href="#" class="hover:text-accent transition">Terms of Service</a></li>
+            </ul>
+          </div>
+
         </div>
-        <div class="border-t border-slate-100 mt-8 pt-8 text-center">
-          <p class="text-slate-400 font-medium text-sm">
-            &copy; 2026 GK360.pk. All rights reserved. <br class="sm:hidden"/>
-            <span class="inline-block mt-2 sm:mt-0 sm:ml-2 text-slate-500 font-bold hover:text-accent transition duration-200 cursor-pointer">
-              Crafted with ❤️ by Abraaj Growth Labs
-            </span>
+        
+        <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
+          <p class="text-slate-400 font-bold text-sm">
+            &copy; 2026 GK360.pk. All rights reserved.
           </p>
+          <div class="inline-flex items-center justify-center px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
+            <span class="text-slate-500 font-bold text-sm">
+              Architected with ❤️ by <span class="text-slate-800 font-black">Abraaj Growth Labs</span>
+            </span>
+          </div>
         </div>
       </div>
     </footer>
