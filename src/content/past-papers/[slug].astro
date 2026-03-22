@@ -1,36 +1,22 @@
 ---
 // src/pages/past-papers/[slug].astro
-//
-// HOW THIS WORKS:
-// - Reads every JSON file in src/content/past-papers/
-// - Each JSON file becomes its own URL: /past-papers/[slug]
-// - Add a new JSON file → new page auto-appears. Nothing else needed.
-// - Subject pages, department cards, year cards ALL auto-update
-//   because they read the same JSON files at build time.
+// RENAME the downloaded file from slug.astro to [slug].astro
 
-import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// ── STATIC PATHS ──────────────────────────────────────────────
-// Astro calls this to know which pages to build
+// ── GENERATE ALL PAGES FROM JSON FILES ────────────────────
 export async function getStaticPaths() {
-  const papersDir = join(process.cwd(), 'src/content/past-papers');
-  const files = readdirSync(papersDir).filter(f => f.endsWith('.json'));
-
-  return files.map(file => {
-    const raw  = readFileSync(join(papersDir, file), 'utf-8');
-    const paper = JSON.parse(raw);
-    return {
-      params: { slug: paper.slug },
-      props:  { paper },
-    };
-  });
+  const papers = await getCollection('past-papers');
+  return papers.map(entry => ({
+    params: { slug: entry.data.slug },
+    props:  { paper: entry.data },
+  }));
 }
 
 const { paper } = Astro.props;
 
-// ── SEO SCHEMA ────────────────────────────────────────────────
+// ── SEO SCHEMAS ───────────────────────────────────────────
 const paperSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Quiz",
@@ -55,7 +41,6 @@ const breadcrumbSchema = JSON.stringify({
 
 const combinedSchema = `[${paperSchema},${breadcrumbSchema}]`;
 
-// ── SHARE URL ─────────────────────────────────────────────────
 const shareUrl  = `https://gk360.pk/past-papers/${paper.slug}/`;
 const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past paper with answer key on GK360.pk`);
 ---
@@ -70,28 +55,14 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 <!-- BREADCRUMB -->
 <nav class="breadcrumb-nav" aria-label="Breadcrumb">
   <div class="container">
-    <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
-      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
-        <meta itemprop="position" content="1" />
-      </li>
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
       <li aria-hidden="true">›</li>
-      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <a href="/past-papers/" itemprop="item"><span itemprop="name">Past Papers</span></a>
-        <meta itemprop="position" content="2" />
-      </li>
+      <li><a href="/past-papers/">Past Papers</a></li>
       <li aria-hidden="true">›</li>
-      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <a href={`/past-papers/department/${paper.deptSlug}/`} itemprop="item">
-          <span itemprop="name">{paper.departmentShort}</span>
-        </a>
-        <meta itemprop="position" content="3" />
-      </li>
+      <li><a href={`/past-papers/department/${paper.deptSlug}/`}>{paper.departmentShort}</a></li>
       <li aria-hidden="true">›</li>
-      <li class="active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <span itemprop="name">{paper.title} {paper.year}</span>
-        <meta itemprop="position" content="4" />
-      </li>
+      <li class="active">{paper.title} {paper.year}</li>
     </ol>
   </div>
 </nav>
@@ -130,53 +101,36 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 
       <!-- ACTION BUTTONS -->
       <div class="paper-actions-row">
-        <button class="btn btn-primary" id="start-quiz-btn" onclick="startQuiz()">
+        <button class="btn btn-primary" id="start-quiz-btn" onclick="startQuiz(true)">
           ⏱ Attempt with Timer
         </button>
         <button class="btn btn-navy" onclick="startQuiz(false)">
           👁 View Paper (No Timer)
         </button>
-        <button class="btn btn-ghost share-trigger" id="share-btn" aria-label="Share this paper" aria-expanded="false" onclick="toggleShare()">
+        <button class="btn btn-ghost" id="share-btn" aria-label="Share this paper" aria-expanded="false" onclick="toggleShare()">
           📤 Share
         </button>
       </div>
 
       <!-- SHARE PANEL -->
-      <div class="share-panel" id="share-panel" hidden aria-label="Share options">
+      <div class="share-panel" id="share-panel" hidden>
         <p class="share-label">Share this paper:</p>
         <div class="share-buttons">
           <a
             href={`https://api.whatsapp.com/send?text=${shareText}%0A${encodeURIComponent(shareUrl)}`}
             target="_blank" rel="noopener noreferrer"
             class="share-btn share-wa"
-            aria-label="Share on WhatsApp"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.78L0 24l6.375-1.5A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
             </svg>
             WhatsApp
           </a>
-          <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-            target="_blank" rel="noopener noreferrer"
-            class="share-btn share-fb"
-            aria-label="Share on Facebook"
-          >
-            📘 Facebook
-          </a>
-          <a
-            href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`}
-            target="_blank" rel="noopener noreferrer"
-            class="share-btn share-tw"
-            aria-label="Share on Twitter/X"
-          >
-            𝕏 Twitter
-          </a>
-          <button class="share-btn share-copy" onclick="copyLink()" aria-label="Copy link">
-            🔗 Copy Link
-          </button>
+          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="share-btn share-fb">📘 Facebook</a>
+          <a href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="share-btn share-tw">𝕏 Twitter</a>
+          <button class="share-btn share-copy" onclick="copyLink()">🔗 Copy Link</button>
         </div>
-        <div class="copy-confirm" id="copy-confirm" hidden>✅ Link copied to clipboard!</div>
+        <div class="copy-confirm" id="copy-confirm" hidden>✅ Link copied!</div>
       </div>
     </header>
 
@@ -185,12 +139,12 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
       <h2 id="breakdown-heading" class="section-h2">Subject-Wise Breakdown</h2>
       <div class="breakdown-grid">
         {paper.subjectBreakdown.map((s: any) => (
-          <a href={`/subjects/${s.subject}/`} class="breakdown-card" aria-label={`${s.label}: ${s.count} questions`}>
+          <a href={`/subjects/${s.subject}/`} class="breakdown-card">
             <div class="bc-top">
               <span class="bc-label">{s.label}</span>
               <span class="bc-count">{s.count} Qs</span>
             </div>
-            <div class="bc-bar-wrap" role="progressbar" aria-valuenow={s.percentage} aria-valuemin={0} aria-valuemax={100} aria-label={`${s.percentage}%`}>
+            <div class="bc-bar-wrap" role="progressbar" aria-valuenow={s.percentage} aria-valuemin={0} aria-valuemax={100}>
               <div class="bc-bar" style={`width:${s.percentage}%`}></div>
             </div>
             <div class="bc-pct">{s.percentage}%</div>
@@ -199,11 +153,11 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
       </div>
     </section>
 
-    <!-- QUIZ / PAPER VIEW AREA -->
+    <!-- QUIZ AREA -->
     <section class="quiz-section" id="quiz-section" aria-labelledby="quiz-heading">
 
-      <!-- TIMER BAR (shown in timed mode) -->
-      <div class="timer-bar" id="timer-bar" hidden role="timer" aria-live="polite" aria-label="Exam timer">
+      <!-- TIMER BAR -->
+      <div class="timer-bar" id="timer-bar" hidden role="timer" aria-live="polite">
         <div class="timer-info">
           <span class="timer-icon">⏱</span>
           <span id="timer-display" class="timer-display">90:00</span>
@@ -212,10 +166,10 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
         <div class="timer-progress-wrap">
           <div class="timer-progress" id="timer-progress"></div>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="submitQuiz()" id="submit-btn">Submit Paper</button>
+        <button class="btn btn-ghost btn-sm" onclick="submitQuiz()">Submit Paper</button>
       </div>
 
-      <!-- START SCREEN (default state) -->
+      <!-- START SCREEN -->
       <div class="start-screen" id="start-screen">
         <div class="start-screen-inner">
           <div class="start-icon">📝</div>
@@ -228,11 +182,10 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
         </div>
       </div>
 
-      <!-- QUESTIONS (rendered by JS) -->
+      <!-- QUESTIONS -->
       <div class="questions-wrap" id="questions-wrap" hidden>
         <div class="questions-grid" id="questions-grid" role="list"></div>
-
-        <!-- RESULTS PANEL (shown after submit) -->
+        <!-- RESULTS -->
         <div class="results-panel" id="results-panel" hidden aria-live="polite">
           <div class="results-inner">
             <div class="results-score-wrap">
@@ -255,11 +208,11 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 
     </section>
 
-    <!-- RELATED PAPERS (static for now, will be dynamic) -->
+    <!-- RELATED -->
     <section class="related-section" aria-labelledby="related-heading">
       <h2 id="related-heading" class="section-h2">More Papers You May Like</h2>
       <div class="related-grid">
-        <a href="/past-papers/department/{paper.deptSlug}/" class="related-card">
+        <a href={`/past-papers/department/${paper.deptSlug}/`} class="related-card">
           <span class="related-icon">🏛️</span>
           <div>
             <div class="related-title">All {paper.departmentShort} Papers</div>
@@ -289,35 +242,28 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
   </div>
 </main>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE-SPECIFIC STYLES
-     ══════════════════════════════════════════════════ -->
 <style>
-/* Breadcrumb */
 .breadcrumb-nav { background: var(--cream); border-bottom: 1px solid var(--border); padding: 12px 0; }
 .breadcrumb { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; list-style: none; font-size: 13px; color: var(--text-muted); }
 .breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
 .breadcrumb a:hover { color: var(--navy); }
 .breadcrumb .active { color: var(--navy); font-weight: 600; }
 
-/* Paper Header */
 .paper-page { padding: 48px 0 80px; }
 .paper-header { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 40px; margin-bottom: 32px; }
 .paper-header-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .dept-badge-lg { font-size: 12px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 12px; background: var(--navy); color: var(--gold-light); border-radius: 6px; }
 .paper-year-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: var(--cream); border: 1.5px solid var(--border); color: var(--navy); border-radius: 6px; }
-.solved-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: rgba(34,160,90,0.1); border: 1.5px solid rgba(34,160,90,0.25); color: #1A7A40; border-radius: 6px; }
+.solved-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: rgba(26,122,64,0.08); border: 1.5px solid rgba(26,122,64,0.2); color: #1A7A40; border-radius: 6px; }
 .paper-main-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(22px, 3vw, 34px); font-weight: 700; color: var(--navy); margin-bottom: 20px; text-align: left; }
 .paper-stats-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
 .paper-stat-item { display: flex; align-items: center; gap: 7px; font-size: 14px; color: var(--text-muted); font-weight: 500; }
-.psi-icon { font-size: 16px; }
-.paper-actions-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.paper-actions-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 
-/* Share Panel */
-.share-panel { background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-top: 4px; }
+.share-panel { background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-top: 8px; }
 .share-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
 .share-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-.share-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: 8px; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.share-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: 8px; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
 .share-wa   { background: #1A7A40; color: white; border-color: #1A7A40; }
 .share-wa:hover { background: #166832; }
 .share-fb   { background: #1877F2; color: white; border-color: #1877F2; }
@@ -325,13 +271,11 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 .share-tw   { background: #000; color: white; border-color: #000; }
 .share-tw:hover { background: #333; }
 .share-copy { background: var(--white); color: var(--navy); border-color: var(--border); }
-.share-copy:hover { background: var(--cream); border-color: var(--navy); }
+.share-copy:hover { background: var(--cream-dark); border-color: var(--navy); }
 .copy-confirm { font-size: 13px; color: #1A7A40; font-weight: 600; margin-top: 10px; }
 
-/* Section heading */
 .section-h2 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; color: var(--navy); margin-bottom: 24px; text-align: left; }
 
-/* Subject Breakdown */
 .subject-breakdown { margin-bottom: 32px; }
 .breakdown-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .breakdown-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 18px; text-decoration: none; transition: all 0.2s; display: block; }
@@ -340,10 +284,9 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 .bc-label { font-size: 13px; font-weight: 700; color: var(--navy); }
 .bc-count { font-size: 12px; font-weight: 600; color: var(--text-muted); }
 .bc-bar-wrap { height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
-.bc-bar { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.8s ease; }
+.bc-bar { height: 100%; background: var(--gold); border-radius: 3px; }
 .bc-pct { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
-/* Start Screen */
 .quiz-section { margin-bottom: 40px; }
 .start-screen { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 60px 40px; text-align: center; }
 .start-screen-inner { max-width: 480px; margin: 0 auto; }
@@ -352,48 +295,36 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 .start-screen p { color: var(--text-muted); font-size: 15px; margin-bottom: 28px; text-align: center; }
 .start-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-/* Timer */
 .timer-bar { background: var(--navy); border-radius: var(--radius-lg); padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .timer-info { display: flex; align-items: center; gap: 8px; color: white; }
-.timer-icon { font-size: 18px; }
 .timer-display { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: var(--gold-light); min-width: 65px; }
 .timer-label { font-size: 12px; color: rgba(255,255,255,0.6); }
 .timer-progress-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; overflow: hidden; min-width: 100px; }
 .timer-progress { height: 100%; background: var(--gold); border-radius: 3px; transition: width 1s linear; width: 100%; }
 .timer-bar .btn { margin-left: auto; }
 
-/* Questions */
 .questions-grid { display: flex; flex-direction: column; gap: 16px; }
 .question-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: border-color 0.2s; }
 .question-card.answered { border-color: var(--gold); }
-.question-card.correct  { border-color: #1A7A40; background: rgba(26,122,64,0.03); }
-.question-card.wrong    { border-color: #dc2626; background: rgba(220,38,38,0.03); }
-.q-header { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
-.q-number { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; background: var(--navy); color: var(--gold-light); padding: 3px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+.question-card.correct  { border-color: #1A7A40; background: rgba(26,122,64,0.02); }
+.question-card.wrong    { border-color: #dc2626; background: rgba(220,38,38,0.02); }
+.q-header { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; flex-wrap: wrap; }
+.q-number { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; background: var(--navy); color: var(--gold-light); padding: 3px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
 .q-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-.q-subject-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; background: var(--cream); border: 1px solid var(--border); color: var(--text-muted); border-radius: 4px; letter-spacing: 0.04em; }
-.q-type-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.04em; }
-.q-type-badge.static  { background: rgba(26,122,64,0.1);  color: #1A7A40; border: 1px solid rgba(26,122,64,0.2); }
-.q-type-badge.dynamic { background: rgba(197,150,58,0.12); color: var(--gold-dark); border: 1px solid rgba(197,150,58,0.25); }
+.q-subject-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; background: var(--cream); border: 1px solid var(--border); color: var(--text-muted); border-radius: 4px; }
+.q-type-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.q-type-badge.static  { background: rgba(26,122,64,0.1); color: #1A7A40; border: 1px solid rgba(26,122,64,0.2); }
+.q-type-badge.dynamic { background: rgba(197,150,58,0.1); color: var(--gold-dark); border: 1px solid rgba(197,150,58,0.2); }
 .q-text { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 16px; line-height: 1.55; text-align: left; }
 .options-grid { display: flex; flex-direction: column; gap: 8px; }
-.option-btn {
-  display: flex; align-items: center; gap: 12px;
-  width: 100%; text-align: left;
-  background: var(--cream); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 11px 16px;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 14px; font-weight: 500; color: var(--text-body);
-  cursor: pointer; transition: all 0.18s;
-}
+.option-btn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 11px 16px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 14px; font-weight: 500; color: var(--text-body); cursor: pointer; transition: all 0.18s; }
 .option-btn:hover:not(:disabled) { background: var(--cream-dark); border-color: var(--navy); color: var(--navy); }
 .option-btn:disabled { cursor: default; }
-.option-btn.selected  { background: rgba(11,29,58,0.07); border-color: var(--navy); color: var(--navy); font-weight: 600; }
-.option-btn.correct   { background: rgba(26,122,64,0.1); border-color: #1A7A40; color: #1A7A40; font-weight: 700; }
-.option-btn.wrong     { background: rgba(220,38,38,0.1); border-color: #dc2626; color: #dc2626; font-weight: 700; }
+.option-btn.selected { background: rgba(11,29,58,0.07); border-color: var(--navy); color: var(--navy); font-weight: 600; }
+.option-btn.correct  { background: rgba(26,122,64,0.1); border-color: #1A7A40; color: #1A7A40; font-weight: 700; }
+.option-btn.wrong    { background: rgba(220,38,38,0.1); border-color: #dc2626; color: #dc2626; font-weight: 700; }
 .option-key { font-weight: 800; min-width: 22px; font-size: 13px; }
 
-/* Results */
 .results-panel { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 48px 40px; text-align: center; margin-top: 24px; }
 .results-inner { max-width: 520px; margin: 0 auto; }
 .results-score-wrap { margin-bottom: 24px; }
@@ -406,10 +337,8 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 .rbd-item { font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 7px; }
 .rbd-correct { background: rgba(26,122,64,0.1); color: #1A7A40; }
 .rbd-wrong   { background: rgba(220,38,38,0.1); color: #dc2626; }
-.rbd-skip    { background: var(--cream); color: var(--text-muted); }
 .results-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
-/* Related */
 .related-section { margin-top: 16px; }
 .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .related-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px 20px; text-decoration: none; display: flex; align-items: center; gap: 14px; transition: all 0.2s; }
@@ -433,20 +362,7 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past pap
 }
 </style>
 
-<!-- ══════════════════════════════════════════════════════
-     QUIZ ENGINE JAVASCRIPT
-     ══════════════════════════════════════════════════ -->
 <script define:vars={{ questions: paper.questions, totalTime: paper.timeMinutes * 60, totalQ: paper.totalQuestions }}>
-
-// ── STATE ────────────────────────────────────────────────
-let userAnswers = {};
-let timerInterval = null;
-let timeLeft = totalTime;
-let timedMode = false;
-let quizStarted = false;
-let quizSubmitted = false;
-
-// ── SUBJECT DISPLAY NAMES ────────────────────────────────
 const subjectLabels = {
   'pera-law':          'PERA Law',
   'english':           'English',
@@ -459,207 +375,169 @@ const subjectLabels = {
   'general-knowledge': 'General Knowledge',
 };
 
-// ── START QUIZ ────────────────────────────────────────────
-function startQuiz(timed = true) {
-  timedMode = timed;
-  quizStarted = true;
-  userAnswers = {};
-  timeLeft = totalTime;
+let userAnswers  = {};
+let timerInterval = null;
+let timeLeft      = totalTime;
+let timedMode     = false;
+let quizSubmitted = false;
 
-  document.getElementById('start-screen').hidden   = true;
-  document.getElementById('questions-wrap').hidden = false;
-  document.getElementById('results-panel').hidden  = true;
+function startQuiz(timed = true) {
+  timedMode     = timed;
+  quizSubmitted = false;
+  userAnswers   = {};
+  timeLeft      = totalTime;
+
+  document.getElementById('start-screen').hidden    = true;
+  document.getElementById('questions-wrap').hidden  = false;
+  document.getElementById('results-panel').hidden   = true;
 
   if (timed) {
     document.getElementById('timer-bar').hidden = false;
-    startTimer();
+    if (timerInterval) clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      if (timeLeft <= 0) { clearInterval(timerInterval); submitQuiz(true); }
+    }, 1000);
+  } else {
+    document.getElementById('timer-bar').hidden = true;
   }
 
   renderQuestions(false);
-  window.scrollTo({ top: document.getElementById('quiz-section').offsetTop - 80, behavior: 'smooth' });
+  const sec = document.getElementById('quiz-section');
+  if (sec) window.scrollTo({ top: sec.offsetTop - 80, behavior: 'smooth' });
 }
 
-// ── RENDER QUESTIONS ─────────────────────────────────────
-function renderQuestions(showAnswers = false) {
+function renderQuestions(showAns = false) {
   const grid = document.getElementById('questions-grid');
+  if (!grid) return;
   grid.innerHTML = questions.map(q => {
-    const userAns  = userAnswers[q.no];
-    const isAnswered = !!userAns;
-    let cardClass = 'question-card';
-    if (showAnswers && isAnswered) cardClass += userAns === q.correct ? ' correct' : ' wrong';
-    else if (isAnswered) cardClass += ' answered';
+    const ua = userAnswers[q.no];
+    let cardCls = 'question-card';
+    if (showAns && ua) cardCls += ua === q.correct ? ' correct' : ' wrong';
+    else if (ua) cardCls += ' answered';
 
-    const optionsHtml = Object.entries(q.options).map(([key, val]) => {
-      let btnClass = 'option-btn';
-      let ariaLabel = `Option ${key}: ${val}`;
-      if (showAnswers) {
-        if (key === q.correct) { btnClass += ' correct'; ariaLabel += ' (Correct Answer)'; }
-        else if (key === userAns && key !== q.correct) { btnClass += ' wrong'; ariaLabel += ' (Your Wrong Answer)'; }
-      } else if (key === userAns) {
-        btnClass += ' selected';
-        ariaLabel += ' (Selected)';
-      }
-      return `<button
-        class="${btnClass}"
-        onclick="selectAnswer(${q.no}, '${key}')"
-        ${(showAnswers || quizSubmitted) ? 'disabled' : ''}
-        aria-label="${ariaLabel}"
-        aria-pressed="${key === userAns}"
-      >
-        <span class="option-key">${key}.</span>
-        <span>${val}</span>
-        ${showAnswers && key === q.correct ? '<span style="margin-left:auto">✅</span>' : ''}
-        ${showAnswers && key === userAns && key !== q.correct ? '<span style="margin-left:auto">❌</span>' : ''}
+    const opts = Object.entries(q.options).map(([k, v]) => {
+      let bc = 'option-btn';
+      if (showAns) {
+        if (k === q.correct)               bc += ' correct';
+        else if (k === ua && k !== q.correct) bc += ' wrong';
+      } else if (k === ua) bc += ' selected';
+      return `<button class="${bc}" onclick="selectAnswer(${q.no},'${k}')" ${(showAns || quizSubmitted) ? 'disabled' : ''}>
+        <span class="option-key">${k}.</span><span>${v}</span>
+        ${showAns && k === q.correct ? '<span style="margin-left:auto">✅</span>' : ''}
+        ${showAns && k === ua && k !== q.correct ? '<span style="margin-left:auto">❌</span>' : ''}
       </button>`;
     }).join('');
 
-    const typeClass = q.type === 'static' ? 'static' : 'dynamic';
-    const typeLabel = q.type === 'static' ? '📌 Static Fact' : '🔄 Current/Dynamic';
-
-    return `<article class="${cardClass}" role="listitem" id="q-${q.no}">
+    return `<article class="${cardCls}" id="q-${q.no}" role="listitem">
       <div class="q-header">
         <span class="q-number">Q.${q.no}</span>
         <div class="q-badges">
           <span class="q-subject-badge">${subjectLabels[q.subject] || q.subject}</span>
-          <span class="q-type-badge ${typeClass}">${typeLabel}</span>
+          <span class="q-type-badge ${q.type}">${q.type === 'static' ? '📌 Static' : '🔄 Current'}</span>
         </div>
       </div>
       <p class="q-text">${q.question}</p>
-      <div class="options-grid" role="group" aria-label="Options for question ${q.no}">${optionsHtml}</div>
+      <div class="options-grid">${opts}</div>
     </article>`;
   }).join('');
 }
 
-// ── SELECT ANSWER ─────────────────────────────────────────
 function selectAnswer(qNo, key) {
   if (quizSubmitted) return;
   userAnswers[qNo] = key;
-  // Update just this question's buttons without re-rendering all
   const card = document.getElementById(`q-${qNo}`);
   if (!card) return;
   card.classList.add('answered');
   card.querySelectorAll('.option-btn').forEach(btn => {
-    btn.classList.remove('selected');
-    const btnKey = btn.querySelector('.option-key').textContent.replace('.', '').trim();
-    if (btnKey === key) btn.classList.add('selected');
-    btn.setAttribute('aria-pressed', btnKey === key);
+    const k = btn.querySelector('.option-key').textContent.replace('.','').trim();
+    btn.classList.toggle('selected', k === key);
   });
-}
-
-// ── TIMER ─────────────────────────────────────────────────
-function startTimer() {
-  updateTimerDisplay();
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    updateTimerDisplay();
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      submitQuiz(true);
-    }
-  }, 1000);
 }
 
 function updateTimerDisplay() {
-  const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-  const secs = (timeLeft % 60).toString().padStart(2, '0');
+  const m = Math.floor(timeLeft / 60).toString().padStart(2,'0');
+  const s = (timeLeft % 60).toString().padStart(2,'0');
   const el = document.getElementById('timer-display');
-  if (el) el.textContent = `${mins}:${secs}`;
-
-  const progress = document.getElementById('timer-progress');
-  if (progress) {
+  if (el) el.textContent = `${m}:${s}`;
+  const bar = document.getElementById('timer-progress');
+  if (bar) {
     const pct = (timeLeft / totalTime) * 100;
-    progress.style.width = `${pct}%`;
-    progress.style.background = pct > 50 ? 'var(--gold)' : pct > 20 ? '#f97316' : '#dc2626';
+    bar.style.width = `${pct}%`;
+    bar.style.background = pct > 50 ? 'var(--gold)' : pct > 20 ? '#f97316' : '#dc2626';
   }
 }
 
-// ── SUBMIT ────────────────────────────────────────────────
 function submitQuiz(timeUp = false) {
   if (timerInterval) clearInterval(timerInterval);
   quizSubmitted = true;
-
   let correct = 0, wrong = 0, skipped = 0;
   questions.forEach(q => {
-    if (!userAnswers[q.no]) { skipped++; }
-    else if (userAnswers[q.no] === q.correct) { correct++; }
-    else { wrong++; }
+    if (!userAnswers[q.no]) skipped++;
+    else if (userAnswers[q.no] === q.correct) correct++;
+    else wrong++;
   });
-
   const pct = Math.round((correct / totalQ) * 100);
   const msgs = [
-    { min: 80, msg: '🎉 Excellent! Outstanding performance. You are exam-ready!', title: 'Excellent!' },
-    { min: 60, msg: '👍 Good work! A bit more practice and you\'ll be fully prepared.', title: 'Good Result!' },
-    { min: 40, msg: '📚 Keep practicing! Focus on your weak subjects and try again.', title: 'Keep Going!' },
-    { min: 0,  msg: '💪 Don\'t give up. Review the answer key and practice more.', title: 'Keep Trying!' },
+    { min:80, title:'Excellent! 🎉', msg:'Outstanding performance. You are exam-ready!' },
+    { min:60, title:'Good Result! 👍', msg:'A bit more practice and you\'ll be fully prepared.' },
+    { min:40, title:'Keep Going! 📚', msg:'Focus on weak subjects and practice more.' },
+    { min:0,  title:'Keep Trying! 💪', msg:'Review the answer key carefully and try again.' },
   ];
-  const result = msgs.find(m => pct >= m.min);
-
-  document.getElementById('timer-bar').hidden = true;
+  const r = msgs.find(m => pct >= m.min);
+  document.getElementById('timer-bar').hidden   = true;
   document.getElementById('results-panel').hidden = false;
   document.getElementById('results-score').textContent = correct;
-  document.getElementById('results-title').textContent = timeUp ? 'Time Up! Here are your results:' : result.title;
-  document.getElementById('results-msg').textContent = result.msg;
+  document.getElementById('results-title').textContent = timeUp ? 'Time Up!' : r.title;
+  document.getElementById('results-msg').textContent   = r.msg;
   document.getElementById('results-breakdown').innerHTML = `
     <span class="rbd-item rbd-correct">✅ Correct: ${correct}</span>
     <span class="rbd-item rbd-wrong">❌ Wrong: ${wrong}</span>
-    <span class="rbd-item rbd-skip">⏭ Skipped: ${skipped}</span>
-    <span class="rbd-item" style="background:var(--cream);color:var(--navy);font-weight:700;">${pct}%</span>
+    <span class="rbd-item" style="background:var(--cream);color:var(--text-muted);">⏭ Skipped: ${skipped}</span>
+    <span class="rbd-item" style="background:var(--navy);color:var(--gold-light);">${pct}%</span>
   `;
-
-  document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('results-panel').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
-// ── RETRY / SHOW ANSWERS ──────────────────────────────────
-function retryQuiz() {
-  quizSubmitted = false;
-  startQuiz(timedMode);
-}
-
+function retryQuiz()  { startQuiz(timedMode); }
 function showAnswers() {
   document.getElementById('results-panel').hidden = true;
   renderQuestions(true);
-  document.getElementById('questions-wrap').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('questions-wrap').scrollIntoView({ behavior:'smooth' });
 }
 
-// ── SHARE ─────────────────────────────────────────────────
 function toggleShare() {
-  const panel = document.getElementById('share-panel');
-  const btn   = document.getElementById('share-btn');
-  const isHidden = panel.hidden;
-  panel.hidden = !isHidden;
-  btn.setAttribute('aria-expanded', String(isHidden));
-  if (isHidden) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const p = document.getElementById('share-panel');
+  const b = document.getElementById('share-btn');
+  p.hidden = !p.hidden;
+  b.setAttribute('aria-expanded', String(!p.hidden));
 }
 
 function copyLink() {
-  const url = window.location.href;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => showCopyConfirm());
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = url;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showCopyConfirm();
-  }
+  navigator.clipboard?.writeText(window.location.href).then(showCopyConfirm).catch(() => {
+    const t = document.createElement('textarea');
+    t.value = window.location.href;
+    document.body.appendChild(t); t.select(); document.execCommand('copy');
+    document.body.removeChild(t); showCopyConfirm();
+  });
 }
 
 function showCopyConfirm() {
   const el = document.getElementById('copy-confirm');
+  if (!el) return;
   el.hidden = false;
   setTimeout(() => { el.hidden = true; }, 3000);
 }
 
-// Expose functions to global scope (needed for inline onclick)
-window.startQuiz     = startQuiz;
-window.selectAnswer  = selectAnswer;
-window.submitQuiz    = submitQuiz;
-window.retryQuiz     = retryQuiz;
-window.showAnswers   = showAnswers;
-window.toggleShare   = toggleShare;
-window.copyLink      = copyLink;
+window.startQuiz    = startQuiz;
+window.selectAnswer = selectAnswer;
+window.submitQuiz   = submitQuiz;
+window.retryQuiz    = retryQuiz;
+window.showAnswers  = showAnswers;
+window.toggleShare  = toggleShare;
+window.copyLink     = copyLink;
 </script>
 
 </BaseLayout>
