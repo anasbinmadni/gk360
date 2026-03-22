@@ -1,0 +1,224 @@
+---
+// src/pages/english/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ENGLISH_SECTIONS } from '../../data/english';
+import { getCollection } from 'astro:content';
+import { routeToEnglishSection } from '../../data/english';
+
+// Count MCQs per English sub-section from all papers
+const allPapers = await getCollection('past-papers');
+const sectionCount: Record<string, number> = {};
+
+allPapers.forEach(paper => {
+  paper.data.questions
+    ?.filter((q: any) => q.subject === 'english')
+    .forEach((q: any) => {
+      const slug = routeToEnglishSection(q.topic || '');
+      sectionCount[slug] = (sectionCount[slug] || 0) + 1;
+    });
+});
+
+const totalEnglish = Object.values(sectionCount).reduce((a, b) => a + b, 0);
+const totalPapers  = allPapers.filter(p =>
+  p.data.subjectBreakdown?.some((s: any) => s.subject === 'english')
+).length;
+
+const title       = "English Corner — PPSC English Preparation | GK360.pk";
+const description = `Complete English preparation for PPSC — vocabulary, grammar, idioms & phrases, and interview skills. ${totalEnglish}+ MCQs from real past papers.`;
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "English Corner — PPSC English Preparation",
+  "description": description,
+  "url": "https://gk360.pk/english/",
+  "provider": { "@type": "Organization", "name": "GK360.pk" }
+});
+---
+
+<BaseLayout title={title} description={description}
+  keywords="PPSC English preparation, English vocabulary PPSC, English grammar PPSC, idioms phrases PPSC, English MCQs past papers"
+  schema={schema}>
+
+<!-- BREADCRUMB -->
+<nav class="bc-nav" aria-label="Breadcrumb">
+  <div class="container">
+    <ol class="bc-ol">
+      <li><a href="/">Home</a></li><li aria-hidden="true">›</li>
+      <li class="bc-current">English Corner</li>
+    </ol>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="eng-hero">
+  <div class="container">
+    <div class="eng-hero-inner">
+      <p class="label label-light">Improve Your English</p>
+      <h1>English Corner</h1>
+      <p class="eng-hero-sub">Dedicated English preparation for PPSC — vocabulary, grammar, idioms, and communication skills. All MCQs sourced from real past papers.</p>
+
+      <!-- Partnership badge -->
+      <a href="https://www.voxenglishacademy.com" target="_blank" rel="noopener noreferrer" class="eng-partner-badge" aria-label="In partnership with VoxEnglishAcademy.com">
+        🤝 Communication skills section powered by <strong>VoxEnglishAcademy.com</strong> ↗
+      </a>
+
+      <div class="eng-hero-stats">
+        <span>📝 <b>{totalEnglish}</b> MCQs</span>
+        <span class="eh-dot">·</span>
+        <span>📄 From <b>{totalPapers}</b> Past Papers</span>
+        <span class="eh-dot">·</span>
+        <span>✅ With Answer Keys</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENGLISH SUB-SECTIONS -->
+<main class="eng-main">
+  <div class="container">
+
+    <div class="eng-sections-grid">
+      {ENGLISH_SECTIONS.map(sec => {
+        const count = sectionCount[sec.slug] || 0;
+        return (
+          <a href={`/english/${sec.slug}/`} class="eng-sec-card">
+            <div class="esc-icon-wrap" aria-hidden="true">{sec.icon}</div>
+            <div class="esc-body">
+              <h2 class="esc-name">{sec.name}</h2>
+              <p class="esc-desc">{sec.description}</p>
+              <div class="esc-footer">
+                <span class="esc-count">{count > 0 ? `${count} MCQs from past papers` : 'Study material & practice'}</span>
+                {sec.voxPartner && (
+                  <span class="esc-vox-badge">🤝 VoxEnglish</span>
+                )}
+              </div>
+              <div class="esc-tip">
+                <span class="esc-tip-icon">💡</span>
+                <span class="esc-tip-text">{sec.examTip}</span>
+              </div>
+            </div>
+            <div class="esc-cta">Explore {sec.short} →</div>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- WHY ENGLISH MATTERS -->
+    <div class="eng-why-section">
+      <h2 class="eng-section-heading">Why English Matters in PPSC</h2>
+      <div class="eng-why-grid">
+        <div class="eng-why-card">
+          <div class="ewc-icon">🎯</div>
+          <h3>8-15 Marks Per Paper</h3>
+          <p>English carries significant weightage in every PPSC one-paper exam. Mastering English vocabulary and grammar alone can add 10+ marks to your score.</p>
+        </div>
+        <div class="eng-why-card">
+          <div class="ewc-icon">🔁</div>
+          <h3>PPSC Repeats Questions</h3>
+          <p>Synonyms, idioms, and grammar correction questions repeat across multiple years. Practicing past papers gives you a very high chance of seeing exact same questions.</p>
+        </div>
+        <div class="eng-why-card">
+          <div class="ewc-icon">⚡</div>
+          <h3>Easy Scoring Opportunity</h3>
+          <p>Unlike GK or Current Affairs, English rules are fixed. Once you learn them, they never change. This makes English the most reliable scoring subject.</p>
+        </div>
+        <div class="eng-why-card">
+          <div class="ewc-icon">🗣️</div>
+          <h3>Interview Advantage</h3>
+          <p>Clear English communication in PPSC oral tests and interviews creates a strong first impression that influences your final selection.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK PRACTICE STRIP -->
+    <div class="eng-practice-strip">
+      <div class="eps-left">
+        <h2>Want Full Paper Practice?</h2>
+        <p>English MCQs in context — attempt complete past papers with all subjects together, just like the real exam.</p>
+      </div>
+      <a href="/past-papers/" class="btn-gold">Browse Past Papers →</a>
+    </div>
+
+  </div>
+</main>
+
+<style is:global>
+/* Hero */
+.eng-hero { background:linear-gradient(160deg, var(--navy) 0%, #0f2550 100%); padding:72px 24px 80px; position:relative; overflow:hidden; }
+.eng-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.035) 1px,transparent 1px); background-size:56px 56px; pointer-events:none; }
+.eng-hero-inner { position:relative; z-index:1; text-align:center; max-width:720px; margin:0 auto; }
+.eng-hero .label { color:rgba(197,150,58,.85); }
+.eng-hero h1 { font-family:'Playfair Display',Georgia,serif; color:var(--white); font-size:clamp(30px,4.5vw,52px); font-weight:700; margin-bottom:14px; text-align:center; }
+.eng-hero-sub { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:24px; line-height:1.75; text-align:center; }
+
+.eng-partner-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(197,150,58,.12); border:1px solid rgba(197,150,58,.28); color:var(--gold-light); font-size:13px; font-weight:500; padding:8px 18px; border-radius:100px; text-decoration:none; margin-bottom:24px; transition:background .2s; line-height:1.4; }
+.eng-partner-badge:hover { background:rgba(197,150,58,.22); }
+.eng-partner-badge strong { font-weight:800; }
+
+.eng-hero-stats { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; font-size:14px; color:rgba(255,255,255,.7); }
+.eng-hero-stats b { color:var(--gold-light); }
+.eh-dot { color:rgba(255,255,255,.25); }
+
+/* Main */
+.eng-main { background:var(--cream); padding:52px 0 72px; }
+
+/* Sections grid */
+.eng-sections-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; margin-bottom:56px; }
+.eng-sec-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:32px; text-decoration:none; display:flex; flex-direction:column; gap:20px; transition:all .25s; position:relative; overflow:hidden; }
+.eng-sec-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(to right, var(--gold), var(--gold-light)); transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+.eng-sec-card:hover::before { transform:scaleX(1); }
+.eng-sec-card:hover { border-color:var(--border-dark); box-shadow:var(--shadow-lg); transform:translateY(-3px); }
+
+.esc-icon-wrap { font-size:40px; width:68px; height:68px; background:var(--cream); border-radius:16px; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+.eng-sec-card:hover .esc-icon-wrap { background:rgba(11,29,58,.07); }
+
+.esc-body { flex:1; }
+.esc-name { font-family:'Playfair Display',Georgia,serif; font-size:22px; font-weight:700; color:var(--navy); margin-bottom:10px; text-align:left; }
+.esc-desc { font-size:14px; color:var(--text-muted); line-height:1.75; margin-bottom:14px; text-align:left; }
+.esc-footer { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.esc-count { font-size:13px; font-weight:700; color:var(--text-muted); }
+.esc-vox-badge { font-size:11px; font-weight:700; padding:3px 9px; background:rgba(197,150,58,.1); border:1px solid rgba(197,150,58,.25); color:var(--gold-dark); border-radius:5px; }
+
+.esc-tip { display:flex; gap:10px; background:rgba(197,150,58,.06); border:1px solid rgba(197,150,58,.18); border-radius:var(--radius); padding:12px 14px; }
+.esc-tip-icon { font-size:16px; flex-shrink:0; }
+.esc-tip-text { font-size:13px; color:var(--text-body); line-height:1.6; text-align:left; font-style:italic; }
+
+.esc-cta { font-size:14px; font-weight:700; color:var(--navy); border-bottom:1.5px solid var(--navy); padding-bottom:2px; align-self:flex-start; transition:color .18s, border-color .18s; }
+.eng-sec-card:hover .esc-cta { color:var(--gold-dark); border-color:var(--gold-dark); }
+
+/* Why section */
+.eng-section-heading { font-family:'Playfair Display',Georgia,serif; font-size:28px; font-weight:700; color:var(--navy); margin-bottom:24px; text-align:left; }
+.eng-why-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:48px; }
+.eng-why-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:24px 20px; text-align:center; transition:all .22s; }
+.eng-why-card:hover { background:var(--navy); border-color:var(--navy); transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+.eng-why-card:hover h3 { color:var(--white); }
+.eng-why-card:hover p  { color:rgba(255,255,255,.7); }
+.ewc-icon { font-size:32px; margin-bottom:14px; }
+.eng-why-card h3 { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:8px; transition:color .22s; text-align:center; }
+.eng-why-card p  { font-size:13px; color:var(--text-muted); line-height:1.7; transition:color .22s; text-align:center; }
+
+/* Practice strip */
+.eng-practice-strip { background:var(--navy); border-radius:var(--radius-xl); padding:40px 44px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; position:relative; overflow:hidden; }
+.eng-practice-strip::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.04) 1px,transparent 1px); background-size:48px 48px; }
+.eps-left { position:relative; z-index:1; }
+.eps-left h2 { font-family:'Playfair Display',Georgia,serif; font-size:24px; color:var(--white); margin-bottom:8px; text-align:left; }
+.eps-left p  { font-size:15px; color:rgba(255,255,255,.65); text-align:left; line-height:1.6; }
+.eng-practice-strip .btn-gold { position:relative; z-index:1; flex-shrink:0; }
+
+/* Breadcrumb */
+.bc-nav { background:var(--cream); border-bottom:1px solid var(--border); padding:10px 0; }
+.bc-ol  { display:flex; align-items:center; gap:7px; flex-wrap:wrap; list-style:none; font-size:13px; color:var(--text-muted); }
+.bc-ol a { color:var(--text-muted); transition:color .2s; }
+.bc-ol a:hover { color:var(--navy); }
+.bc-current { color:var(--navy); font-weight:600; }
+
+/* btn-gold global */
+.btn-gold { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--gold); color:var(--navy); border:2px solid var(--gold); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:15px; font-weight:700; padding:13px 28px; border-radius:var(--radius); cursor:pointer; transition:all .22s; white-space:nowrap; text-decoration:none; }
+.btn-gold:hover { background:var(--gold-light); border-color:var(--gold-light); transform:translateY(-1px); }
+
+@media (max-width:900px)  { .eng-sections-grid { grid-template-columns:1fr; } .eng-why-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px)  { .eng-why-grid { grid-template-columns:1fr; } .eng-practice-strip { flex-direction:column; text-align:center; padding:32px 24px; } .eng-practice-strip .btn-gold { width:100%; } .eps-left h2, .eps-left p { text-align:center; } }
+</style>
+
+</BaseLayout>

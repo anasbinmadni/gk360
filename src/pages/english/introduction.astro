@@ -1,0 +1,295 @@
+---
+// src/pages/english/introduction.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title       = "How to Introduce Yourself — PPSC Interview English | GK360.pk";
+const description = "Learn how to confidently introduce yourself in PPSC oral tests and interviews. Sample scripts, tips, and practice exercises — powered by VoxEnglishAcademy.com.";
+---
+
+<BaseLayout title={title} description={description}
+  keywords="how to introduce yourself PPSC, self introduction PPSC interview, English speaking PPSC, PPSC oral test preparation">
+
+<nav class="bc-nav" aria-label="Breadcrumb">
+  <div class="container">
+    <ol class="bc-ol">
+      <li><a href="/">Home</a></li><li aria-hidden="true">›</li>
+      <li><a href="/english/">English Corner</a></li><li aria-hidden="true">›</li>
+      <li class="bc-current">Self Introduction</li>
+    </ol>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="intro-hero">
+  <div class="container">
+    <div class="intro-hero-inner">
+      <div class="intro-icon" aria-hidden="true">🎤</div>
+      <div class="intro-info">
+        <p class="label label-light">English Corner</p>
+        <h1>How to Introduce Yourself</h1>
+        <p class="intro-desc">A strong self-introduction in your PPSC oral test or interview creates a powerful first impression. Learn exactly what to say, how to say it, and how to practice.</p>
+        <a href="https://www.voxenglishacademy.com" target="_blank" rel="noopener noreferrer" class="intro-partner-badge">
+          🤝 In partnership with <strong>VoxEnglishAcademy.com</strong> ↗
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="intro-page">
+  <div class="container">
+    <div class="intro-layout">
+
+      <main class="intro-main">
+
+        <!-- EXAM TIP BANNER -->
+        <div class="intro-tip-banner">
+          <span class="itb-icon">💡</span>
+          <div>
+            <strong>Exam Tip:</strong> Prepare both a <em>60-second version</em> (for quick rounds) and a <em>2-minute version</em> (for detailed interviews). Practice until it feels natural — not memorised.
+          </div>
+        </div>
+
+        <!-- WHAT TO INCLUDE -->
+        <div class="intro-section-card">
+          <h2>What to Include in Your Introduction</h2>
+          <div class="intro-checklist">
+            {[
+              { icon: '👤', title: 'Your Name',          tip: 'State your full name clearly. Speak slowly — this is your first impression.' },
+              { icon: '🏙️', title: 'Where You\'re From', tip: 'Mention your city or district. Keep it simple: "I am from Lahore, Punjab."' },
+              { icon: '🎓', title: 'Education',          tip: 'State your highest qualification, institution, and year. One sentence only.' },
+              { icon: '💼', title: 'Experience',         tip: 'If you have work experience, mention it briefly. If not, skip to achievements.' },
+              { icon: '🌟', title: 'Skills / Strengths', tip: 'Mention 2-3 relevant skills: "I have strong analytical skills and am proficient in MS Office."' },
+              { icon: '🎯', title: 'Why This Post',      tip: 'One strong sentence on why you applied. Shows motivation and preparation.' },
+            ].map(item => (
+              <div class="ic-item">
+                <span class="ic-icon">{item.icon}</span>
+                <div class="ic-body">
+                  <strong class="ic-title">{item.title}</strong>
+                  <p class="ic-tip">{item.tip}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- SAMPLE SCRIPTS -->
+        <div class="intro-section-card">
+          <h2>Sample Scripts</h2>
+          <p class="intro-section-sub">Use these as a starting point. Adapt them with your own information.</p>
+
+          <!-- 60 second version -->
+          <div class="script-card">
+            <div class="script-header">
+              <span class="script-badge script-badge--short">60 Seconds</span>
+              <span class="script-label">Short Version — Quick Introduction Round</span>
+            </div>
+            <div class="script-text" id="script-60">
+              <p>"Good morning / afternoon, respected panel. My name is <span class="script-blank">[Your Full Name]</span>. I am from <span class="script-blank">[City, District]</span>.</p>
+              <p>I hold a <span class="script-blank">[Degree]</span> in <span class="script-blank">[Subject]</span> from <span class="script-blank">[University]</span>, completed in <span class="script-blank">[Year]</span>.</p>
+              <p>I have <span class="script-blank">[X years of experience / strong academic background]</span> in <span class="script-blank">[relevant field]</span>. My key strengths are <span class="script-blank">[skill 1]</span>, <span class="script-blank">[skill 2]</span>, and <span class="script-blank">[skill 3]</span>.</p>
+              <p>I am applying for this position because <span class="script-blank">[one strong reason]</span>. I believe I can contribute effectively to the department. Thank you."</p>
+            </div>
+          </div>
+
+          <!-- 2 minute version -->
+          <div class="script-card" style="margin-top:16px;">
+            <div class="script-header">
+              <span class="script-badge script-badge--long">2 Minutes</span>
+              <span class="script-label">Detailed Version — Full Interview</span>
+            </div>
+            <div class="script-text">
+              <p>"Good morning / afternoon. It is an honour to be here. My name is <span class="script-blank">[Your Full Name]</span>, and I belong to <span class="script-blank">[City/District, Punjab/Province]</span>.</p>
+              <p>Regarding my academic background — I completed my <span class="script-blank">[Matriculation/FA/BA]</span> from <span class="script-blank">[Institution]</span> with <span class="script-blank">[Grade/Marks]</span>, and then earned my <span class="script-blank">[Degree]</span> in <span class="script-blank">[Field]</span> from <span class="script-blank">[University]</span> in <span class="script-blank">[Year]</span>.</p>
+              <p>Professionally, I have <span class="script-blank">[worked as / gained experience in]</span> <span class="script-blank">[Role/Field]</span> for <span class="script-blank">[duration]</span>. This experience has strengthened my <span class="script-blank">[relevant skills]</span>.</p>
+              <p>On a personal note, I am a dedicated, disciplined, and detail-oriented individual. I believe in continuous learning and taking initiative.</p>
+              <p>I applied for this position at <span class="script-blank">[Department Name]</span> because I am genuinely passionate about <span class="script-blank">[public service / the specific role]</span>, and I believe my background in <span class="script-blank">[relevant area]</span> makes me a strong candidate.</p>
+              <p>I am confident that I will contribute positively and grow within this department. Thank you for this opportunity."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMMON MISTAKES -->
+        <div class="intro-section-card">
+          <h2>Common Mistakes to Avoid</h2>
+          <div class="mistakes-grid">
+            {[
+              { wrong: 'Speaking too fast',           right: 'Speak at a measured, confident pace' },
+              { wrong: 'Memorising word for word',    right: 'Understand the structure — speak naturally' },
+              { wrong: 'Mentioning irrelevant info',  right: 'Stay focused: education, skills, motivation' },
+              { wrong: 'Starting with "My name is X"', right: 'Start with a greeting first' },
+              { wrong: 'Looking down or away',        right: 'Maintain respectful eye contact with the panel' },
+              { wrong: 'Using Urdu/Punjabi words',    right: 'Stay in English throughout — practice this specifically' },
+            ].map(m => (
+              <div class="mistake-card">
+                <div class="mc-wrong">❌ {m.wrong}</div>
+                <div class="mc-right">✅ {m.right}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- PRACTICE TIPS -->
+        <div class="intro-section-card">
+          <h2>How to Practice</h2>
+          <div class="practice-steps">
+            {[
+              { num: '01', title: 'Write Your Script',  body: 'Fill in the template with your actual details. Write it out fully, then reduce it to bullet points.' },
+              { num: '02', title: 'Record Yourself',    body: 'Use your phone camera. Watch it back. Notice filler words (um, uh), pace, and facial expression.' },
+              { num: '03', title: 'Time It',            body: 'Aim for exactly 60 seconds or 2 minutes. Too short seems unprepared; too long seems unfocused.' },
+              { num: '04', title: 'Practice Out Loud',  body: 'At least 20 times. In front of a mirror, to a family member, or to your phone camera.' },
+              { num: '05', title: 'Vary Your Practice', body: 'Practice in the morning, evening, and even when tired. It should feel natural in any condition.' },
+            ].map(step => (
+              <div class="ps-step">
+                <span class="ps-num">{step.num}</span>
+                <div class="ps-body">
+                  <strong class="ps-title">{step.title}</strong>
+                  <p class="ps-text">{step.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- VOXENGLISH CTA -->
+        <div class="intro-vox-cta">
+          <div class="ivc-content">
+            <div class="ivc-icon">🎓</div>
+            <h2>Want Expert Coaching?</h2>
+            <p>VoxEnglishAcademy.com offers dedicated spoken English courses, mock interview practice, and personal coaching for PPSC candidates.</p>
+            <a href="https://www.voxenglishacademy.com" target="_blank" rel="noopener noreferrer" class="btn-gold">
+              Visit VoxEnglishAcademy.com ↗
+            </a>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- SIDEBAR -->
+      <aside class="intro-sidebar">
+
+        <div class="isb-card">
+          <h3 class="isb-title">English Sections</h3>
+          <div class="isb-links">
+            <a href="/english/"             class="isb-link">🏠 English Hub</a>
+            <a href="/english/vocabulary/"  class="isb-link">📖 Vocabulary <span>→</span></a>
+            <a href="/english/grammar/"     class="isb-link">✍️ Grammar <span>→</span></a>
+            <a href="/english/idioms/"      class="isb-link">💬 Idioms & Phrases <span>→</span></a>
+          </div>
+        </div>
+
+        <div class="isb-card isb-card--tip">
+          <h3 style="color:var(--white);font-family:'Playfair Display',Georgia,serif;font-size:17px;margin-bottom:10px;text-align:center;">Quick Tip</h3>
+          <p style="color:rgba(255,255,255,.75);font-size:14px;text-align:center;line-height:1.65;">"Practice your introduction so many times that even if you're nervous, the words come out naturally."</p>
+        </div>
+
+        <div class="isb-card">
+          <h3 class="isb-title">Other Subjects</h3>
+          <div class="isb-links">
+            <a href="/subjects/general-knowledge/" class="isb-link">🌍 General Knowledge <span>→</span></a>
+            <a href="/subjects/islamiyat/"          class="isb-link">☪️ Islamiyat <span>→</span></a>
+            <a href="/subjects/pakistan-studies/"   class="isb-link">🗺️ Pakistan Studies <span>→</span></a>
+            <a href="/subjects/"                    class="isb-link" style="border-color:var(--navy);">All Subjects →</a>
+          </div>
+        </div>
+
+        <div class="isb-card">
+          <h3 class="isb-title">Practice Papers</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;text-align:left;">See English MCQs in context — attempt full past papers with all subjects.</p>
+          <a href="/past-papers/" class="btn-gold" style="width:100%;justify-content:center;">Browse Papers →</a>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+.intro-hero { background:linear-gradient(160deg,var(--navy) 0%,#0f2550 100%); padding:60px 24px 72px; position:relative; overflow:hidden; }
+.intro-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.035) 1px,transparent 1px); background-size:56px 56px; pointer-events:none; }
+.intro-hero-inner { position:relative; z-index:1; display:flex; gap:24px; align-items:flex-start; max-width:820px; }
+.intro-icon { font-size:52px; background:rgba(197,150,58,.1); border:1px solid rgba(197,150,58,.2); border-radius:16px; width:80px; height:80px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.intro-info .label { color:rgba(197,150,58,.85); }
+.intro-info h1 { font-family:'Playfair Display',Georgia,serif; color:var(--white); font-size:clamp(24px,3.5vw,40px); font-weight:700; margin-bottom:12px; text-align:left; }
+.intro-desc { font-size:15px; color:rgba(255,255,255,.65); margin-bottom:18px; line-height:1.75; text-align:left; max-width:580px; }
+.intro-partner-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(197,150,58,.12); border:1px solid rgba(197,150,58,.28); color:var(--gold-light); font-size:13px; font-weight:500; padding:8px 16px; border-radius:100px; text-decoration:none; transition:background .2s; }
+.intro-partner-badge:hover { background:rgba(197,150,58,.22); }
+.intro-partner-badge strong { font-weight:800; }
+
+.intro-page { background:var(--cream); padding:40px 0 72px; }
+.intro-layout { display:grid; grid-template-columns:1fr 280px; gap:24px; align-items:start; }
+
+/* Exam tip banner */
+.intro-tip-banner { display:flex; gap:12px; background:rgba(197,150,58,.08); border:1.5px solid rgba(197,150,58,.22); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:20px; font-size:14px; color:var(--text-body); line-height:1.65; }
+.itb-icon { font-size:20px; flex-shrink:0; }
+
+/* Section cards */
+.intro-section-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:32px; margin-bottom:20px; }
+.intro-section-card h2 { font-family:'Playfair Display',Georgia,serif; font-size:22px; font-weight:700; color:var(--navy); margin-bottom:20px; text-align:left; }
+.intro-section-sub { font-size:14px; color:var(--text-muted); margin-bottom:20px; margin-top:-12px; text-align:left; }
+
+/* Checklist */
+.intro-checklist { display:flex; flex-direction:column; gap:14px; }
+.ic-item { display:flex; gap:14px; align-items:flex-start; }
+.ic-icon { font-size:22px; flex-shrink:0; width:38px; height:38px; background:var(--cream); border-radius:9px; display:flex; align-items:center; justify-content:center; }
+.ic-body { flex:1; }
+.ic-title { font-size:14px; font-weight:700; color:var(--navy); display:block; margin-bottom:4px; }
+.ic-tip   { font-size:13px; color:var(--text-muted); line-height:1.65; text-align:left; margin:0; }
+
+/* Script cards */
+.script-card { background:var(--cream); border:1.5px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+.script-header { display:flex; align-items:center; gap:12px; padding:14px 20px; background:var(--white); border-bottom:1px solid var(--border); }
+.script-badge { font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; padding:4px 10px; border-radius:5px; }
+.script-badge--short { background:rgba(26,122,64,.1); color:#1A7A40; }
+.script-badge--long  { background:rgba(11,29,58,.08); color:var(--navy); }
+.script-label { font-size:13px; color:var(--text-muted); font-weight:500; }
+.script-text { padding:22px; display:flex; flex-direction:column; gap:12px; font-size:14px; color:var(--text-body); line-height:1.8; }
+.script-text p { text-align:left; margin:0; }
+.script-blank { color:var(--gold-dark); font-weight:700; border-bottom:1.5px dashed var(--gold); }
+
+/* Mistakes */
+.mistakes-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.mistake-card { background:var(--cream); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
+.mc-wrong { font-size:13px; color:#dc2626; font-weight:600; }
+.mc-right  { font-size:13px; color:#1A7A40; font-weight:600; }
+
+/* Practice steps */
+.practice-steps { display:flex; flex-direction:column; gap:14px; }
+.ps-step { display:flex; gap:16px; align-items:flex-start; }
+.ps-num  { font-family:'Playfair Display',Georgia,serif; font-size:22px; font-weight:700; color:var(--gold); flex-shrink:0; min-width:36px; line-height:1.2; }
+.ps-body { flex:1; }
+.ps-title { font-size:14px; font-weight:700; color:var(--navy); display:block; margin-bottom:4px; }
+.ps-text  { font-size:13px; color:var(--text-muted); line-height:1.65; text-align:left; margin:0; }
+
+/* VoxEnglish CTA */
+.intro-vox-cta { background:var(--navy); border-radius:var(--radius-xl); padding:52px 44px; text-align:center; position:relative; overflow:hidden; }
+.intro-vox-cta::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.04) 1px,transparent 1px); background-size:48px 48px; }
+.ivc-content { position:relative; z-index:1; }
+.ivc-icon { font-size:48px; margin-bottom:16px; }
+.intro-vox-cta h2 { font-family:'Playfair Display',Georgia,serif; font-size:28px; color:var(--white); margin-bottom:12px; text-align:center; }
+.intro-vox-cta p  { font-size:15px; color:rgba(255,255,255,.65); max-width:500px; margin:0 auto 24px; text-align:center; line-height:1.75; }
+
+/* Sidebar */
+.intro-sidebar { display:flex; flex-direction:column; gap:18px; }
+.isb-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:22px 24px; }
+.isb-card--tip { background:var(--navy); border-color:var(--navy); }
+.isb-title { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:16px; text-align:left; }
+.isb-links { display:flex; flex-direction:column; gap:8px; }
+.isb-link  { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--cream); border:1px solid var(--border); border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; color:var(--navy); transition:all .18s; }
+.isb-link:hover { background:var(--cream-dark); border-color:var(--navy); }
+
+/* btn-gold */
+.btn-gold { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--gold); color:var(--navy); border:2px solid var(--gold); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:15px; font-weight:700; padding:13px 28px; border-radius:var(--radius); cursor:pointer; transition:all .22s; white-space:nowrap; text-decoration:none; }
+.btn-gold:hover { background:var(--gold-light); border-color:var(--gold-light); transform:translateY(-1px); }
+
+@media (max-width:960px) { .intro-layout { grid-template-columns:1fr; } .intro-sidebar { display:grid; grid-template-columns:1fr 1fr; gap:16px; } }
+@media (max-width:640px) {
+  .intro-hero-inner { flex-direction:column; gap:16px; }
+  .intro-icon { width:60px; height:60px; font-size:30px; }
+  .intro-sidebar { grid-template-columns:1fr; }
+  .mistakes-grid { grid-template-columns:1fr; }
+  .intro-vox-cta { padding:36px 22px; }
+}
+</style>
+
+</BaseLayout>
