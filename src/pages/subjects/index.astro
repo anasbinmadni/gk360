@@ -1,0 +1,146 @@
+---
+// src/pages/subjects/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SUBJECTS, SUBJECT_CATEGORIES, getSubjectsByCategory } from '../../data/subjects';
+import { getCollection } from 'astro:content';
+
+// Count MCQs per subject from all paper JSONs
+const allPapers = await getCollection('past-papers');
+const mcqCount: Record<string, number> = {};
+allPapers.forEach(paper => {
+  paper.data.questions?.forEach((q: any) => {
+    mcqCount[q.subject] = (mcqCount[q.subject] || 0) + 1;
+  });
+});
+
+const totalMCQs = Object.values(mcqCount).reduce((a, b) => a + b, 0);
+
+const title       = "All PPSC Subjects — MCQs, Notes & Past Questions | GK360.pk";
+const description = "Master every PPSC subject — General Knowledge, Islamiyat, Pakistan Studies, English, Mathematics, Constitution, PPC, CrPC, Pedagogy and 20+ more. MCQs from real past papers.";
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "PPSC Subjects — All MCQs & Notes",
+  "description": description,
+  "url": "https://gk360.pk/subjects/",
+  "provider": { "@type": "Organization", "name": "GK360.pk" }
+});
+---
+
+<BaseLayout title={title} description={description}
+  keywords="PPSC subjects, PPSC MCQs by subject, General Knowledge PPSC, Islamiyat MCQs, Pakistan Studies MCQs, English PPSC, Constitution MCQs, PPC 1860 MCQs"
+  schema={schema}>
+
+<!-- BREADCRUMB -->
+<nav class="bc-nav" aria-label="Breadcrumb">
+  <div class="container">
+    <ol class="bc-ol">
+      <li><a href="/">Home</a></li><li aria-hidden="true">›</li>
+      <li class="bc-current">Subjects</li>
+    </ol>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="subj-hero">
+  <div class="container">
+    <div class="subj-hero-inner">
+      <p class="label label-light">Targeted Preparation</p>
+      <h1>Master Every PPSC Subject</h1>
+      <p class="subj-hero-sub">Practice subject by subject. Every MCQ is taken from real past papers — so you know exactly what to expect on exam day.</p>
+      <div class="subj-hero-stats">
+        <span>📚 <b>{SUBJECTS.filter(s=>s.active).length}</b> Subjects</span>
+        <span class="sh-dot">·</span>
+        <span>📝 <b>{totalMCQs.toLocaleString()}+</b> MCQs</span>
+        <span class="sh-dot">·</span>
+        <span>🗂️ <b>{SUBJECT_CATEGORIES.length}</b> Categories</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBJECTS BY CATEGORY -->
+<main class="subj-main">
+  <div class="container">
+
+    {SUBJECT_CATEGORIES.map(cat => {
+      const subs = getSubjectsByCategory(cat).filter(s => s.active);
+      return (
+        <section class="subj-cat-section" aria-labelledby={`cat-${cat.replace(/[\s&\/]+/g,'-').toLowerCase()}`}>
+          <h2 class="subj-cat-title" id={`cat-${cat.replace(/[\s&\/]+/g,'-').toLowerCase()}`}>
+            {cat}
+          </h2>
+          <div class="subj-grid">
+            {subs.map(sub => {
+              const count = mcqCount[sub.slug] || 0;
+              return (
+                <a href={`/subjects/${sub.slug}/`} class="subj-card" aria-label={`${sub.name} — ${count} MCQs`}>
+                  <div class="sc-icon-wrap" aria-hidden="true">{sub.icon}</div>
+                  <div class="sc-body">
+                    <h3 class="sc-name">{sub.name}</h3>
+                    <p class="sc-desc">{sub.description.split('.')[0]}.</p>
+                    <div class="sc-footer">
+                      <span class="sc-mcq-count">{count > 0 ? `${count} MCQs` : 'Coming soon'}</span>
+                      {sub.importance === 'core' && <span class="sc-badge sc-badge--core">Core</span>}
+                      {sub.importance === 'special' && <span class="sc-badge sc-badge--special">Dept Specific</span>}
+                    </div>
+                  </div>
+                  <span class="sc-arrow" aria-hidden="true">→</span>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      );
+    })}
+
+  </div>
+</main>
+
+<style is:global>
+.subj-hero { background:var(--navy); padding:72px 24px 80px; position:relative; overflow:hidden; }
+.subj-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.045) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+.subj-hero-inner { position:relative; z-index:1; text-align:center; max-width:680px; margin:0 auto; }
+.subj-hero .label { color:rgba(197,150,58,.85); }
+.subj-hero h1 { font-family:'Playfair Display',Georgia,serif; color:var(--white); font-size:clamp(28px,4vw,46px); font-weight:700; margin-bottom:14px; text-align:center; }
+.subj-hero-sub { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:22px; line-height:1.75; text-align:center; }
+.subj-hero-stats { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; font-size:14px; color:rgba(255,255,255,.7); }
+.subj-hero-stats b { color:var(--gold-light); }
+.sh-dot { color:rgba(255,255,255,.25); }
+
+.subj-main { background:var(--cream); padding:52px 0 80px; }
+.subj-cat-section { margin-bottom:52px; }
+.subj-cat-title { font-family:'Playfair Display',Georgia,serif; font-size:22px; font-weight:700; color:var(--navy); margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--border); text-align:left; }
+
+.subj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.subj-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:22px; text-decoration:none; display:flex; align-items:flex-start; gap:16px; transition:all .22s; }
+.subj-card:hover { border-color:var(--navy); box-shadow:var(--shadow-md); transform:translateY(-2px); }
+
+.sc-icon-wrap { font-size:28px; width:52px; height:52px; background:var(--cream); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .2s; }
+.subj-card:hover .sc-icon-wrap { background:rgba(11,29,58,.08); }
+
+.sc-body { flex:1; min-width:0; }
+.sc-name { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px; text-align:left; line-height:1.3; }
+.sc-desc { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:12px; text-align:left; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.sc-footer { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.sc-mcq-count { font-size:12px; font-weight:700; color:var(--text-muted); }
+.sc-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; letter-spacing:.04em; text-transform:uppercase; }
+.sc-badge--core    { background:rgba(26,122,64,.1); color:#1A7A40; border:1px solid rgba(26,122,64,.2); }
+.sc-badge--special { background:rgba(197,150,58,.1); color:var(--gold-dark); border:1px solid rgba(197,150,58,.25); }
+
+.sc-arrow { font-size:18px; color:var(--text-light); flex-shrink:0; align-self:center; transition:transform .18s, color .18s; }
+.subj-card:hover .sc-arrow { transform:translateX(4px); color:var(--navy); }
+
+/* Breadcrumb */
+.bc-nav { background:var(--cream); border-bottom:1px solid var(--border); padding:10px 0; }
+.bc-ol  { display:flex; align-items:center; gap:7px; flex-wrap:wrap; list-style:none; font-size:13px; color:var(--text-muted); }
+.bc-ol a { color:var(--text-muted); transition:color .2s; }
+.bc-ol a:hover { color:var(--navy); }
+.bc-current { color:var(--navy); font-weight:600; }
+
+@media (max-width:960px) { .subj-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .subj-grid { grid-template-columns:1fr; } .subj-card { flex-direction:column; gap:12px; } .sc-arrow { display:none; } }
+</style>
+
+</BaseLayout>
