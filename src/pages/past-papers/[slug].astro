@@ -1,11 +1,10 @@
 ---
 // src/pages/past-papers/[slug].astro
-// RENAME the downloaded file from slug.astro to [slug].astro
+// Rename this file to [slug].astro when placing in src/pages/past-papers/
 
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// ── GENERATE ALL PAGES FROM JSON FILES ────────────────────
 export async function getStaticPaths() {
   const papers = await getCollection('past-papers');
   return papers.map(entry => ({
@@ -16,14 +15,12 @@ export async function getStaticPaths() {
 
 const { paper } = Astro.props;
 
-// ── SEO SCHEMAS ───────────────────────────────────────────
 const paperSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Quiz",
   "name": paper.titleFull,
   "description": paper.seoDescription,
   "educationalLevel": "professional",
-  "about": { "@type": "Thing", "name": "PPSC Competitive Exam" },
   "datePublished": paper.date,
   "provider": { "@type": "Organization", "name": "GK360.pk", "url": "https://gk360.pk" }
 });
@@ -40,335 +37,507 @@ const breadcrumbSchema = JSON.stringify({
 });
 
 const combinedSchema = `[${paperSchema},${breadcrumbSchema}]`;
-
 const shareUrl  = `https://gk360.pk/past-papers/${paper.slug}/`;
-const shareText = encodeURIComponent(`${paper.titleFull} — Solve this past paper with answer key on GK360.pk`);
+const shareText = encodeURIComponent(`${paper.titleFull} — Attempt this solved paper on GK360.pk`);
 ---
 
 <BaseLayout
   title={paper.seoTitle}
   description={paper.seoDescription}
-  keywords={`${paper.title}, ${paper.department}, PPSC past paper ${paper.year}, ${paper.post}, solved past paper`}
+  keywords={`${paper.title}, ${paper.department}, PPSC past paper ${paper.year}, solved`}
   schema={combinedSchema}
 >
 
 <!-- BREADCRUMB -->
-<nav class="breadcrumb-nav" aria-label="Breadcrumb">
+<nav class="pp-breadcrumb" aria-label="Breadcrumb">
   <div class="container">
-    <ol class="breadcrumb">
+    <ol>
       <li><a href="/">Home</a></li>
       <li aria-hidden="true">›</li>
       <li><a href="/past-papers/">Past Papers</a></li>
       <li aria-hidden="true">›</li>
       <li><a href={`/past-papers/department/${paper.deptSlug}/`}>{paper.departmentShort}</a></li>
       <li aria-hidden="true">›</li>
-      <li class="active">{paper.title} {paper.year}</li>
+      <li class="current">{paper.title} {paper.year}</li>
     </ol>
   </div>
 </nav>
 
-<main class="paper-page">
+<div class="pp-page">
   <div class="container">
+    <div class="pp-layout">
 
-    <!-- PAPER HEADER -->
-    <header class="paper-header">
-      <div class="paper-header-meta">
-        <span class="dept-badge-lg">{paper.departmentShort}</span>
-        <span class="paper-year-badge">{paper.year}</span>
-        {paper.solved && <span class="solved-badge">✅ Solved</span>}
-      </div>
+      <!-- ══ LEFT: PAPER INFO + QUIZ ══════════════════════════ -->
+      <div class="pp-main">
 
-      <h1 class="paper-main-title">{paper.titleFull}</h1>
-
-      <div class="paper-stats-row">
-        <div class="paper-stat-item">
-          <span class="psi-icon">📄</span>
-          <span class="psi-label">{paper.totalQuestions} MCQs</span>
-        </div>
-        <div class="paper-stat-item">
-          <span class="psi-icon">⏱</span>
-          <span class="psi-label">{paper.timeMinutes} Minutes</span>
-        </div>
-        <div class="paper-stat-item">
-          <span class="psi-icon">📅</span>
-          <span class="psi-label">{new Date(paper.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-        </div>
-        <div class="paper-stat-item">
-          <span class="psi-icon">🏛️</span>
-          <span class="psi-label">{paper.conductedBy}</span>
-        </div>
-      </div>
-
-      <!-- ACTION BUTTONS -->
-      <div class="paper-actions-row">
-        <button class="btn btn-primary" id="start-quiz-btn" onclick="startQuiz(true)">
-          ⏱ Attempt with Timer
-        </button>
-        <button class="btn btn-navy" onclick="startQuiz(false)">
-          👁 View Paper (No Timer)
-        </button>
-        <button class="btn btn-ghost" id="share-btn" aria-label="Share this paper" aria-expanded="false" onclick="toggleShare()">
-          📤 Share
-        </button>
-      </div>
-
-      <!-- SHARE PANEL -->
-      <div class="share-panel" id="share-panel" hidden>
-        <p class="share-label">Share this paper:</p>
-        <div class="share-buttons">
-          <a
-            href={`https://api.whatsapp.com/send?text=${shareText}%0A${encodeURIComponent(shareUrl)}`}
-            target="_blank" rel="noopener noreferrer"
-            class="share-btn share-wa"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.78L0 24l6.375-1.5A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
-            </svg>
-            WhatsApp
-          </a>
-          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="share-btn share-fb">📘 Facebook</a>
-          <a href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="share-btn share-tw">𝕏 Twitter</a>
-          <button class="share-btn share-copy" onclick="copyLink()">🔗 Copy Link</button>
-        </div>
-        <div class="copy-confirm" id="copy-confirm" hidden>✅ Link copied!</div>
-      </div>
-    </header>
-
-    <!-- SUBJECT BREAKDOWN -->
-    <section class="subject-breakdown" aria-labelledby="breakdown-heading">
-      <h2 id="breakdown-heading" class="section-h2">Subject-Wise Breakdown</h2>
-      <div class="breakdown-grid">
-        {paper.subjectBreakdown.map((s: any) => (
-          <a href={`/subjects/${s.subject}/`} class="breakdown-card">
-            <div class="bc-top">
-              <span class="bc-label">{s.label}</span>
-              <span class="bc-count">{s.count} Qs</span>
+        <!-- PAPER HEADER CARD -->
+        <div class="pp-header-card">
+          <div class="pp-header-top">
+            <div class="pp-badges">
+              <span class="pp-dept-badge">{paper.departmentShort}</span>
+              <span class="pp-year-badge">{paper.year}</span>
+              {paper.solved && <span class="pp-solved-badge">✅ Solved</span>}
             </div>
-            <div class="bc-bar-wrap" role="progressbar" aria-valuenow={s.percentage} aria-valuemin={0} aria-valuemax={100}>
-              <div class="bc-bar" style={`width:${s.percentage}%`}></div>
+            <!-- SHARE BUTTON -->
+            <button class="pp-share-btn" onclick="toggleShare()" aria-label="Share paper" aria-expanded="false" id="share-btn">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              Share
+            </button>
+          </div>
+
+          <h1 class="pp-title">{paper.titleFull}</h1>
+
+          <div class="pp-meta-row">
+            <span class="pp-meta-item">📄 <strong>{paper.totalQuestions}</strong> MCQs</span>
+            <span class="pp-meta-sep">·</span>
+            <span class="pp-meta-item">⏱ <strong>{paper.timeMinutes}</strong> Minutes</span>
+            <span class="pp-meta-sep">·</span>
+            <span class="pp-meta-item">📅 {new Date(paper.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+            <span class="pp-meta-sep">·</span>
+            <span class="pp-meta-item">🏛️ {paper.conductedBy}</span>
+          </div>
+
+          <!-- SHARE PANEL -->
+          <div class="pp-share-panel" id="share-panel" hidden>
+            <p class="pp-share-title">Share this paper:</p>
+            <div class="pp-share-row">
+              <a href={`https://api.whatsapp.com/send?text=${shareText}%0A${encodeURIComponent(shareUrl)}`}
+                 target="_blank" rel="noopener noreferrer" class="pp-share-wa">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.78L0 24l6.375-1.5A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.653-.494-5.188-1.362L3 22l1.388-3.742A9.936 9.936 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                WhatsApp
+              </a>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="pp-share-fb">📘 Facebook</a>
+              <a href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="pp-share-tw">𝕏 Twitter</a>
+              <button class="pp-share-copy" onclick="copyLink()">🔗 Copy Link</button>
             </div>
-            <div class="bc-pct">{s.percentage}%</div>
-          </a>
-        ))}
-      </div>
-    </section>
+            <p class="pp-copy-confirm" id="copy-confirm" hidden>✅ Link copied to clipboard!</p>
+          </div>
 
-    <!-- QUIZ AREA -->
-    <section class="quiz-section" id="quiz-section" aria-labelledby="quiz-heading">
-
-      <!-- TIMER BAR -->
-      <div class="timer-bar" id="timer-bar" hidden role="timer" aria-live="polite">
-        <div class="timer-info">
-          <span class="timer-icon">⏱</span>
-          <span id="timer-display" class="timer-display">90:00</span>
-          <span class="timer-label">remaining</span>
-        </div>
-        <div class="timer-progress-wrap">
-          <div class="timer-progress" id="timer-progress"></div>
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="submitQuiz()">Submit Paper</button>
-      </div>
-
-      <!-- START SCREEN -->
-      <div class="start-screen" id="start-screen">
-        <div class="start-screen-inner">
-          <div class="start-icon">📝</div>
-          <h2 id="quiz-heading">Ready to Attempt?</h2>
-          <p>This paper has <strong>{paper.totalQuestions} MCQs</strong> and the time limit is <strong>{paper.timeMinutes} minutes</strong> — same as the real exam.</p>
-          <div class="start-options">
-            <button class="btn btn-primary" onclick="startQuiz(true)">⏱ Start with Timer</button>
-            <button class="btn btn-navy"    onclick="startQuiz(false)">👁 View Without Timer</button>
+          <!-- ACTION BUTTONS -->
+          <div class="pp-action-row">
+            <button class="pp-btn-timer" onclick="startQuiz(true)">⏱ Attempt with Timer</button>
+            <button class="pp-btn-view"  onclick="startQuiz(false)">👁 View Paper</button>
           </div>
         </div>
-      </div>
 
-      <!-- QUESTIONS -->
-      <div class="questions-wrap" id="questions-wrap" hidden>
-        <div class="questions-grid" id="questions-grid" role="list"></div>
-        <!-- RESULTS -->
-        <div class="results-panel" id="results-panel" hidden aria-live="polite">
-          <div class="results-inner">
-            <div class="results-score-wrap">
-              <div class="results-circle">
-                <span class="results-score" id="results-score">0</span>
-                <span class="results-total">/ {paper.totalQuestions}</span>
-              </div>
-            </div>
-            <h2 class="results-title" id="results-title">Your Result</h2>
-            <p class="results-msg" id="results-msg"></p>
-            <div class="results-breakdown" id="results-breakdown"></div>
-            <div class="results-actions">
-              <button class="btn btn-primary" onclick="retryQuiz()">🔄 Try Again</button>
-              <button class="btn btn-navy"    onclick="showAnswers()">✅ Review Answers</button>
-              <a href="/past-papers/" class="btn btn-ghost">← More Papers</a>
+        <!-- SUBJECT BREAKDOWN -->
+        <div class="pp-breakdown-card">
+          <h2 class="pp-section-title">Subject-Wise Breakdown</h2>
+          <div class="pp-breakdown-grid">
+            {paper.subjectBreakdown.map((s: any) => (
+              <a href={`/subjects/${s.subject}/`} class="pp-breakdown-item">
+                <div class="pp-bi-top">
+                  <span class="pp-bi-name">{s.label}</span>
+                  <span class="pp-bi-count">{s.count} Qs · {s.percentage}%</span>
+                </div>
+                <div class="pp-bi-track">
+                  <div class="pp-bi-fill" style={`width:${s.percentage}%`}></div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- QUIZ AREA -->
+        <div class="pp-quiz-area" id="quiz-area">
+
+          <!-- START SCREEN -->
+          <div class="pp-start-screen" id="start-screen">
+            <div class="pp-start-icon">📋</div>
+            <h2>Ready to Attempt?</h2>
+            <p><strong>{paper.totalQuestions} questions · {paper.timeMinutes} minutes</strong></p>
+            <p style="margin-top:8px;font-size:14px;color:var(--text-muted);">Choose timed mode to simulate real exam conditions, or view mode to study at your own pace.</p>
+            <div class="pp-start-btns">
+              <button class="pp-btn-timer" onclick="startQuiz(true)">⏱ Start with Timer</button>
+              <button class="pp-btn-view"  onclick="startQuiz(false)">👁 View Without Timer</button>
             </div>
           </div>
+
+          <!-- TIMER BAR -->
+          <div class="pp-timer-bar" id="timer-bar" hidden>
+            <div class="pp-timer-left">
+              <span class="pp-timer-icon">⏱</span>
+              <span class="pp-timer-time" id="timer-display">90:00</span>
+              <span class="pp-timer-label">remaining</span>
+            </div>
+            <div class="pp-timer-track">
+              <div class="pp-timer-fill" id="timer-fill"></div>
+            </div>
+            <button class="pp-btn-submit" id="submit-btn" onclick="submitQuiz()">Submit Paper</button>
+          </div>
+
+          <!-- QUESTIONS LIST -->
+          <div class="pp-questions" id="questions-list" hidden></div>
+
+          <!-- RESULTS PANEL -->
+          <div class="pp-results" id="results-panel" hidden>
+            <div class="pp-results-score-ring">
+              <span class="pp-rs-num" id="results-score">0</span>
+              <span class="pp-rs-total">/{paper.totalQuestions}</span>
+            </div>
+            <h2 class="pp-results-title" id="results-title">Your Result</h2>
+            <p class="pp-results-msg" id="results-msg"></p>
+            <div class="pp-results-stats" id="results-stats"></div>
+            <div class="pp-results-actions">
+              <button class="pp-btn-timer" onclick="retryQuiz()">🔄 Try Again</button>
+              <button class="pp-btn-view"  onclick="reviewAnswers()">✅ Review Answers</button>
+              <a href="/past-papers/" class="pp-btn-back">← More Papers</a>
+            </div>
+          </div>
+
         </div>
       </div>
 
-    </section>
+      <!-- ══ RIGHT: SIDEBAR ════════════════════════════════════ -->
+      <aside class="pp-sidebar">
 
-    <!-- RELATED -->
-    <section class="related-section" aria-labelledby="related-heading">
-      <h2 id="related-heading" class="section-h2">More Papers You May Like</h2>
-      <div class="related-grid">
-        <a href={`/past-papers/department/${paper.deptSlug}/`} class="related-card">
-          <span class="related-icon">🏛️</span>
-          <div>
-            <div class="related-title">All {paper.departmentShort} Papers</div>
-            <div class="related-sub">Browse all papers from this department</div>
-          </div>
-          <span class="related-arrow">→</span>
-        </a>
-        <a href={`/past-papers/year/${paper.year}/`} class="related-card">
-          <span class="related-icon">📅</span>
-          <div>
-            <div class="related-title">All {paper.year} Papers</div>
-            <div class="related-sub">Every PPSC exam held in {paper.year}</div>
-          </div>
-          <span class="related-arrow">→</span>
-        </a>
-        <a href="/quiz/" class="related-card">
-          <span class="related-icon">⚡</span>
-          <div>
-            <div class="related-title">Quick Subject Quiz</div>
-            <div class="related-sub">Practice by subject — GK, Islamiyat, English & more</div>
-          </div>
-          <span class="related-arrow">→</span>
-        </a>
-      </div>
-    </section>
+        <!-- QUICK STATS -->
+        <div class="pp-sidebar-card">
+          <h3 class="pp-sidebar-title">Paper Details</h3>
+          <ul class="pp-details-list">
+            <li><span class="pdl-key">Department</span><span class="pdl-val">{paper.department}</span></li>
+            <li><span class="pdl-key">Post</span><span class="pdl-val">{paper.post}</span></li>
+            <li><span class="pdl-key">Year</span><span class="pdl-val">{paper.year}</span></li>
+            <li><span class="pdl-key">Date</span><span class="pdl-val">{new Date(paper.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' })}</span></li>
+            <li><span class="pdl-key">Total Questions</span><span class="pdl-val">{paper.totalQuestions}</span></li>
+            <li><span class="pdl-key">Time Allowed</span><span class="pdl-val">{paper.timeMinutes} min</span></li>
+            <li><span class="pdl-key">Conducted By</span><span class="pdl-val">{paper.conductedBy}</span></li>
+            <li><span class="pdl-key">Difficulty</span><span class="pdl-val" style="text-transform:capitalize">{paper.difficulty}</span></li>
+          </ul>
+        </div>
 
+        <!-- MORE PAPERS -->
+        <div class="pp-sidebar-card">
+          <h3 class="pp-sidebar-title">More Papers</h3>
+          <div class="pp-more-links">
+            <a href={`/past-papers/department/${paper.deptSlug}/`} class="pp-more-link">
+              <span>🏛️ All {paper.departmentShort} Papers</span>
+              <span>→</span>
+            </a>
+            <a href={`/past-papers/year/${paper.year}/`} class="pp-more-link">
+              <span>📅 All {paper.year} Papers</span>
+              <span>→</span>
+            </a>
+            <a href="/past-papers/" class="pp-more-link">
+              <span>📚 All Past Papers</span>
+              <span>→</span>
+            </a>
+            <a href="/quiz/" class="pp-more-link">
+              <span>⚡ Subject-Wise Quiz</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- TAGS -->
+        <div class="pp-sidebar-card">
+          <h3 class="pp-sidebar-title">Topics in this Paper</h3>
+          <div class="pp-tags-wrap">
+            {paper.tags.map((tag: string) => (
+              <span class="pp-tag">{tag}</span>
+            ))}
+          </div>
+        </div>
+
+      </aside>
+    </div>
   </div>
-</main>
+</div>
 
+<!-- ════════════════════════════════════════════════════════
+     STYLES
+     ════════════════════════════════════════════════════ -->
 <style>
-.breadcrumb-nav { background: var(--cream); border-bottom: 1px solid var(--border); padding: 12px 0; }
-.breadcrumb { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; list-style: none; font-size: 13px; color: var(--text-muted); }
-.breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
-.breadcrumb a:hover { color: var(--navy); }
-.breadcrumb .active { color: var(--navy); font-weight: 600; }
+/* ── PAGE WRAPPER ── */
+.pp-breadcrumb { background: var(--cream); border-bottom: 1px solid var(--border); padding: 10px 0; }
+.pp-breadcrumb ol { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; list-style: none; font-size: 13px; color: var(--text-muted); }
+.pp-breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
+.pp-breadcrumb a:hover { color: var(--navy); }
+.pp-breadcrumb .current { color: var(--navy); font-weight: 600; }
 
-.paper-page { padding: 48px 0 80px; }
-.paper-header { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 40px; margin-bottom: 32px; }
-.paper-header-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-.dept-badge-lg { font-size: 12px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 12px; background: var(--navy); color: var(--gold-light); border-radius: 6px; }
-.paper-year-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: var(--cream); border: 1.5px solid var(--border); color: var(--navy); border-radius: 6px; }
-.solved-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: rgba(26,122,64,0.08); border: 1.5px solid rgba(26,122,64,0.2); color: #1A7A40; border-radius: 6px; }
-.paper-main-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(22px, 3vw, 34px); font-weight: 700; color: var(--navy); margin-bottom: 20px; text-align: left; }
-.paper-stats-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
-.paper-stat-item { display: flex; align-items: center; gap: 7px; font-size: 14px; color: var(--text-muted); font-weight: 500; }
-.paper-actions-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.pp-page { padding: 40px 0 72px; background: var(--cream); min-height: 60vh; }
 
-.share-panel { background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-top: 8px; }
-.share-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
-.share-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-.share-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: 8px; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
-.share-wa   { background: #1A7A40; color: white; border-color: #1A7A40; }
-.share-wa:hover { background: #166832; }
-.share-fb   { background: #1877F2; color: white; border-color: #1877F2; }
-.share-fb:hover { background: #0d63d0; }
-.share-tw   { background: #000; color: white; border-color: #000; }
-.share-tw:hover { background: #333; }
-.share-copy { background: var(--white); color: var(--navy); border-color: var(--border); }
-.share-copy:hover { background: var(--cream-dark); border-color: var(--navy); }
-.copy-confirm { font-size: 13px; color: #1A7A40; font-weight: 600; margin-top: 10px; }
+.pp-layout { display: grid; grid-template-columns: 1fr 300px; gap: 28px; align-items: start; }
 
-.section-h2 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; color: var(--navy); margin-bottom: 24px; text-align: left; }
-
-.subject-breakdown { margin-bottom: 32px; }
-.breakdown-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.breakdown-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 18px; text-decoration: none; transition: all 0.2s; display: block; }
-.breakdown-card:hover { border-color: var(--navy); box-shadow: var(--shadow); }
-.bc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.bc-label { font-size: 13px; font-weight: 700; color: var(--navy); }
-.bc-count { font-size: 12px; font-weight: 600; color: var(--text-muted); }
-.bc-bar-wrap { height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
-.bc-bar { height: 100%; background: var(--gold); border-radius: 3px; }
-.bc-pct { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-
-.quiz-section { margin-bottom: 40px; }
-.start-screen { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 60px 40px; text-align: center; }
-.start-screen-inner { max-width: 480px; margin: 0 auto; }
-.start-icon { font-size: 52px; margin-bottom: 20px; }
-.start-screen h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; color: var(--navy); margin-bottom: 12px; text-align: center; }
-.start-screen p { color: var(--text-muted); font-size: 15px; margin-bottom: 28px; text-align: center; }
-.start-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-.timer-bar { background: var(--navy); border-radius: var(--radius-lg); padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.timer-info { display: flex; align-items: center; gap: 8px; color: white; }
-.timer-display { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: var(--gold-light); min-width: 65px; }
-.timer-label { font-size: 12px; color: rgba(255,255,255,0.6); }
-.timer-progress-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; overflow: hidden; min-width: 100px; }
-.timer-progress { height: 100%; background: var(--gold); border-radius: 3px; transition: width 1s linear; width: 100%; }
-.timer-bar .btn { margin-left: auto; }
-
-.questions-grid { display: flex; flex-direction: column; gap: 16px; }
-.question-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: border-color 0.2s; }
-.question-card.answered { border-color: var(--gold); }
-.question-card.correct  { border-color: #1A7A40; background: rgba(26,122,64,0.02); }
-.question-card.wrong    { border-color: #dc2626; background: rgba(220,38,38,0.02); }
-.q-header { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; flex-wrap: wrap; }
-.q-number { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; background: var(--navy); color: var(--gold-light); padding: 3px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
-.q-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-.q-subject-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; background: var(--cream); border: 1px solid var(--border); color: var(--text-muted); border-radius: 4px; }
-.q-type-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
-.q-type-badge.static  { background: rgba(26,122,64,0.1); color: #1A7A40; border: 1px solid rgba(26,122,64,0.2); }
-.q-type-badge.dynamic { background: rgba(197,150,58,0.1); color: var(--gold-dark); border: 1px solid rgba(197,150,58,0.2); }
-.q-text { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 16px; line-height: 1.55; text-align: left; }
-.options-grid { display: flex; flex-direction: column; gap: 8px; }
-.option-btn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 11px 16px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 14px; font-weight: 500; color: var(--text-body); cursor: pointer; transition: all 0.18s; }
-.option-btn:hover:not(:disabled) { background: var(--cream-dark); border-color: var(--navy); color: var(--navy); }
-.option-btn:disabled { cursor: default; }
-.option-btn.selected { background: rgba(11,29,58,0.07); border-color: var(--navy); color: var(--navy); font-weight: 600; }
-.option-btn.correct  { background: rgba(26,122,64,0.1); border-color: #1A7A40; color: #1A7A40; font-weight: 700; }
-.option-btn.wrong    { background: rgba(220,38,38,0.1); border-color: #dc2626; color: #dc2626; font-weight: 700; }
-.option-key { font-weight: 800; min-width: 22px; font-size: 13px; }
-
-.results-panel { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 48px 40px; text-align: center; margin-top: 24px; }
-.results-inner { max-width: 520px; margin: 0 auto; }
-.results-score-wrap { margin-bottom: 24px; }
-.results-circle { display: inline-flex; align-items: baseline; gap: 4px; background: var(--navy); border-radius: 50%; width: 120px; height: 120px; justify-content: center; align-items: center; }
-.results-score { font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: var(--gold-light); }
-.results-total { font-size: 16px; color: rgba(255,255,255,0.6); }
-.results-title { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; text-align: center; }
-.results-msg   { font-size: 16px; color: var(--text-muted); margin-bottom: 20px; text-align: center; }
-.results-breakdown { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
-.rbd-item { font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 7px; }
-.rbd-correct { background: rgba(26,122,64,0.1); color: #1A7A40; }
-.rbd-wrong   { background: rgba(220,38,38,0.1); color: #dc2626; }
-.results-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-.related-section { margin-top: 16px; }
-.related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.related-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px 20px; text-decoration: none; display: flex; align-items: center; gap: 14px; transition: all 0.2s; }
-.related-card:hover { border-color: var(--navy); box-shadow: var(--shadow); transform: translateY(-1px); }
-.related-icon  { font-size: 26px; flex-shrink: 0; }
-.related-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
-.related-sub   { font-size: 12px; color: var(--text-muted); }
-.related-arrow { font-size: 18px; color: var(--text-muted); margin-left: auto; flex-shrink: 0; }
-
-@media (max-width: 768px) {
-  .paper-header { padding: 24px; }
-  .breakdown-grid { grid-template-columns: repeat(2, 1fr); }
-  .related-grid   { grid-template-columns: 1fr; }
-  .paper-actions-row { flex-direction: column; }
-  .paper-actions-row .btn { width: 100%; justify-content: center; }
+/* ── HEADER CARD ── */
+.pp-header-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 20px;
 }
-@media (max-width: 480px) {
-  .breakdown-grid { grid-template-columns: 1fr; }
-  .start-options  { flex-direction: column; }
-  .results-actions { flex-direction: column; align-items: center; }
+.pp-header-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.pp-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.pp-dept-badge  { font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 12px; background: var(--navy); color: var(--gold-light); border-radius: 6px; }
+.pp-year-badge  { font-size: 12px; font-weight: 700; padding: 5px 12px; background: var(--cream); border: 1.5px solid var(--border); color: var(--navy); border-radius: 6px; }
+.pp-solved-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: rgba(26,122,64,0.08); border: 1.5px solid rgba(26,122,64,0.2); color: #1A7A40; border-radius: 6px; }
+
+.pp-share-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--navy); background: var(--cream); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 14px; cursor: pointer; transition: all 0.2s; }
+.pp-share-btn:hover { background: var(--cream-dark); border-color: var(--navy); }
+
+.pp-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(20px, 2.8vw, 30px); font-weight: 700; color: var(--navy); margin-bottom: 16px; text-align: left; line-height: 1.3; }
+
+.pp-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+.pp-meta-item { display: flex; align-items: center; gap: 5px; }
+.pp-meta-sep  { color: var(--border-dark); }
+
+/* Share panel */
+.pp-share-panel { background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 20px; }
+.pp-share-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; }
+.pp-share-row   { display: flex; gap: 8px; flex-wrap: wrap; }
+.pp-share-wa, .pp-share-fb, .pp-share-tw, .pp-share-copy {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; padding: 8px 14px;
+  border-radius: 8px; text-decoration: none; cursor: pointer;
+  border: 1.5px solid transparent; transition: all 0.2s;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+.pp-share-wa   { background: #1A7A40; color: white; border-color: #1A7A40; }
+.pp-share-wa:hover { background: #155f32; }
+.pp-share-fb   { background: #1877F2; color: white; border-color: #1877F2; }
+.pp-share-fb:hover { background: #0d63d0; }
+.pp-share-tw   { background: #000; color: white; border-color: #000; }
+.pp-share-tw:hover { background: #333; }
+.pp-share-copy { background: var(--white); color: var(--navy); border-color: var(--border); }
+.pp-share-copy:hover { background: var(--cream-dark); border-color: var(--navy); }
+.pp-copy-confirm { font-size: 13px; color: #1A7A40; font-weight: 600; margin-top: 10px; }
+
+/* Action buttons */
+.pp-action-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.pp-btn-timer {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--gold); color: var(--navy);
+  border: 2px solid var(--gold);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 15px; font-weight: 700;
+  padding: 13px 28px; border-radius: var(--radius);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  text-decoration: none;
+}
+.pp-btn-timer:hover { background: var(--gold-light); border-color: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(197,150,58,0.3); }
+
+.pp-btn-view {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--navy); color: var(--white);
+  border: 2px solid var(--navy);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 15px; font-weight: 600;
+  padding: 13px 28px; border-radius: var(--radius);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  text-decoration: none;
+}
+.pp-btn-view:hover { background: var(--navy-light); border-color: var(--navy-light); transform: translateY(-1px); }
+
+/* ── BREAKDOWN CARD ── */
+.pp-breakdown-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 28px 32px; margin-bottom: 20px; }
+.pp-section-title  { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 20px; text-align: left; }
+.pp-breakdown-grid { display: flex; flex-direction: column; gap: 12px; }
+.pp-breakdown-item { text-decoration: none; display: block; }
+.pp-bi-top  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.pp-bi-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+.pp-bi-count { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.pp-bi-track { height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
+.pp-bi-fill  { height: 100%; background: linear-gradient(to right, var(--gold), var(--gold-light)); border-radius: 3px; transition: width 0.8s ease; }
+.pp-breakdown-item:hover .pp-bi-name { color: var(--gold-dark); }
+
+/* ── START SCREEN ── */
+.pp-start-screen { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 52px 40px; text-align: center; }
+.pp-start-icon { font-size: 56px; margin-bottom: 18px; }
+.pp-start-screen h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; text-align: center; }
+.pp-start-screen p  { color: var(--text-muted); font-size: 15px; text-align: center; }
+.pp-start-btns { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+
+/* ── TIMER BAR ── */
+.pp-timer-bar { background: var(--navy); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.pp-timer-left  { display: flex; align-items: center; gap: 10px; }
+.pp-timer-icon  { font-size: 20px; }
+.pp-timer-time  { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 700; color: var(--gold-light); min-width: 72px; }
+.pp-timer-label { font-size: 12px; color: rgba(255,255,255,0.6); letter-spacing: 0.05em; text-transform: uppercase; }
+.pp-timer-track { flex: 1; height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; min-width: 80px; }
+.pp-timer-fill  { height: 100%; background: var(--gold); border-radius: 4px; transition: width 1s linear, background 1s; width: 100%; }
+/* Submit button — clearly gold, never hidden */
+.pp-btn-submit {
+  background: var(--gold); color: var(--navy);
+  border: 2px solid var(--gold);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 14px; font-weight: 700;
+  padding: 10px 20px; border-radius: 8px;
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.pp-btn-submit:hover { background: var(--gold-light); border-color: var(--gold-light); }
+
+/* ── QUESTION CARDS ── */
+.pp-questions { display: flex; flex-direction: column; gap: 0; }
+
+.pp-q-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  padding: 24px 28px;
+  border-bottom: none;
+  transition: background 0.2s;
+}
+.pp-q-card:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.pp-q-card:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg); border-bottom: 1.5px solid var(--border); }
+.pp-q-card:only-child  { border-radius: var(--radius-lg); border-bottom: 1.5px solid var(--border); }
+.pp-q-card.pp-answered { background: rgba(11,29,58,0.02); border-color: rgba(11,29,58,0.25); }
+.pp-q-card.pp-correct  { background: rgba(26,122,64,0.03); border-color: rgba(26,122,64,0.35); }
+.pp-q-card.pp-wrong    { background: rgba(220,38,38,0.03); border-color: rgba(220,38,38,0.35); }
+
+/* Question header */
+.pp-q-hdr { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.pp-q-num {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
+  background: var(--navy); color: var(--gold-light);
+  padding: 4px 10px; border-radius: 5px;
+  white-space: nowrap; flex-shrink: 0;
+  margin-top: 2px;
+}
+.pp-q-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pp-q-subj {
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  background: var(--cream); border: 1px solid var(--border);
+  color: var(--text-muted); border-radius: 4px;
+}
+.pp-q-type-static  { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(26,122,64,0.08); color: #1A7A40; border: 1px solid rgba(26,122,64,0.2); }
+.pp-q-type-dynamic { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(139,105,20,0.1); color: var(--gold-dark); border: 1px solid rgba(139,105,20,0.2); }
+
+/* Question text */
+.pp-q-text {
+  font-size: 15px; font-weight: 600; color: var(--navy);
+  line-height: 1.6; margin-bottom: 16px;
+  text-align: left;
+}
+
+/* Options — THE KEY FIX: proper 2-column grid, clear A B C D */
+.pp-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pp-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: left;
+  width: 100%;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+.pp-opt:hover:not(:disabled) { border-color: var(--navy); background: var(--white); box-shadow: var(--shadow-sm); }
+.pp-opt:disabled { cursor: default; }
+
+/* Option key (A/B/C/D box on the left) */
+.pp-opt-key {
+  background: var(--navy);
+  color: var(--gold-light);
+  font-size: 13px; font-weight: 800;
+  padding: 12px 14px;
+  flex-shrink: 0;
+  display: flex; align-items: flex-start;
+  line-height: 1.4;
+  min-width: 42px;
+  justify-content: center;
+}
+/* Option text */
+.pp-opt-text {
+  font-size: 14px; font-weight: 500; color: var(--text-body);
+  padding: 12px 14px;
+  line-height: 1.45;
+  flex: 1;
+}
+
+/* Selected state */
+.pp-opt.pp-selected .pp-opt-key { background: var(--navy-light); }
+.pp-opt.pp-selected .pp-opt-text { color: var(--navy); font-weight: 600; background: rgba(11,29,58,0.05); }
+.pp-opt.pp-selected { border-color: var(--navy); }
+
+/* Correct state (shown after submit) */
+.pp-opt.pp-opt-correct .pp-opt-key { background: #1A7A40; color: white; }
+.pp-opt.pp-opt-correct .pp-opt-text { background: rgba(26,122,64,0.06); color: #1A7A40; font-weight: 600; }
+.pp-opt.pp-opt-correct { border-color: #1A7A40; }
+
+/* Wrong state */
+.pp-opt.pp-opt-wrong .pp-opt-key { background: #dc2626; color: white; }
+.pp-opt.pp-opt-wrong .pp-opt-text { background: rgba(220,38,38,0.06); color: #dc2626; font-weight: 600; }
+.pp-opt.pp-opt-wrong { border-color: #dc2626; }
+
+/* ── RESULTS ── */
+.pp-results { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 48px 32px; text-align: center; margin-top: 20px; }
+.pp-results-score-ring { display: inline-flex; align-items: center; justify-content: center; background: var(--navy); border-radius: 50%; width: 120px; height: 120px; margin-bottom: 20px; flex-direction: column; }
+.pp-rs-num   { font-family: 'Playfair Display', Georgia, serif; font-size: 40px; font-weight: 700; color: var(--gold-light); line-height: 1; }
+.pp-rs-total { font-size: 14px; color: rgba(255,255,255,0.6); }
+.pp-results-title { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; text-align: center; }
+.pp-results-msg   { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; text-align: center; }
+.pp-results-stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+.pp-rs-stat { font-size: 14px; font-weight: 700; padding: 8px 16px; border-radius: 8px; }
+.pp-rs-correct { background: rgba(26,122,64,0.1); color: #1A7A40; }
+.pp-rs-wrong   { background: rgba(220,38,38,0.1); color: #dc2626; }
+.pp-rs-skip    { background: var(--cream); color: var(--text-muted); }
+.pp-rs-pct     { background: var(--navy); color: var(--gold-light); }
+.pp-results-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.pp-btn-back { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--navy); border: 1.5px solid var(--border); padding: 13px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 600; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+.pp-btn-back:hover { background: var(--cream); border-color: var(--navy); }
+
+/* ── SIDEBAR ── */
+.pp-sidebar-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 22px 24px; margin-bottom: 20px; }
+.pp-sidebar-title { font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 16px; text-align: left; }
+.pp-details-list { display: flex; flex-direction: column; gap: 10px; }
+.pp-details-list li { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; font-size: 13px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.pp-details-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.pdl-key { color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
+.pdl-val { color: var(--navy); font-weight: 600; text-align: right; }
+.pp-more-links { display: flex; flex-direction: column; gap: 8px; }
+.pp-more-link { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--cream); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--navy); transition: all 0.18s; }
+.pp-more-link:hover { background: var(--cream-dark); border-color: var(--navy); }
+.pp-tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-tag { font-size: 12px; font-weight: 600; padding: 4px 10px; background: var(--cream); border: 1.5px solid var(--border); color: var(--text-muted); border-radius: 100px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .pp-layout { grid-template-columns: 1fr; }
+  .pp-sidebar { order: -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .pp-sidebar-card { margin-bottom: 0; }
+}
+@media (max-width: 640px) {
+  .pp-header-card, .pp-breakdown-card, .pp-start-screen, .pp-results { padding: 20px; }
+  .pp-title { font-size: 20px; }
+  .pp-meta-row { gap: 6px; font-size: 13px; }
+  .pp-action-row { flex-direction: column; }
+  .pp-action-row .pp-btn-timer, .pp-action-row .pp-btn-view { width: 100%; }
+  .pp-options { grid-template-columns: 1fr; } /* single column on mobile */
+  .pp-start-btns { flex-direction: column; align-items: center; }
+  .pp-results-actions { flex-direction: column; align-items: center; }
+  .pp-timer-bar { flex-wrap: wrap; gap: 10px; }
+  .pp-btn-submit { width: 100%; justify-content: center; }
+  .pp-sidebar { grid-template-columns: 1fr; }
+  .pp-q-card { padding: 18px 16px; }
+  .pp-share-row { flex-direction: column; }
+  .pp-share-wa, .pp-share-fb, .pp-share-tw, .pp-share-copy { width: 100%; justify-content: center; }
 }
 </style>
 
+<!-- ════════════════════════════════════════════════════════
+     QUIZ ENGINE
+     ════════════════════════════════════════════════════ -->
 <script define:vars={{ questions: paper.questions, totalTime: paper.timeMinutes * 60, totalQ: paper.totalQuestions }}>
-const subjectLabels = {
+
+const SUBJECT_LABELS = {
   'pera-law':          'PERA Law',
   'english':           'English',
-  'basic-mathematics': 'Mathematics',
-  'pakistan-studies':  'Pakistan Studies',
-  'general-science':   'General Science',
+  'basic-mathematics': 'Maths',
+  'pakistan-studies':  'Pak Studies',
+  'general-science':   'Gen. Science',
   'computer-basics':   'Computer/IT',
   'current-affairs':   'Current Affairs',
   'geography-maps':    'Geography',
@@ -376,168 +545,182 @@ const subjectLabels = {
 };
 
 let userAnswers  = {};
-let timerInterval = null;
-let timeLeft      = totalTime;
-let timedMode     = false;
-let quizSubmitted = false;
+let timerRef     = null;
+let timeLeft     = totalTime;
+let timedMode    = false;
+let submitted    = false;
 
-function startQuiz(timed = true) {
-  timedMode     = timed;
-  quizSubmitted = false;
-  userAnswers   = {};
-  timeLeft      = totalTime;
+// ── START ────────────────────────────────────────────────
+function startQuiz(timed) {
+  timedMode  = timed;
+  submitted  = false;
+  userAnswers = {};
+  timeLeft   = totalTime;
+  if (timerRef) clearInterval(timerRef);
 
-  document.getElementById('start-screen').hidden    = true;
-  document.getElementById('questions-wrap').hidden  = false;
-  document.getElementById('results-panel').hidden   = true;
+  document.getElementById('start-screen').hidden  = true;
+  document.getElementById('questions-list').hidden = false;
+  document.getElementById('results-panel').hidden  = true;
+  document.getElementById('timer-bar').hidden      = !timed;
 
   if (timed) {
-    document.getElementById('timer-bar').hidden = false;
-    if (timerInterval) clearInterval(timerInterval);
-    updateTimerDisplay();
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      updateTimerDisplay();
-      if (timeLeft <= 0) { clearInterval(timerInterval); submitQuiz(true); }
-    }, 1000);
-  } else {
-    document.getElementById('timer-bar').hidden = true;
+    tickTimer();
+    timerRef = setInterval(tickTimer, 1000);
   }
 
-  renderQuestions(false);
-  const sec = document.getElementById('quiz-section');
-  if (sec) window.scrollTo({ top: sec.offsetTop - 80, behavior: 'smooth' });
+  renderQs(false);
+  const area = document.getElementById('quiz-area');
+  if (area) area.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function renderQuestions(showAns = false) {
-  const grid = document.getElementById('questions-grid');
-  if (!grid) return;
-  grid.innerHTML = questions.map(q => {
+// ── RENDER QUESTIONS ─────────────────────────────────────
+function renderQs(showAns) {
+  const list = document.getElementById('questions-list');
+  if (!list) return;
+
+  list.innerHTML = questions.map(q => {
     const ua = userAnswers[q.no];
-    let cardCls = 'question-card';
-    if (showAns && ua) cardCls += ua === q.correct ? ' correct' : ' wrong';
-    else if (ua) cardCls += ' answered';
+    let cardCls = 'pp-q-card';
+    if (showAns && ua) cardCls += ua === q.correct ? ' pp-correct' : ' pp-wrong';
+    else if (ua) cardCls += ' pp-answered';
 
     const opts = Object.entries(q.options).map(([k, v]) => {
-      let bc = 'option-btn';
+      let cls = 'pp-opt';
       if (showAns) {
-        if (k === q.correct)               bc += ' correct';
-        else if (k === ua && k !== q.correct) bc += ' wrong';
-      } else if (k === ua) bc += ' selected';
-      return `<button class="${bc}" onclick="selectAnswer(${q.no},'${k}')" ${(showAns || quizSubmitted) ? 'disabled' : ''}>
-        <span class="option-key">${k}.</span><span>${v}</span>
-        ${showAns && k === q.correct ? '<span style="margin-left:auto">✅</span>' : ''}
-        ${showAns && k === ua && k !== q.correct ? '<span style="margin-left:auto">❌</span>' : ''}
+        if (k === q.correct) cls += ' pp-opt-correct';
+        else if (k === ua)   cls += ' pp-opt-wrong';
+      } else if (k === ua) cls += ' pp-selected';
+
+      return `<button
+        class="${cls}"
+        onclick="pickOpt(${q.no},'${k}')"
+        ${(showAns || submitted) ? 'disabled' : ''}
+        aria-label="Option ${k}: ${v}"
+      >
+        <span class="pp-opt-key">${k}</span>
+        <span class="pp-opt-text">${v}${showAns && k === q.correct ? ' ✅' : ''}${showAns && k === ua && k !== q.correct ? ' ❌' : ''}</span>
       </button>`;
     }).join('');
 
-    return `<article class="${cardCls}" id="q-${q.no}" role="listitem">
-      <div class="q-header">
-        <span class="q-number">Q.${q.no}</span>
-        <div class="q-badges">
-          <span class="q-subject-badge">${subjectLabels[q.subject] || q.subject}</span>
-          <span class="q-type-badge ${q.type}">${q.type === 'static' ? '📌 Static' : '🔄 Current'}</span>
+    const typeClass = q.type === 'static' ? 'pp-q-type-static' : 'pp-q-type-dynamic';
+    const typeLabel = q.type === 'static' ? '📌 Static' : '🔄 Current';
+
+    return `<div class="${cardCls}" id="qc-${q.no}">
+      <div class="pp-q-hdr">
+        <span class="pp-q-num">Q.${q.no}</span>
+        <div class="pp-q-badges">
+          <span class="pp-q-subj">${SUBJECT_LABELS[q.subject] || q.subject}</span>
+          <span class="${typeClass}">${typeLabel}</span>
         </div>
       </div>
-      <p class="q-text">${q.question}</p>
-      <div class="options-grid">${opts}</div>
-    </article>`;
+      <p class="pp-q-text">${q.question}</p>
+      <div class="pp-options">${opts}</div>
+    </div>`;
   }).join('');
 }
 
-function selectAnswer(qNo, key) {
-  if (quizSubmitted) return;
+// ── PICK OPTION ──────────────────────────────────────────
+function pickOpt(qNo, key) {
+  if (submitted) return;
   userAnswers[qNo] = key;
-  const card = document.getElementById(`q-${qNo}`);
+  const card = document.getElementById(`qc-${qNo}`);
   if (!card) return;
-  card.classList.add('answered');
-  card.querySelectorAll('.option-btn').forEach(btn => {
-    const k = btn.querySelector('.option-key').textContent.replace('.','').trim();
-    btn.classList.toggle('selected', k === key);
+  card.classList.add('pp-answered');
+  card.querySelectorAll('.pp-opt').forEach(btn => {
+    const k = btn.querySelector('.pp-opt-key').textContent.trim();
+    btn.classList.toggle('pp-selected', k === key);
   });
 }
 
-function updateTimerDisplay() {
-  const m = Math.floor(timeLeft / 60).toString().padStart(2,'0');
-  const s = (timeLeft % 60).toString().padStart(2,'0');
-  const el = document.getElementById('timer-display');
-  if (el) el.textContent = `${m}:${s}`;
-  const bar = document.getElementById('timer-progress');
-  if (bar) {
+// ── TIMER ────────────────────────────────────────────────
+function tickTimer() {
+  timeLeft = Math.max(0, timeLeft - 1);
+  const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const s = (timeLeft % 60).toString().padStart(2, '0');
+  const disp = document.getElementById('timer-display');
+  const fill = document.getElementById('timer-fill');
+  if (disp) disp.textContent = `${m}:${s}`;
+  if (fill) {
     const pct = (timeLeft / totalTime) * 100;
-    bar.style.width = `${pct}%`;
-    bar.style.background = pct > 50 ? 'var(--gold)' : pct > 20 ? '#f97316' : '#dc2626';
+    fill.style.width = `${pct}%`;
+    fill.style.background = pct > 50 ? 'var(--gold)' : pct > 20 ? '#f97316' : '#dc2626';
   }
+  if (timeLeft <= 0) { clearInterval(timerRef); submitQuiz(true); }
 }
 
+// ── SUBMIT ───────────────────────────────────────────────
 function submitQuiz(timeUp = false) {
-  if (timerInterval) clearInterval(timerInterval);
-  quizSubmitted = true;
+  if (timerRef) clearInterval(timerRef);
+  submitted = true;
+
   let correct = 0, wrong = 0, skipped = 0;
   questions.forEach(q => {
-    if (!userAnswers[q.no]) skipped++;
-    else if (userAnswers[q.no] === q.correct) correct++;
+    const a = userAnswers[q.no];
+    if (!a) skipped++;
+    else if (a === q.correct) correct++;
     else wrong++;
   });
+
   const pct = Math.round((correct / totalQ) * 100);
-  const msgs = [
-    { min:80, title:'Excellent! 🎉', msg:'Outstanding performance. You are exam-ready!' },
-    { min:60, title:'Good Result! 👍', msg:'A bit more practice and you\'ll be fully prepared.' },
-    { min:40, title:'Keep Going! 📚', msg:'Focus on weak subjects and practice more.' },
-    { min:0,  title:'Keep Trying! 💪', msg:'Review the answer key carefully and try again.' },
+  const levels = [
+    { min: 80, title: 'Excellent! 🎉', msg: 'Outstanding score. You are exam-ready!' },
+    { min: 60, title: 'Good Result! 👍', msg: 'Solid effort. A bit more practice and you\'ll be fully prepared.' },
+    { min: 40, title: 'Keep Going! 📚', msg: 'Review your weak subjects and practice more.' },
+    { min: 0,  title: 'Keep Trying! 💪', msg: 'Don\'t give up. Review the answer key below and try again.' },
   ];
-  const r = msgs.find(m => pct >= m.min);
-  document.getElementById('timer-bar').hidden   = true;
+  const lv = levels.find(l => pct >= l.min);
+
+  document.getElementById('timer-bar').hidden    = true;
   document.getElementById('results-panel').hidden = false;
   document.getElementById('results-score').textContent = correct;
-  document.getElementById('results-title').textContent = timeUp ? 'Time Up!' : r.title;
-  document.getElementById('results-msg').textContent   = r.msg;
-  document.getElementById('results-breakdown').innerHTML = `
-    <span class="rbd-item rbd-correct">✅ Correct: ${correct}</span>
-    <span class="rbd-item rbd-wrong">❌ Wrong: ${wrong}</span>
-    <span class="rbd-item" style="background:var(--cream);color:var(--text-muted);">⏭ Skipped: ${skipped}</span>
-    <span class="rbd-item" style="background:var(--navy);color:var(--gold-light);">${pct}%</span>
+  document.getElementById('results-title').textContent = timeUp ? '⏱ Time Up!' : lv.title;
+  document.getElementById('results-msg').textContent   = lv.msg;
+  document.getElementById('results-stats').innerHTML = `
+    <span class="pp-rs-stat pp-rs-correct">✅ ${correct} Correct</span>
+    <span class="pp-rs-stat pp-rs-wrong">❌ ${wrong} Wrong</span>
+    <span class="pp-rs-stat pp-rs-skip">⏭ ${skipped} Skipped</span>
+    <span class="pp-rs-stat pp-rs-pct">${pct}%</span>
   `;
-  document.getElementById('results-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+  document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function retryQuiz()  { startQuiz(timedMode); }
-function showAnswers() {
+function retryQuiz()    { startQuiz(timedMode); }
+function reviewAnswers() {
   document.getElementById('results-panel').hidden = true;
-  renderQuestions(true);
-  document.getElementById('questions-wrap').scrollIntoView({ behavior:'smooth' });
+  renderQs(true);
+  document.getElementById('questions-list').scrollIntoView({ behavior: 'smooth' });
 }
 
+// ── SHARE ────────────────────────────────────────────────
 function toggleShare() {
   const p = document.getElementById('share-panel');
   const b = document.getElementById('share-btn');
+  if (!p) return;
   p.hidden = !p.hidden;
-  b.setAttribute('aria-expanded', String(!p.hidden));
+  if (b) b.setAttribute('aria-expanded', String(!p.hidden));
 }
 
 function copyLink() {
-  navigator.clipboard?.writeText(window.location.href).then(showCopyConfirm).catch(() => {
+  const url = window.location.href;
+  (navigator.clipboard?.writeText(url) ?? Promise.reject()).then(done).catch(() => {
     const t = document.createElement('textarea');
-    t.value = window.location.href;
-    document.body.appendChild(t); t.select(); document.execCommand('copy');
-    document.body.removeChild(t); showCopyConfirm();
+    t.value = url; document.body.appendChild(t); t.select();
+    document.execCommand('copy'); document.body.removeChild(t); done();
   });
+  function done() {
+    const el = document.getElementById('copy-confirm');
+    if (el) { el.hidden = false; setTimeout(() => { el.hidden = true; }, 3000); }
+  }
 }
 
-function showCopyConfirm() {
-  const el = document.getElementById('copy-confirm');
-  if (!el) return;
-  el.hidden = false;
-  setTimeout(() => { el.hidden = true; }, 3000);
-}
-
-window.startQuiz    = startQuiz;
-window.selectAnswer = selectAnswer;
-window.submitQuiz   = submitQuiz;
-window.retryQuiz    = retryQuiz;
-window.showAnswers  = showAnswers;
-window.toggleShare  = toggleShare;
-window.copyLink     = copyLink;
+// Expose to global scope for inline onclick
+window.startQuiz     = startQuiz;
+window.pickOpt       = pickOpt;
+window.submitQuiz    = submitQuiz;
+window.retryQuiz     = retryQuiz;
+window.reviewAnswers = reviewAnswers;
+window.toggleShare   = toggleShare;
+window.copyLink      = copyLink;
 </script>
 
 </BaseLayout>
