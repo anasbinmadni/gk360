@@ -1,0 +1,858 @@
+{
+  "id": "pera-eo-io-2026-03-15",
+  "slug": "pera-eo-io-2026-03-15",
+  "title": "PERA Enforcement Officer & Investigation Officer",
+  "titleFull": "PERA EO & IO Solved Paper — Punjab Enforcement & Regularity Authority",
+  "department": "Punjab Enforcement & Regularity Authority (PERA)",
+  "departmentShort": "PERA",
+  "deptSlug": "pera",
+  "post": "Enforcement Officer (EO) & Investigation Officer (IO)",
+  "date": "2026-03-15",
+  "year": 2026,
+  "month": "March",
+  "totalQuestions": 91,
+  "totalMarks": 100,
+  "timeMinutes": 90,
+  "solved": true,
+  "hasAnswerKey": true,
+  "difficulty": "medium",
+  "conductedBy": "PPSC",
+  "seoTitle": "PERA EO IO Solved Past Paper 2026 — Punjab Enforcement Authority | GK360.pk",
+  "seoDescription": "Download and attempt PERA EO & IO solved past paper held on 15 March 2026. 91 MCQs with answer key, subject-wise breakdown, and timed quiz mode.",
+
+  "subjectBreakdown": [
+    { "subject": "pera-law",          "label": "PERA Act & Law",      "count": 28, "percentage": 31 },
+    { "subject": "english",           "label": "English",             "count": 20, "percentage": 22 },
+    { "subject": "basic-mathematics", "label": "Mathematics",         "count": 9,  "percentage": 10 },
+    { "subject": "pakistan-studies",  "label": "Pakistan Studies",    "count": 10, "percentage": 11 },
+    { "subject": "general-science",   "label": "General Science",     "count": 7,  "percentage": 8  },
+    { "subject": "computer-basics",   "label": "Computer / IT",       "count": 5,  "percentage": 5  },
+    { "subject": "current-affairs",   "label": "Current Affairs",     "count": 6,  "percentage": 7  },
+    { "subject": "geography-maps",    "label": "Geography & Maps",    "count": 3,  "percentage": 3  },
+    { "subject": "general-knowledge", "label": "General Knowledge",   "count": 3,  "percentage": 3  }
+  ],
+
+  "tags": ["PERA", "EO", "IO", "Punjab Enforcement", "One Paper", "PPSC 2026"],
+
+  "questions": [
+    {
+      "no": 1,
+      "question": "DG PERA appointed by CM of which Grade?",
+      "options": { "A": "BS 19 or above", "B": "BS 18", "C": "BS 17", "D": "BS 16" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Authority — Appointments"
+    },
+    {
+      "no": 2,
+      "question": "Investigation Officer can register FIR at?",
+      "options": { "A": "Enforcement Station", "B": "Enforcement Appeal", "C": "In the court", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Procedures"
+    },
+    {
+      "no": 3,
+      "question": "Buddy System in PERA Act is?",
+      "options": { "A": "Temporary", "B": "Mandatory", "C": "Tentative", "D": "None of these" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Provisions"
+    },
+    {
+      "no": 4,
+      "question": "PERA rule full name:",
+      "options": { "A": "Punjab Enforcement and Regularity Authority Rules, 2024", "B": "Punjab Enforcement 2026", "C": "Punjab Enforcement 2025", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Basic Info"
+    },
+    {
+      "no": 5,
+      "question": "Meeting of the board at least one in every _____ months?",
+      "options": { "A": "2 months", "B": "3 months", "C": "4 months", "D": "5 months" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Authority — Board Meetings"
+    },
+    {
+      "no": 6,
+      "question": "Record of evidence must be submitted before judge on?",
+      "options": { "A": "Affidavit", "B": "Response", "C": "Proof", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Legal Procedure"
+    },
+    {
+      "no": 7,
+      "question": "Who is the Secretary of the PERA Authority?",
+      "options": { "A": "Inspector PERA", "B": "D.G PERA", "C": "I.G PERA", "D": "None of these" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Authority — Structure"
+    },
+    {
+      "no": 8,
+      "question": "Appointment of DG PERA — who shall be officer of basic scale?",
+      "options": { "A": "BS 18", "B": "BS 19", "C": "BS 16", "D": "BS 17" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Authority — Appointments"
+    },
+    {
+      "no": 9,
+      "question": "Who can send requisition under PERA Act?",
+      "options": { "A": "Sub-Divisional Enforcement Officer", "B": "Divisional Officer", "C": "Stational Officer", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Officers"
+    },
+    {
+      "no": 10,
+      "question": "Company made violation by workers — the owner would be considered offender until?",
+      "options": { "A": "He proves to be not involved", "B": "He proves to be involved", "C": "He proves to be partner in crime", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Offences & Liability"
+    },
+    {
+      "no": 11,
+      "question": "Summary Trial purpose is?",
+      "options": { "A": "To Proceed cases Slowly", "B": "To Proceed cases Speedily", "C": "To Proceed Cases Randomly", "D": "None of these" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Trial Procedure"
+    },
+    {
+      "no": 12,
+      "question": "Special Magistrate can try cases under the Hoarding Act through which Section?",
+      "options": { "A": "12 A", "B": "13 A", "C": "14 A", "D": "15 A" },
+      "correct": "C",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Sections"
+    },
+    {
+      "no": 13,
+      "question": "Article 175(1) deals with:",
+      "options": { "A": "Establishment of Islamabad High Court", "B": "Establishment of Law Institution", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "Constitution — Articles"
+    },
+    {
+      "no": 14,
+      "question": "Article 24 does not apply:",
+      "options": { "A": "To be enemy property in own state", "B": "To the Property in state", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "Constitution — Articles"
+    },
+    {
+      "no": 15,
+      "question": "Special meeting of DERB convened by?",
+      "options": { "A": "Chairperson or On the request of any member", "B": "On the request of local person", "C": "On the request of Labor", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Authority — Board Meetings"
+    },
+    {
+      "no": 16,
+      "question": "GIS in PERA stands for?",
+      "options": { "A": "Geological Information System", "B": "Geographical Interface System", "C": "Geographical Information System", "D": "None of these" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Terminology"
+    },
+    {
+      "no": 17,
+      "question": "Enforcement officer is appointed by?",
+      "options": { "A": "Member", "B": "Local Body system", "C": "Authority", "D": "None of these" },
+      "correct": "C",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Officers"
+    },
+    {
+      "no": 18,
+      "question": "If a Milk Company is involved in Price Hike then who will be responsible for offence?",
+      "options": { "A": "Everyone is offender until provided his innocence", "B": "Nobody is offender", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Offences & Liability"
+    },
+    {
+      "no": 19,
+      "question": "Arrested person must be produced before the Magistrate in _____ hours.",
+      "options": { "A": "20 hours", "B": "24 hours", "C": "10 hours", "D": "5 hours" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Arrest Procedures"
+    },
+    {
+      "no": 20,
+      "question": "Authority may confer additional power to EO/IO/SDEO?",
+      "options": { "A": "EO", "B": "Member", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Officers"
+    },
+    {
+      "no": 21,
+      "question": "What is meant by schedule in PERA?",
+      "options": { "A": "Schedule appended to the rules", "B": "Members", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Definitions"
+    },
+    {
+      "no": 22,
+      "question": "Prohibition of encroachment is under which section?",
+      "options": { "A": "34", "B": "37", "C": "35", "D": "33" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Sections"
+    },
+    {
+      "no": 23,
+      "question": "Bar of Jurisdiction under PERA Act?",
+      "options": { "A": "Court Specified for this Act", "B": "Court Does Not Specified for this Act", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Jurisdiction"
+    },
+    {
+      "no": 24,
+      "question": "PERA is an act to provide for the establishment of PERA and prescribe procedure for efficient and effective implementation of:",
+      "options": { "A": "Special Law", "B": "Temporary Law", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Basic Info"
+    },
+    {
+      "no": 25,
+      "question": "If injured person has died under Police Custody then the report of medical officer shall be considered as _____ before magistrate.",
+      "options": { "A": "Signature of Station House Officer", "B": "Evidence of Statement", "C": "Both", "D": "None of these" },
+      "correct": "B",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Legal Procedure"
+    },
+    {
+      "no": 26,
+      "question": "After the trial of the case Magistrate forwards a copy to whom?",
+      "options": { "A": "Session Judge", "B": "High Court Judge", "C": "Supreme Court Judge", "D": "None of these" },
+      "correct": "A",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PERA Act — Trial Procedure"
+    },
+    {
+      "no": 27,
+      "question": "Special Revision of Record of right under which section of PLRA 1967?",
+      "options": { "A": "Section 35", "B": "Section 38", "C": "Section 40", "D": "Section 45" },
+      "correct": "C",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "PLRA 1967 — Sections"
+    },
+    {
+      "no": 28,
+      "question": "Right of Occupancy not to be acquired by mere lapse is in which section of tenancy act?",
+      "options": { "A": "Section 7", "B": "Section 8", "C": "Section 9", "D": "Section 10" },
+      "correct": "C",
+      "subject": "pera-law",
+      "type": "static",
+      "topic": "Tenancy Act — Sections"
+    },
+    {
+      "no": 29,
+      "question": "Begum Nasim Wali Khan died in?",
+      "options": { "A": "16 May 2021", "B": "17 May 2021", "C": "18 May 2021", "D": "19 May 2021" },
+      "correct": "A",
+      "subject": "current-affairs",
+      "type": "static",
+      "topic": "Pakistan — Notable Deaths"
+    },
+    {
+      "no": 30,
+      "question": "Mount Blanc is located in which country?",
+      "options": { "A": "Germany", "B": "Japan", "C": "France", "D": "China" },
+      "correct": "C",
+      "subject": "geography-maps",
+      "type": "static",
+      "topic": "World Geography — Mountains"
+    },
+    {
+      "no": 31,
+      "question": "What is Pakistani Cryptocurrency App?",
+      "options": { "A": "Binance P-to-P", "B": "Binance k-to-K", "C": "Binance M-to-M", "D": "None of these" },
+      "correct": "A",
+      "subject": "current-affairs",
+      "type": "dynamic",
+      "topic": "Pakistan — Technology & Apps"
+    },
+    {
+      "no": 32,
+      "question": "How many satellites cover GPS?",
+      "options": { "A": "20", "B": "22", "C": "24", "D": "26" },
+      "correct": "C",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Technology — Satellites"
+    },
+    {
+      "no": 33,
+      "question": "Filter option in MS Excel?",
+      "options": { "A": "Data > Filter", "B": "File > Filter", "C": "Filter > Data", "D": "None of these" },
+      "correct": "A",
+      "subject": "computer-basics",
+      "type": "static",
+      "topic": "MS Excel"
+    },
+    {
+      "no": 34,
+      "question": "SQL stands for:",
+      "options": { "A": "Structured Query Language", "B": "Standard Question Language", "C": "Startup Query Language", "D": "None of these" },
+      "correct": "A",
+      "subject": "computer-basics",
+      "type": "static",
+      "topic": "Computer — Abbreviations"
+    },
+    {
+      "no": 35,
+      "question": "How to create PowerPoint Presentation Video?",
+      "options": { "A": "Go to File > Export > Create Video", "B": "Go to Documents > Creates Video", "C": "Both", "D": "None of these" },
+      "correct": "A",
+      "subject": "computer-basics",
+      "type": "static",
+      "topic": "MS PowerPoint"
+    },
+    {
+      "no": 36,
+      "question": "How to Split View in MS Office?",
+      "options": { "A": "View > Split > Window Group", "B": "File > Split > window", "C": "Documents > File > Split", "D": "None of these" },
+      "correct": "A",
+      "subject": "computer-basics",
+      "type": "static",
+      "topic": "MS Office"
+    },
+    {
+      "no": 37,
+      "question": "Which technology is used for text generated response in ChatGPT?",
+      "options": { "A": "Deep Learning", "B": "Fake Learning", "C": "Understanding", "D": "None of these" },
+      "correct": "A",
+      "subject": "computer-basics",
+      "type": "dynamic",
+      "topic": "AI & Technology"
+    },
+    {
+      "no": 38,
+      "question": "Joint of Elbow is an example of which?",
+      "options": { "A": "Hinge Joint", "B": "Shoulder Joints", "C": "Harder Joints", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Biology — Human Body"
+    },
+    {
+      "no": 39,
+      "question": "Why does Type 2 diabetes happen?",
+      "options": { "A": "Insulin Resistance", "B": "Blood Pressure", "C": "Muscles Pain", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Biology — Diseases"
+    },
+    {
+      "no": 40,
+      "question": "When rain above 100mm in one hour?",
+      "options": { "A": "Cloud Burst", "B": "Little Drops of rain", "C": "Wind Blowing", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Meteorology"
+    },
+    {
+      "no": 41,
+      "question": "Major component of Natural Gas is?",
+      "options": { "A": "Methane", "B": "Oxygen", "C": "Nitrogen", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Chemistry — Elements & Compounds"
+    },
+    {
+      "no": 42,
+      "question": "International Unit of Sound Intensity is?",
+      "options": { "A": "Pascal", "B": "Decimal", "C": "Joule", "D": "None of these" },
+      "correct": "B",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Physics — Units"
+    },
+    {
+      "no": 43,
+      "question": "SiO2 is known as?",
+      "options": { "A": "Sand", "B": "Soil", "C": "Hill", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Chemistry — Elements & Compounds"
+    },
+    {
+      "no": 44,
+      "question": "What is used for Green House effect?",
+      "options": { "A": "Plastic", "B": "Glass", "C": "Soil", "D": "Sand" },
+      "correct": "B",
+      "subject": "general-science",
+      "type": "static",
+      "topic": "Physics — Materials"
+    },
+    {
+      "no": 45,
+      "question": "Choose the correct statement:",
+      "options": { "A": "Harder the Work, Great the Reward", "B": "The harder the work, the greater the reward.", "C": "The harder the reward, the greater the work.", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Grammar Correction"
+    },
+    {
+      "no": 46,
+      "question": "Bury the Hatchet means?",
+      "options": { "A": "To make peace", "B": "To make Quarrel", "C": "To make damage", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Idioms & Phrases"
+    },
+    {
+      "no": 47,
+      "question": "Murder of Mother is called?",
+      "options": { "A": "Fratricide", "B": "Matricide", "C": "Both", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Vocabulary (One Word Substitution)"
+    },
+    {
+      "no": 48,
+      "question": "Break the legs meaning?",
+      "options": { "A": "Bad Luck", "B": "Good Luck", "C": "Good Performance", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Idioms & Phrases"
+    },
+    {
+      "no": 49,
+      "question": "Correction: She apologized ___ her mistake.",
+      "options": { "A": "She apologized by her mistake.", "B": "She apologized to her mistake.", "C": "She apologized for her mistake.", "D": "None of these" },
+      "correct": "C",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Grammar Correction"
+    },
+    {
+      "no": 50,
+      "question": "A person who respects all religions is called?",
+      "options": { "A": "Secular / an Omnist", "B": "Feminist", "C": "Conservative", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Vocabulary (One Word Substitution)"
+    },
+    {
+      "no": 51,
+      "question": "Synonym of Opportune is?",
+      "options": { "A": "Timely", "B": "By Late", "C": "suddenly", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Synonyms"
+    },
+    {
+      "no": 52,
+      "question": "Synonym of Experimental is?",
+      "options": { "A": "Permanent", "B": "Tentative", "C": "Proper", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Synonyms"
+    },
+    {
+      "no": 53,
+      "question": "Antonym of Approbate is?",
+      "options": { "A": "Reject", "B": "Condemn", "C": "Accept", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Antonyms"
+    },
+    {
+      "no": 54,
+      "question": "Antonym of Vindictive is?",
+      "options": { "A": "Aggressive", "B": "Polite", "C": "Quarrel", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Antonyms"
+    },
+    {
+      "no": 55,
+      "question": "In a fix — idiom means?",
+      "options": { "A": "Undecided", "B": "Decided", "C": "Acceptable", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Idioms & Phrases"
+    },
+    {
+      "no": 56,
+      "question": "Carry out means?",
+      "options": { "A": "To Manage", "B": "To Accomplish", "C": "To Modify", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Idioms & Phrases"
+    },
+    {
+      "no": 57,
+      "question": "Correction:",
+      "options": { "A": "He is a family man.", "B": "He are a family man.", "C": "He a family men.", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Grammar Correction"
+    },
+    {
+      "no": 58,
+      "question": "Yeoman's Work idiom means:",
+      "options": { "A": "Bad Work", "B": "Excellent Work", "C": "Moderate Work", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Idioms & Phrases"
+    },
+    {
+      "no": 59,
+      "question": "Cut the mustard means:",
+      "options": { "A": "To be Damaged", "B": "To be Succeed", "C": "To be Unsuccessful", "D": "None of these" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Idioms & Phrases"
+    },
+    {
+      "no": 60,
+      "question": "A woman whose husband is dead is called?",
+      "options": { "A": "Widow", "B": "Married", "C": "Single", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Vocabulary (One Word Substitution)"
+    },
+    {
+      "no": 61,
+      "question": "Antonym of Deride is?",
+      "options": { "A": "Admire", "B": "Hate", "C": "Rumor", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Antonyms"
+    },
+    {
+      "no": 62,
+      "question": "Antonym of Pique?",
+      "options": { "A": "Soothe", "B": "Bad", "C": "Good", "D": "None of these" },
+      "correct": "A",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Antonyms"
+    },
+    {
+      "no": 63,
+      "question": "Let you and _____ go to school.",
+      "options": { "A": "him", "B": "me", "C": "them", "D": "her" },
+      "correct": "B",
+      "subject": "english",
+      "type": "static",
+      "topic": "English — Grammar (Pronouns)"
+    },
+    {
+      "no": 64,
+      "question": "Sum of adjacent angles on a line is?",
+      "options": { "A": "120", "B": "140", "C": "180", "D": "190" },
+      "correct": "C",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Geometry"
+    },
+    {
+      "no": 65,
+      "question": "3/21 = ?",
+      "options": { "A": "7", "B": "8", "C": "9", "D": "10" },
+      "correct": "A",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Fractions"
+    },
+    {
+      "no": 66,
+      "question": "Point difference between (-6, 8) : ?",
+      "options": { "A": "10", "B": "12", "C": "13", "D": "14" },
+      "correct": "D",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Coordinate Geometry"
+    },
+    {
+      "no": 67,
+      "question": "12:68::30:x = Find the X",
+      "options": { "A": "120", "B": "160", "C": "170", "D": "180" },
+      "correct": "C",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Ratios & Proportions"
+    },
+    {
+      "no": 68,
+      "question": "A can do work in 10 days while A and B can do the same work in 12 days, find the days B can alone do that work:",
+      "options": { "A": "50 days", "B": "60 days", "C": "70 days", "D": "80 days" },
+      "correct": "B",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Work & Time"
+    },
+    {
+      "no": 69,
+      "question": "Circumference of a circle whose radius is 8 cm?",
+      "options": { "A": "50.2 cm", "B": "50 cm", "C": "51 cm", "D": "52 cm" },
+      "correct": "A",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Geometry (Circles)"
+    },
+    {
+      "no": 70,
+      "question": "(3x + 3y) + (x² - y²) / x+y = ?",
+      "options": { "A": "3+x-y", "B": "3-x+y", "C": "x-y", "D": "None of these" },
+      "correct": "A",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Algebra"
+    },
+    {
+      "no": 71,
+      "question": "F(X) = x² - 1, then F(F(-1)) = ?",
+      "options": { "A": "-1", "B": "+1", "C": "-4", "D": "+4" },
+      "correct": "A",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Functions"
+    },
+    {
+      "no": 72,
+      "question": "A worker makes a basket in 2/3 of an hour. How many baskets can he make in 7.5 hours?",
+      "options": { "A": "45/3", "B": "45/4", "C": "45/5", "D": "45/6" },
+      "correct": "B",
+      "subject": "basic-mathematics",
+      "type": "static",
+      "topic": "Mathematics — Work & Time"
+    },
+    {
+      "no": 73,
+      "question": "The 2nd meeting of Azerbaijan and Turkey's Foreign Ministers with Pakistan held in which city?",
+      "options": { "A": "Lahore", "B": "Islamabad", "C": "Quetta", "D": "Karachi" },
+      "correct": "B",
+      "subject": "current-affairs",
+      "type": "dynamic",
+      "topic": "Pakistan — Foreign Affairs 2026"
+    },
+    {
+      "no": 74,
+      "question": "Which fort was built by Akbar?",
+      "options": { "A": "Agra Fort", "B": "Chakwal Fort", "C": "Dirawar Fort", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan/South Asia — Mughal History"
+    },
+    {
+      "no": 75,
+      "question": "Four Days war of Indo-Pakistan was started on?",
+      "options": { "A": "8 May 2025", "B": "7 May 2025", "C": "6 May 2025", "D": "5 May 2025" },
+      "correct": "B",
+      "subject": "current-affairs",
+      "type": "dynamic",
+      "topic": "Pakistan — Major Events 2025"
+    },
+    {
+      "no": 76,
+      "question": "GIS stands for?",
+      "options": { "A": "Geographic Information System", "B": "Geopolitical Information System", "C": "Geopolitical Intellectual System", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-knowledge",
+      "type": "static",
+      "topic": "General Knowledge — Abbreviations"
+    },
+    {
+      "no": 77,
+      "question": "In 1758, who captured the city of Lahore?",
+      "options": { "A": "Marhatas", "B": "Rajputes", "C": "Mughals", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan History — Lahore"
+    },
+    {
+      "no": 78,
+      "question": "What was the purpose of Simon Commission?",
+      "options": { "A": "Trade", "B": "Constitution Reforms", "C": "Amendments", "D": "None of these" },
+      "correct": "B",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan History — British Period"
+    },
+    {
+      "no": 79,
+      "question": "In which place did F-16 clash in 2020?",
+      "options": { "A": "Near Shakarparian", "B": "Rawalpindi", "C": "Quetta", "D": "None of these" },
+      "correct": "A",
+      "subject": "current-affairs",
+      "type": "dynamic",
+      "topic": "Pakistan — Military Events"
+    },
+    {
+      "no": 80,
+      "question": "Azakhel Dry Port is located in which city?",
+      "options": { "A": "Quetta", "B": "Lahore", "C": "Nowshera", "D": "None of these" },
+      "correct": "C",
+      "subject": "geography-maps",
+      "type": "static",
+      "topic": "Pakistan Geography — Trade & Ports"
+    },
+    {
+      "no": 81,
+      "question": "The first Constitutional assembly lasted for how many years?",
+      "options": { "A": "5 years", "B": "6 years", "C": "7 years", "D": "8 years" },
+      "correct": "C",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan History — Constitution"
+    },
+    {
+      "no": 82,
+      "question": "Which Commission divided Punjab into two parts?",
+      "options": { "A": "Redcliff Boundary Commission", "B": "Constitution Commission", "C": "Constitutional Committee", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan History — Partition"
+    },
+    {
+      "no": 83,
+      "question": "Pothohar Plateau consists of which type of area?",
+      "options": { "A": "Semi-Arid to Sub-Humid Area", "B": "Dry Area", "C": "Hot and Cold Area", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan Geography — Landforms"
+    },
+    {
+      "no": 84,
+      "question": "Who firstly ruled Punjab?",
+      "options": { "A": "Mahmood Gaznavi / Ranjit Singh", "B": "Babar", "C": "Akbar", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan History — Punjab"
+    },
+    {
+      "no": 85,
+      "question": "Main goal of British Colonial rule in Punjab is?",
+      "options": { "A": "Exploitation of Sources", "B": "Trade", "C": "Terrorism", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Pakistan History — British Period"
+    },
+    {
+      "no": 86,
+      "question": "E-Construction App is used for:",
+      "options": { "A": "Subsidy Projects", "B": "Building Permits", "C": "Travelogue", "D": "None of these" },
+      "correct": "B",
+      "subject": "current-affairs",
+      "type": "dynamic",
+      "topic": "Pakistan — Government Apps & Tech"
+    },
+    {
+      "no": 87,
+      "question": "Which App is used for Visa License Service?",
+      "options": { "A": "E-Construction App", "B": "Pak-Identity App", "C": "Dastak App", "D": "None of these" },
+      "correct": "C",
+      "subject": "current-affairs",
+      "type": "dynamic",
+      "topic": "Pakistan — Government Apps & Tech"
+    },
+    {
+      "no": 88,
+      "question": "Article 11 of the Constitution 1973 is for?",
+      "options": { "A": "Slavery Force Labor Prohibited", "B": "Child Marriage Prevention", "C": "To Stop Domestic Violence", "D": "None of these" },
+      "correct": "A",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Constitution 1973 — Fundamental Rights"
+    },
+    {
+      "no": 89,
+      "question": "Article 9A of the Constitution is for?",
+      "options": { "A": "Child Protection", "B": "Environmental Protection", "C": "Labor Protection", "D": "None of these" },
+      "correct": "B",
+      "subject": "pakistan-studies",
+      "type": "static",
+      "topic": "Constitution 1973 — Fundamental Rights"
+    },
+    {
+      "no": 90,
+      "question": "Largest river by volume?",
+      "options": { "A": "Nile River", "B": "Amazon River", "C": "Congo River", "D": "Indus River" },
+      "correct": "B",
+      "subject": "geography-maps",
+      "type": "static",
+      "topic": "World Geography — Rivers"
+    },
+    {
+      "no": 91,
+      "question": "Life Boat invented by?",
+      "options": { "A": "Lionel Lukin", "B": "John David", "C": "John Belt", "D": "None of these" },
+      "correct": "A",
+      "subject": "general-knowledge",
+      "type": "static",
+      "topic": "General Knowledge — Inventions"
+    }
+  ]
+}
