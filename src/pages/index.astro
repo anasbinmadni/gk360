@@ -1,298 +1,772 @@
 ---
-import '../styles/global.css';
+/*
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  src/pages/index.astro                                           ║
+  ║                                                                  ║
+  ║  THIS IS THE HOMEPAGE.                                           ║
+  ║  It only contains the page CONTENT (body).                       ║
+  ║  The <head>, fonts, CSS, and schema are all                      ║
+  ║  handled by BaseLayout.astro automatically.                      ║
+  ╚══════════════════════════════════════════════════════════════════╝
+*/
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// ── PAGE-SPECIFIC SEO VALUES ───────────────────────────────────────
+// These are the ONLY SEO things you manage per page.
+// Everything else (canonical, og:image, schema, fonts) is automatic.
+
+const title       = "GK360.pk | Pakistan's #1 PPSC Exam Preparation Platform — 10,000+ Past Papers";
+const description = "Prepare for PPSC, FPSC and all one-paper government exams with 10,000+ past papers, practice tests, subject notes, and expert courses. Free resources for Police, Tehsildar, ASF & 20+ departments.";
+const keywords    = "PPSC past papers 2026, PPSC preparation, PPSC police past papers, tehsildar past papers, ASF past papers, Pakistan one paper exams, PPSC MCQs, general knowledge Pakistan";
+
+// ── HOMEPAGE-SPECIFIC SCHEMA (FAQ) ───────────────────────────────
+// This gets passed to BaseLayout and injected into <head> automatically.
+// Only the homepage has this FAQ schema.
+// Other pages will pass different schema (Article, BreadcrumbList, etc.)
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is PPSC one paper exam pattern?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PPSC one paper exam consists of 100 MCQ questions from General Knowledge, Pakistan Studies, Islamiyat, General Science, English, Urdu, and Current Affairs. Time allowed is 90 minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I find PPSC past papers for free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GK360.pk provides 10,000+ PPSC past papers completely free, organized by year, department, and subject. No registration required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How to prepare for PPSC police exam?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Practice past papers from the police department section, focus on General Knowledge, Islamiyat, Pakistan Studies, and English, and take timed practice tests on GK360.pk."
+      }
+    }
+  ]
+};
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<!--
+  BaseLayout wraps everything.
+  It provides: <html>, <head>, all meta tags, CSS, fonts, schema.
+  You pass in the values that change per page.
+  Everything inside this tag becomes the <body> content.
+-->
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={keywords}
+  schema={faqSchema}
+>
 
-    <title>GK360 | Pakistan's Premium CSS, PMS & Govt Exam Academy</title>
-    <meta name="description" content="Master PPSC, FPSC, and NTS exams with GK360. Access thousands of solved past papers with detailed logical explanations, topic-wise MCQs, and downloadable PDF notes." />
-    <meta name="keywords" content="PPSC past papers, FPSC preparation, CSS MCQs, PMS notes, NTS past papers, Pakistan government jobs, Tehsildar past papers" />
-    <link rel="canonical" href="https://gk360.pk" />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://gk360.pk" />
-    <meta property="og:title" content="GK360 | Study Smarter for PPSC & FPSC" />
-    <meta property="og:description" content="Stop memorizing blindly. Get solved past papers with detailed logical explanations and secure your government job." />
-    <meta property="og:image" content="https://gk360.pk/social-preview.jpg" />
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "EducationalOrganization",
-            "@id": "https://gk360.pk/#organization",
-            "name": "GK360",
-            "url": "https://gk360.pk",
-            "logo": "https://gk360.pk/logo.webp",
-            "description": "Pakistan's premium online academy for PPSC, FPSC, and CSS preparation."
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://gk360.pk/#website",
-            "url": "https://gk360.pk",
-            "name": "GK360",
-            "publisher": {"@id": "https://gk360.pk/#organization"}
-          }
-        ]
-      }
-    </script>
-  </head>
-  
-  <body class="bg-dots text-ink min-h-screen flex flex-col antialiased selection:bg-yellow-200 selection:text-ink" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-    
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm transition-all duration-300">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
-          
-          <a href="/" class="flex items-center gap-3 cursor-pointer group">
-            <img src="/logo.webp" alt="GK360 Logo" class="h-10 w-10 object-contain bg-slate-100 rounded-lg p-1 group-hover:scale-105 transition" onerror="this.style.display='none'" />
-            <span class="text-3xl font-black tracking-tight text-slate-900 group-hover:text-accent transition">GK360<span class="text-accent">.pk</span></span>
-          </a>
-          
-          <div class="hidden md:flex space-x-8 items-center font-bold text-slate-600">
-            <a href="#papers" class="hover:text-accent transition">Past Papers</a>
-            <a href="#features" class="hover:text-accent transition">Features</a>
-            <a href="#notes" class="hover:text-accent transition">Study Notes</a>
-            <a href="/blog" class="hover:text-accent transition">Blog</a>
-          </div>
-          
-          <div class="hidden md:flex items-center">
-            <button class="bg-ink text-paper px-8 py-2.5 rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 hover:bg-slate-800 transition duration-200">
-              Login
-            </button>
-          </div>
-
+  <!-- ═══════════════════════════════════════════════════════
+       WHATSAPP TICKER
+       ════════════════════════════════════════════════════ -->
+  <div class="wa-ticker" role="banner" aria-label="Job updates ticker">
+    <a href="https://wa.me/channel/gk360pk" target="_blank" rel="noopener noreferrer nofollow" aria-label="Join GK360 WhatsApp Channel for government job updates">
+      <div class="wa-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.78L0 24l6.375-1.5A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.653-.494-5.188-1.362L3 22l1.388-3.742A9.936 9.936 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+        </svg>
+        <span>Job Alerts</span>
+      </div>
+      <div class="wa-scroll-wrap">
+        <div class="wa-scroll-text">
+          <span>🔥 900+ Open Government Positions Right Now &nbsp;·&nbsp; New PPSC Jobs Posted Daily &nbsp;·&nbsp; Police, Tehsildar, Finance, Education &amp; More &nbsp;·&nbsp; Stay Ahead of Every Notification &nbsp;·&nbsp; Don't Miss Your Dream Government Job &nbsp;·&nbsp; 🔥 900+ Open Government Positions Right Now &nbsp;·&nbsp; New PPSC Jobs Posted Daily &nbsp;·&nbsp; Police, Tehsildar, Finance, Education &amp; More &nbsp;·&nbsp; Stay Ahead of Every Notification &nbsp;·&nbsp; Don't Miss Your Dream Government Job &nbsp;·&nbsp;</span>
         </div>
       </div>
-    </nav>
+      <span class="wa-cta-badge">Join Channel →</span>
+    </a>
+  </div>
 
-    <main class="flex-grow">
-      
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center flex flex-col items-center">
-        
-        <div class="inline-flex items-center gap-2 border border-slate-200 bg-white px-5 py-2 rounded-full text-xs md:text-sm font-extrabold tracking-widest uppercase text-slate-600 mb-10 shadow-sm hover:border-slate-300 transition cursor-default">
-          <span class="relative flex h-3 w-3">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-          </span>
-          Syllabus Updated for 2026
+  <!-- ═══════════════════════════════════════════════════════
+       NAVIGATION
+       ════════════════════════════════════════════════════ -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <!-- LOGO AREA -->
+      <!-- When your logo is ready, replace the svg below with: -->
+      <!-- <img src="/logo.svg" alt="GK360.pk" width="40" height="40" /> -->
+      <a href="/" class="nav-logo" aria-label="GK360.pk Home">
+        <div class="logo-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="#C5963A" stroke-width="2"/>
+            <path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </div>
-        
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-slate-900 max-w-5xl">
-          Crack Any Govt Exam. <br class="hidden md:block"/> 
-          Study <span class="highlight-text text-slate-900">Smarter</span>, Not Harder.
+        <div class="logo-text-wrap">
+          <strong>GK360.pk</strong>
+          <small>PPSC Preparation Academy</small>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" role="menubar">
+        <li role="none"><a href="/"               class="active" role="menuitem">Home</a></li>
+        <li role="none"><a href="/past-papers"               role="menuitem">Past Papers</a></li>
+        <li role="none"><a href="/subjects"                  role="menuitem">Subjects</a></li>
+        <li role="none"><a href="/current-affairs"           role="menuitem">Current Affairs</a></li>
+        <li role="none"><a href="/english"                   role="menuitem">English</a></li>
+        <li role="none"><a href="/blog"                      role="menuitem">Blog</a></li>
+        <li role="none"><a href="/quiz"                      role="menuitem">Free Quiz</a></li>
+        <li role="none"><a href="/course" class="nav-cta"    role="menuitem">Join Course →</a></li>
+      </ul>
+
+      <!-- Mobile hamburger button -->
+      <button class="nav-hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#0B1D3A" stroke-width="2">
+          <path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ═══════════════════════════════════════════════════════
+         HERO
+         ════════════════════════════════════════════════════ -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-bg-grid"  aria-hidden="true"></div>
+      <div class="hero-glow-1"   aria-hidden="true"></div>
+      <div class="hero-glow-2"   aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="hero-dot" aria-hidden="true"></span>
+          Pakistan's Most Complete PPSC Preparation Platform
+        </div>
+
+        <h1 id="hero-heading">
+          Your Government Job<br/>
+          Starts with the <em>Right Preparation</em>
         </h1>
-        
-        <p class="text-lg md:text-2xl text-slate-600 mb-12 max-w-3xl leading-relaxed font-medium">
-          Pakistan's most productive preparation platform. Stop memorizing blindly. Master concepts with <strong class="text-slate-900">logical explanations</strong> and secure your dream job.
+
+        <p class="hero-sub">
+          10,000+ past papers, timed practice tests, and subject-wise notes — everything you need to pass your PPSC, FPSC, and one-paper exams. Free to use, always updated.
         </p>
-        
-        <div class="flex flex-col sm:flex-row justify-center gap-5 w-full sm:w-auto">
-          <a href="#papers" class="bg-accent text-white px-10 py-4 rounded-2xl font-bold hover:bg-teal-800 transition-all shadow-[0_8px_30px_rgb(15,118,110,0.3)] text-lg hover:-translate-y-1">Explore Past Papers</a>
-          <button class="bg-white text-slate-800 border-2 border-slate-200 px-10 py-4 rounded-2xl font-bold hover:border-slate-300 hover:bg-slate-50 transition-all text-lg hover:-translate-y-1">View Demo Notes</button>
-        </div>
 
-        <div class="mt-20 pt-10 border-t border-slate-200/60 w-full max-w-4xl">
-          <p class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6">Comprehensive Preparation For All Major Commissions</p>
-          <div class="flex flex-wrap justify-center gap-4 md:gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            <span class="text-2xl font-black text-slate-800">PPSC</span>
-            <span class="text-2xl font-black text-slate-800">FPSC</span>
-            <span class="text-2xl font-black text-slate-800">SPSC</span>
-            <span class="text-2xl font-black text-slate-800">KPPSC</span>
-            <span class="text-2xl font-black text-slate-800">BPSC</span>
-            <span class="text-2xl font-black text-slate-800">NTS</span>
+        <form class="hero-search" role="search" action="/search" method="get">
+          <svg class="hero-search-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="search"
+            name="q"
+            placeholder="Search past papers, departments, subjects…"
+            aria-label="Search past papers"
+            autocomplete="off"
+          />
+          <button type="submit">Search</button>
+        </form>
+
+        <div class="hero-stats" role="list" aria-label="Platform statistics">
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">10,000+</span>
+            <span class="stat-label">Past Papers</span>
           </div>
-        </div>
-      </section>
-
-      <section id="features" class="bg-white border-y border-slate-200 py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">Everything You Need to Top the Merit List</h2>
-            <p class="text-xl text-slate-600 font-medium max-w-2xl mx-auto">We reverse-engineered the syllabus of top competitive exams to build a study system that guarantees retention.</p>
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">50,000+</span>
+            <span class="stat-label">Practice MCQs</span>
           </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-blue-50/50 hover:border-blue-100 transition duration-300 group">
-              <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">📚</div>
-              <h3 class="text-2xl font-bold mb-3 text-slate-900">Solved Past Papers</h3>
-              <p class="text-slate-600 font-medium leading-relaxed">Thousands of MCQs from previous Assistant Director and Tehsildar exams, cleanly formatted without annoying ads.</p>
-            </div>
-
-            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 hover:border-emerald-100 transition duration-300 group">
-              <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🧠</div>
-              <h3 class="text-2xl font-bold mb-3 text-slate-900">Logical Explanations</h3>
-              <p class="text-slate-600 font-medium leading-relaxed">We don't just provide the answer key. Every question features a detailed explanation so you actually learn the concept.</p>
-            </div>
-
-            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-purple-50/50 hover:border-purple-100 transition duration-300 group">
-              <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🎯</div>
-              <h3 class="text-2xl font-bold mb-3 text-slate-900">Topic-Wise Quizzes</h3>
-              <p class="text-slate-600 font-medium leading-relaxed">Filter questions by General Knowledge, Everyday Science, Pakistan Affairs, Islamiat, or specific degree subjects.</p>
-            </div>
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">20+</span>
+            <span class="stat-label">Departments</span>
           </div>
-        </div>
-      </section>
-
-      <section id="papers" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div class="max-w-2xl">
-            <span class="text-accent font-extrabold tracking-widest uppercase text-sm mb-2 block">Live Database</span>
-            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Latest Past Papers</h2>
-            <p class="text-xl text-slate-600 font-medium">Fully solved, beautifully formatted, and ready for you to practice.</p>
-          </div>
-          <button class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition whitespace-nowrap">View All Papers &rarr;</button>
-        </div>
-        
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-[4px_4px_0px_0px_#1c1917] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#1c1917] transition-all cursor-pointer flex flex-col h-full">
-            <div class="flex justify-between items-start mb-6">
-              <span class="bg-blue-100 text-blue-800 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest">PPSC</span>
-              <span class="text-slate-400 font-bold text-sm">2023</span>
-            </div>
-            <h3 class="text-2xl font-black mb-3 text-slate-900 leading-tight">Tehsildar (BS-16)</h3>
-            <p class="text-slate-500 font-medium mb-6 flex-grow">100 MCQs • English & General Knowledge</p>
-            <div class="text-accent font-bold group flex items-center gap-2">Start Practicing <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></div>
-          </div>
-
-          <div class="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-[4px_4px_0px_0px_#1c1917] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#1c1917] transition-all cursor-pointer flex flex-col h-full">
-            <div class="flex justify-between items-start mb-6">
-              <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest">FPSC</span>
-              <span class="text-slate-400 font-bold text-sm">2024</span>
-            </div>
-            <h3 class="text-2xl font-black mb-3 text-slate-900 leading-tight">Inspector Customs / Intelligence Officer</h3>
-            <p class="text-slate-500 font-medium mb-6 flex-grow">100 MCQs • Everyday Science & Math</p>
-            <div class="text-accent font-bold group flex items-center gap-2">Start Practicing <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></div>
-          </div>
-
-          <div class="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-[4px_4px_0px_0px_#1c1917] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#1c1917] transition-all cursor-pointer flex flex-col h-full">
-            <div class="flex justify-between items-start mb-6">
-              <span class="bg-purple-100 text-purple-800 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-widest">PPSC</span>
-              <span class="text-slate-400 font-bold text-sm">2022</span>
-            </div>
-            <h3 class="text-2xl font-black mb-3 text-slate-900 leading-tight">Lecturer Education (BS-17)</h3>
-            <p class="text-slate-500 font-medium mb-6 flex-grow">100 MCQs • Subject Specialist</p>
-            <div class="text-accent font-bold group flex items-center gap-2">Start Practicing <span class="group-hover:translate-x-1 transition-transform">&rarr;</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-slate-900 py-24 text-white overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-black mb-4">Trusted by Future Officers</h2>
-            <p class="text-xl text-slate-400 font-medium max-w-2xl mx-auto">Join thousands of aspirants who ditched the old books and started studying smarter.</p>
-          </div>
-          
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-3xl">
-              <div class="flex gap-1 text-yellow-400 mb-4 text-xl">★★★★★</div>
-              <p class="text-lg text-slate-300 font-medium mb-6 leading-relaxed">"The logical explanations under the Everyday Science MCQs are a game changer. I finally understand WHY the answer is correct instead of just memorizing a letter."</p>
-              <div class="font-bold">Ali Raza</div>
-              <div class="text-slate-500 text-sm">Qualified PPSC Tehsildar 2023</div>
-            </div>
-             <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-3xl">
-              <div class="flex gap-1 text-yellow-400 mb-4 text-xl">★★★★★</div>
-              <p class="text-lg text-slate-300 font-medium mb-6 leading-relaxed">"The UI is so clean. It feels like I'm using a premium app, not a clunky 10-year-old forum. Studying on my phone during my commute is finally easy."</p>
-              <div class="font-bold">Ayesha T.</div>
-              <div class="text-slate-500 text-sm">FPSC Aspirant</div>
-            </div>
-             <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-3xl">
-              <div class="flex gap-1 text-yellow-400 mb-4 text-xl">★★★★★</div>
-              <p class="text-lg text-slate-300 font-medium mb-6 leading-relaxed">"The downloadable timeline cheat sheets for Pak Affairs saved me weeks of making my own notes. Absolutely brilliant platform."</p>
-              <div class="font-bold">Usman Khan</div>
-              <div class="text-slate-500 text-sm">PMS Officer</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div class="max-w-2xl">
-            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Study Strategy Hub</h2>
-            <p class="text-xl text-slate-600 font-medium">Science-backed techniques and syllabus guides to clear competitive exams.</p>
-          </div>
-          <button class="bg-white border-2 border-slate-200 text-slate-800 px-6 py-3 rounded-xl font-bold hover:border-slate-300 transition whitespace-nowrap">Read All Articles</button>
-        </div>
-        
-        <div class="grid md:grid-cols-2 gap-8">
-          <a href="#" class="group flex flex-col sm:flex-row gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
-            <div class="w-full sm:w-48 h-48 bg-slate-100 rounded-2xl flex-shrink-0 flex items-center justify-center text-5xl group-hover:scale-[1.02] transition-transform">🗺️</div>
-            <div class="flex flex-col justify-center">
-              <span class="text-accent font-black text-xs uppercase tracking-widest mb-2 block">Syllabus Guide</span>
-              <h3 class="text-2xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-accent transition-colors">The 80/20 Rule for Pakistan Studies</h3>
-              <p class="text-slate-500 font-medium line-clamp-2">Stop reading entire history books. Here are the exact eras and events that make up 80% of all commission questions.</p>
-            </div>
-          </a>
-
-          <a href="#" class="group flex flex-col sm:flex-row gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
-            <div class="w-full sm:w-48 h-48 bg-slate-100 rounded-2xl flex-shrink-0 flex items-center justify-center text-5xl group-hover:scale-[1.02] transition-transform">🧠</div>
-            <div class="flex flex-col justify-center">
-              <span class="text-accent font-black text-xs uppercase tracking-widest mb-2 block">Memory Science</span>
-              <h3 class="text-2xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-accent transition-colors">Using Spaced Repetition for Everyday Science</h3>
-              <p class="text-slate-500 font-medium line-clamp-2">How to use the forgetting curve to your advantage and permanently memorize vitamins, planets, and formulas.</p>
-            </div>
-          </a>
-        </div>
-      </section>
-    </main>
-
-    <footer class="bg-white border-t border-slate-200 mt-auto">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 border-b border-slate-100 pb-12">
-          
-          <div class="md:col-span-2">
-            <div class="flex items-center gap-3 mb-4">
-              <img src="/logo.webp" alt="GK360 Logo" class="h-8 w-8 object-contain bg-slate-100 rounded-md p-1" onerror="this.style.display='none'" />
-              <span class="text-2xl font-black tracking-tight text-slate-900">GK360<span class="text-accent">.pk</span></span>
-            </div>
-            <p class="text-slate-500 font-medium text-lg max-w-sm mb-6">Pakistan's most advanced preparation platform. Join the new generation of smart aspirants.</p>
-          </div>
-
-          <div>
-            <h4 class="font-black text-slate-900 mb-4 uppercase tracking-widest text-sm">Resources</h4>
-            <ul class="space-y-3 font-medium text-slate-500">
-              <li><a href="#" class="hover:text-accent transition">Solved Past Papers</a></li>
-              <li><a href="#" class="hover:text-accent transition">Topic MCQs</a></li>
-              <li><a href="#" class="hover:text-accent transition">PDF Study Notes</a></li>
-              <li><a href="#" class="hover:text-accent transition">Blog & Strategy</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="font-black text-slate-900 mb-4 uppercase tracking-widest text-sm">Company</h4>
-            <ul class="space-y-3 font-medium text-slate-500">
-              <li><a href="#" class="hover:text-accent transition">About Us</a></li>
-              <li><a href="#" class="hover:text-accent transition">Contact Support</a></li>
-              <li><a href="#" class="hover:text-accent transition">Privacy Policy</a></li>
-              <li><a href="#" class="hover:text-accent transition">Terms of Service</a></li>
-            </ul>
-          </div>
-
-        </div>
-        
-        <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
-          <p class="text-slate-400 font-bold text-sm">
-            &copy; 2026 GK360.pk. All rights reserved.
-          </p>
-          <div class="inline-flex items-center justify-center px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
-            <span class="text-slate-500 font-bold text-sm">
-              Architected with ❤️ by <span class="text-slate-800 font-black">Abraaj Growth Labs</span>
-            </span>
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">12</span>
+            <span class="stat-label">Core Subjects</span>
           </div>
         </div>
       </div>
-    </footer>
+    </section>
 
-  </body>
-</html>
+    <!-- ═══════════════════════════════════════════════════════
+         QUICK ACCESS
+         ════════════════════════════════════════════════════ -->
+    <section class="quick-section" aria-labelledby="quick-heading">
+      <div class="container">
+        <div class="section-header">
+          <p class="label">Find What You Need</p>
+          <h2 class="section-title" id="quick-heading">Three Ways to Access Past Papers</h2>
+          <p class="section-sub">Browse by the year of the exam, the department you're targeting, or the subject you want to master.</p>
+        </div>
+        <div class="quick-grid">
+          <a href="/past-papers/year" class="quick-card">
+            <div class="quick-card-icon" aria-hidden="true">📅</div>
+            <h3>By Year</h3>
+            <p>Find every PPSC exam paper from a specific year, with full answer keys and subject-wise breakdown.</p>
+            <div class="tag-row">
+              <span class="tag">2026</span><span class="tag">2025</span>
+              <span class="tag">2024</span><span class="tag">2023</span>
+              <span class="tag">2022 & older</span>
+            </div>
+          </a>
+          <a href="/past-papers/department" class="quick-card">
+            <div class="quick-card-icon" aria-hidden="true">🏛️</div>
+            <h3>By Department</h3>
+            <p>Target the specific government department you're applying to — Police, Tehsildar, Finance, Education, and more.</p>
+            <div class="tag-row">
+              <span class="tag">Police</span><span class="tag">Tehsildar</span>
+              <span class="tag">ASF</span><span class="tag">Finance</span>
+              <span class="tag">+ 16 More</span>
+            </div>
+          </a>
+          <a href="/past-papers/subject" class="quick-card">
+            <div class="quick-card-icon" aria-hidden="true">📘</div>
+            <h3>By Subject</h3>
+            <p>Drill into one subject across all departments and years — perfect for targeted preparation.</p>
+            <div class="tag-row">
+              <span class="tag">GK</span><span class="tag">Islamiyat</span>
+              <span class="tag">Pak Studies</span><span class="tag">English</span>
+              <span class="tag">+ 8 More</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SUBJECTS
+         ════════════════════════════════════════════════════ -->
+    <section class="subjects-section" aria-labelledby="subjects-heading">
+      <div class="container">
+        <div class="section-header">
+          <p class="label">Master Every Topic</p>
+          <h2 class="section-title" id="subjects-heading">All 12 Core Subjects</h2>
+          <p class="section-sub">Every PPSC one-paper exam draws from these subjects. Click any subject to explore notes, past questions, and practice tests.</p>
+        </div>
+        <div class="subjects-grid" role="list">
+          <a href="/subjects/general-knowledge"  class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">🌍</div><div class="subject-title">General Knowledge</div></a>
+          <a href="/subjects/pakistan-studies"   class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">🗺️</div><div class="subject-title">Pakistan Studies</div></a>
+          <a href="/subjects/islamiyat"          class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">☪️</div><div class="subject-title">Islamiyat</div></a>
+          <a href="/subjects/general-science"    class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">🔬</div><div class="subject-title">General Science</div></a>
+          <a href="/subjects/english"            class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">📝</div><div class="subject-title">English</div></a>
+          <a href="/subjects/urdu"               class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">✒️</div><div class="subject-title">Urdu</div></a>
+          <a href="/subjects/current-affairs"    class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">📰</div><div class="subject-title">Current Affairs</div></a>
+          <a href="/subjects/basic-mathematics"  class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">🔢</div><div class="subject-title">Basic Mathematics</div></a>
+          <a href="/subjects/computer-basics"    class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">💻</div><div class="subject-title">Computer Basics</div></a>
+          <a href="/subjects/everyday-science"   class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">⚗️</div><div class="subject-title">Everyday Science</div></a>
+          <a href="/subjects/geography-maps"     class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">🧭</div><div class="subject-title">Geography & Maps</div></a>
+          <a href="/subjects/punjab-gk"          class="subject-card" role="listitem"><div class="subject-emoji-bg" aria-hidden="true">🏙️</div><div class="subject-title">Punjab General Knowledge</div></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         DEPARTMENTS (auto-rendered by JS from papersData)
+         ════════════════════════════════════════════════════ -->
+    <section class="depts-section" aria-labelledby="depts-heading">
+      <div class="container">
+        <div class="flex-between" style="margin-bottom:48px;">
+          <div>
+            <p class="label">Your Target Post</p>
+            <h2 class="section-title" id="depts-heading" style="text-align:left;">Browse by Department</h2>
+            <p class="section-sub" style="text-align:left; margin:0; max-width:480px;">Select the government department you are preparing for and access all relevant past papers in one place.</p>
+          </div>
+          <a href="/past-papers/department" class="view-all-link">All Departments →</a>
+        </div>
+        <!-- Cards are auto-rendered by the JS at the bottom of this file -->
+        <div class="depts-grid" id="depts-grid" role="list" aria-live="polite" aria-label="Government departments"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         LATEST PAST PAPERS (auto-rendered by JS)
+         ════════════════════════════════════════════════════ -->
+    <section class="papers-section" aria-labelledby="papers-heading">
+      <div class="container">
+        <div class="flex-between" style="margin-bottom:48px;">
+          <div>
+            <p class="label">Freshly Added</p>
+            <h2 class="section-title" id="papers-heading" style="text-align:left;">Latest Past Papers</h2>
+            <p class="section-sub" style="text-align:left; margin:0; max-width:460px;">Solved, with answer keys. Attempt any paper online with a built-in timer to simulate real exam conditions.</p>
+          </div>
+          <a href="/past-papers" class="view-all-link">All Papers →</a>
+        </div>
+        <!-- Cards are auto-rendered by the JS at the bottom of this file -->
+        <div class="papers-grid" id="papers-grid" role="list"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CURRENT AFFAIRS
+         ════════════════════════════════════════════════════ -->
+    <section class="ca-section" aria-labelledby="ca-heading">
+      <div class="container">
+        <div class="flex-between" style="margin-bottom:40px;">
+          <div>
+            <p class="label">Stay Updated</p>
+            <h2 class="section-title" id="ca-heading" style="text-align:left;">Current Affairs</h2>
+            <p class="section-sub" style="text-align:left; margin:0; max-width:460px;">Current affairs carry significant weight in every PPSC paper. Stay updated with our monthly MCQ compilations.</p>
+          </div>
+          <a href="/current-affairs" class="view-all-link">All Current Affairs →</a>
+        </div>
+        <div class="ca-grid">
+          <a href="/current-affairs/march-2026" class="ca-featured" aria-label="March 2026 Current Affairs">
+            <div class="ca-featured-inner">
+              <div class="ca-month-pill"><span>📰</span> March 2026 — Latest</div>
+              <h3>March 2026 Current Affairs<br/>for PPSC Exams</h3>
+              <p>100 important MCQs from this month — covering Pakistan affairs, international news, economy, sports, and scientific developments. Curated specifically for the PPSC one-paper pattern.</p>
+              <div class="ca-topics">
+                <span class="ca-topic">Pakistan Affairs</span>
+                <span class="ca-topic">International</span>
+                <span class="ca-topic">Economy</span>
+                <span class="ca-topic">Sports</span>
+                <span class="ca-topic">Science & Tech</span>
+              </div>
+              <span class="btn btn-primary btn-sm" style="display:inline-flex;">Attempt Now →</span>
+            </div>
+          </a>
+          <div class="ca-sidebar">
+            <a href="/current-affairs/february-2026" class="ca-card">
+              <div class="ca-card-label">February 2026</div>
+              <h4>February 2026 Current Affairs MCQs</h4>
+              <p>85 important MCQs — Pakistan, international, economy & sports.</p>
+            </a>
+            <a href="/current-affairs/january-2026" class="ca-card">
+              <div class="ca-card-label">January 2026</div>
+              <h4>January 2026 Current Affairs MCQs</h4>
+              <p>92 curated MCQs. Year-opening events, budget updates & more.</p>
+            </a>
+            <a href="/current-affairs/2025-annual" class="ca-card">
+              <div class="ca-card-label">Annual Compilation</div>
+              <h4>Current Affairs 2025 — Complete Year Summary</h4>
+              <p>500+ MCQs from all 12 months of 2025 in one place.</p>
+            </a>
+            <a href="/current-affairs" class="btn btn-ghost" style="text-align:center; display:block;">View All Monthly Archives →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ENGLISH CORNER
+         ════════════════════════════════════════════════════ -->
+    <section class="english-section" aria-labelledby="english-heading">
+      <div class="container english-inner">
+        <div class="section-header">
+          <p class="label label-light">Improve Your English</p>
+          <h2 class="section-title" id="english-heading">English Corner</h2>
+          <p class="section-sub" style="color:rgba(255,255,255,0.5);">A dedicated space to sharpen your English skills for PPSC and beyond — vocabulary, grammar, and confident communication.</p>
+          <a
+            href="https://www.voxenglishacademy.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="english-partner"
+            aria-label="This section is powered by VoxEnglishAcademy.com"
+          >
+            🤝 Powered in partnership with VoxEnglishAcademy.com ↗
+          </a>
+        </div>
+        <div class="english-grid">
+          <a href="/english/vocabulary" class="english-card">
+            <span class="english-card-icon" aria-hidden="true">📖</span>
+            <h3>Vocabulary Builder</h3>
+            <p>Master the most frequently tested English words in PPSC exams. Daily word lists, usage examples, and synonym-antonym MCQs to build a strong vocabulary base.</p>
+            <div class="english-card-cta">Explore Vocabulary <span aria-hidden="true">→</span></div>
+          </a>
+          <a href="/english/grammar" class="english-card">
+            <span class="english-card-icon" aria-hidden="true">✍️</span>
+            <h3>English Grammar</h3>
+            <p>From tenses to sentence correction — structured grammar lessons designed for competitive exam patterns. Covers all grammar topics tested in PPSC papers.</p>
+            <div class="english-card-cta">Start Grammar <span aria-hidden="true">→</span></div>
+          </a>
+          <a href="/english/introduction" class="english-card">
+            <span class="english-card-icon" aria-hidden="true">🎤</span>
+            <h3>How to Introduce Yourself</h3>
+            <p>Prepare a confident, professional self-introduction for PPSC interviews. Sample scripts, tips, and practice exercises in both formal and semi-formal styles.</p>
+            <div class="english-card-cta">Learn Self-Intro <span aria-hidden="true">→</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         BLOG
+         ════════════════════════════════════════════════════ -->
+    <section class="blog-section" aria-labelledby="blog-heading">
+      <div class="container">
+        <div class="flex-between" style="margin-bottom:48px;">
+          <div>
+            <p class="label">Read &amp; Learn</p>
+            <h2 class="section-title" id="blog-heading" style="text-align:left;">From the GK360 Blog</h2>
+            <p class="section-sub" style="text-align:left; margin:0; max-width:460px;">Strategy guides, syllabus breakdowns, and exam tips — written to give you a real edge over the competition.</p>
+          </div>
+          <a href="/blog" class="view-all-link">All Articles →</a>
+        </div>
+        <div class="blog-grid" role="list">
+          <a href="/blog/ppsc-syllabus-2026-complete-guide" class="blog-card" role="listitem">
+            <div class="blog-thumb" style="background:linear-gradient(135deg,#0B1D3A 0%,#1C3360 100%);" aria-hidden="true">📋</div>
+            <div class="blog-body">
+              <div class="blog-category">Syllabus Guide</div>
+              <div class="blog-title">Complete PPSC One Paper Syllabus 2026 — Subject-Wise Breakdown</div>
+              <p class="blog-excerpt">Exact topics, topic weightage, and important areas for every subject in PPSC one-paper exams this year. Updated for 2026 pattern.</p>
+              <div class="blog-meta"><span>March 2026</span><span class="blog-read-time">8 min</span></div>
+            </div>
+          </a>
+          <a href="/blog/how-to-prepare-ppsc-3-months" class="blog-card" role="listitem">
+            <div class="blog-thumb" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6a4f 100%);" aria-hidden="true">🗓️</div>
+            <div class="blog-body">
+              <div class="blog-category">Exam Strategy</div>
+              <div class="blog-title">How to Prepare for PPSC in 3 Months — Complete Roadmap</div>
+              <p class="blog-excerpt">A week-by-week study plan covering all 12 subjects, daily targets, practice test schedule, and smart revision techniques.</p>
+              <div class="blog-meta"><span>February 2026</span><span class="blog-read-time">12 min</span></div>
+            </div>
+          </a>
+          <a href="/blog/ppsc-police-si-complete-guide-2026" class="blog-card" role="listitem">
+            <div class="blog-thumb" style="background:linear-gradient(135deg,#1a1a3a 0%,#2d3a6a 100%);" aria-hidden="true">👮</div>
+            <div class="blog-body">
+              <div class="blog-category">Department Guide</div>
+              <div class="blog-title">PPSC Police Sub-Inspector 2026 — Complete Preparation Guide</div>
+              <p class="blog-excerpt">Everything for the Punjab Police SI exam: syllabus, subject weightage, physical standards, and past paper analysis.</p>
+              <div class="blog-meta"><span>January 2026</span><span class="blog-read-time">10 min</span></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         WHY GK360
+         ════════════════════════════════════════════════════ -->
+    <section class="why-section" aria-labelledby="why-heading">
+      <div class="container">
+        <div class="section-header">
+          <p class="label">Why GK360.pk</p>
+          <h2 class="section-title" id="why-heading">Built Specifically<br/>for Pakistan's Competitive Exams</h2>
+          <p class="section-sub">Every feature on this platform is designed with one purpose — maximising your chances of passing your PPSC exam on the first attempt.</p>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-icon-wrap" aria-hidden="true">📚</div>
+            <div class="why-card-title">10,000+ Past Papers</div>
+            <p class="why-card-body">The largest collection of PPSC and one-paper exam past papers in Pakistan — organized, solved, and searchable by year, department, and subject.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon-wrap" aria-hidden="true">⏱️</div>
+            <div class="why-card-title">Timed Practice Tests</div>
+            <p class="why-card-body">Attempt full papers with a real 90-minute countdown timer. Train your speed and accuracy before exam day so nothing surprises you.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon-wrap" aria-hidden="true">🎯</div>
+            <div class="why-card-title">Subject-Wise Focus</div>
+            <p class="why-card-body">Identify your weak subjects, practice them in isolation, and track improvement. Targeted preparation that uses your study time efficiently.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon-wrap" aria-hidden="true">🔄</div>
+            <div class="why-card-title">Always Updated</div>
+            <p class="why-card-body">New past papers, monthly current affairs, and syllabus changes are added as soon as they're available. You never study outdated content.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MOTIVATION CARD
+         ════════════════════════════════════════════════════ -->
+    <section class="motivation-section" aria-labelledby="motivation-heading" aria-live="polite">
+      <div class="container">
+        <div class="motivation-inner">
+          <span class="motivation-label" id="motivation-heading">Daily Motivation</span>
+          <div class="motivation-card">
+            <div class="motivation-card-inner">
+              <p class="motivation-quote" id="motivation-quote">"The secret of getting ahead is getting started."</p>
+              <div class="motivation-divider"></div>
+              <p class="motivation-author" id="motivation-author">Mark Twain</p>
+            </div>
+          </div>
+          <div class="motivation-dots" role="tablist" aria-label="Motivation quotes">
+            <span class="active" role="tab" aria-selected="true"  aria-label="Quote 1" tabindex="0"></span>
+            <span              role="tab" aria-selected="false" aria-label="Quote 2" tabindex="0"></span>
+            <span              role="tab" aria-selected="false" aria-label="Quote 3" tabindex="0"></span>
+            <span              role="tab" aria-selected="false" aria-label="Quote 4" tabindex="0"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CALL TO ACTION
+         ════════════════════════════════════════════════════ -->
+    <section class="cta-section" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="cta-box">
+          <div class="cta-box-inner">
+            <h2 id="cta-heading">Ready to Start Your<br/>Exam Preparation?</h2>
+            <p>Everything you need is here — free past papers to start, a full course to go deeper. Your government job begins with this decision.</p>
+            <div class="cta-buttons">
+              <a href="/course"      class="btn btn-primary">Enroll in Full Course →</a>
+              <a href="/past-papers" class="btn btn-outline">Browse Free Papers</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+       ════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" aria-label="GK360.pk Home">
+          <div class="logo-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="#C5963A" stroke-width="2"/>
+              <path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="logo-text-wrap">
+            <strong style="color:white;">GK360.pk</strong>
+            <small style="color:rgba(255,255,255,0.35);">PPSC Preparation Academy</small>
+          </div>
+        </a>
+        <p>Pakistan's most complete platform for PPSC and government competitive exam preparation. Free past papers, practice tests, and expert-led courses for all one-paper exams.</p>
+        <div class="footer-social" aria-label="Social media links">
+          <a class="social-link" href="https://facebook.com/gk360pk"      target="_blank" rel="noopener" aria-label="Facebook">📘</a>
+          <a class="social-link" href="https://youtube.com/@gk360pk"       target="_blank" rel="noopener" aria-label="YouTube">📺</a>
+          <a class="social-link" href="https://wa.me/channel/gk360pk"      target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+          <a class="social-link" href="https://instagram.com/gk360pk"      target="_blank" rel="noopener" aria-label="Instagram">📸</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Past Papers</h4>
+        <ul>
+          <li><a href="/past-papers/year/2026">PPSC Papers 2026</a></li>
+          <li><a href="/past-papers/year/2025">PPSC Papers 2025</a></li>
+          <li><a href="/past-papers/department/police">Police Department</a></li>
+          <li><a href="/past-papers/department/tehsildar">Tehsildar / Revenue</a></li>
+          <li><a href="/past-papers/department/asf">Airport Security Force</a></li>
+          <li><a href="/past-papers/department/finance">Finance Department</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Subjects</h4>
+        <ul>
+          <li><a href="/subjects/general-knowledge">General Knowledge</a></li>
+          <li><a href="/subjects/pakistan-studies">Pakistan Studies</a></li>
+          <li><a href="/subjects/islamiyat">Islamiyat</a></li>
+          <li><a href="/subjects/general-science">General Science</a></li>
+          <li><a href="/subjects/english">English</a></li>
+          <li><a href="/subjects/urdu">Urdu</a></li>
+          <li><a href="/subjects/current-affairs">Current Affairs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/course">Join Course</a></li>
+          <li><a href="/quiz">Free Quiz</a></li>
+          <li><a href="/current-affairs">Current Affairs</a></li>
+          <li><a href="/english">English Corner</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Use</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
+        </ul>
+        <h4 style="margin-top:24px;">Partners</h4>
+        <ul>
+          <li><a href="https://www.voxenglishacademy.com" target="_blank" rel="noopener">VoxEnglishAcademy</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider" />
+    <div class="footer-bottom">
+      <span>© 2026 GK360.pk — All rights reserved. Proudly serving Pakistan 🇵🇰</span>
+      <div class="footer-made-by">
+        <span>Made with</span>
+        <span class="heart" aria-label="love">❤️</span>
+        <span>by</span>
+        <a href="https://www.abraajgrowthlabs.com" target="_blank" rel="noopener noreferrer">Abraaj Growth Labs</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════
+       JAVASCRIPT
+       In Astro, this <script> tag works exactly the same.
+       Later you can move this to src/scripts/home.js
+       ════════════════════════════════════════════════════ -->
+  <script>
+    // ── PAPERS DATA ──────────────────────────────────────────────
+    // ADD NEW PAPERS HERE — departments + homepage auto-update.
+    // In Astro Phase 2, this will be replaced by:
+    //   const papers = await getCollection('past-papers');
+    const papersData = [
+      { id:"ppsc-asi-2026-01",       title:"PPSC Assistant Sub Inspector (ASI) 2026",       year:2026, dept:"Punjab Police",            deptSlug:"police",           mcqs:100, minutes:90, solved:true, subjects:["GK","Pak Studies","Islamiyat","English"] },
+      { id:"ppsc-si-2025-01",        title:"PPSC Sub Inspector (SI) Punjab Police 2025",     year:2025, dept:"Punjab Police",            deptSlug:"police",           mcqs:100, minutes:90, solved:true, subjects:["GK","Urdu","Islamiyat","Current Affairs"] },
+      { id:"ppsc-tehsildar-2026-01", title:"PPSC Tehsildar / Naib Tehsildar 2026",           year:2026, dept:"Revenue Department",       deptSlug:"tehsildar",        mcqs:100, minutes:90, solved:true, subjects:["GK","Islamiyat","Pak Studies","Maps"] },
+      { id:"ppsc-asf-corporal-2025", title:"PPSC ASF Corporal 2025",                         year:2025, dept:"Airport Security Force",   deptSlug:"asf",              mcqs:100, minutes:90, solved:true, subjects:["GK","English","General Science","Islamiyat"] },
+      { id:"ppsc-finance-2025",      title:"PPSC Finance Department Accountant 2025",        year:2025, dept:"Finance Department",       deptSlug:"finance",          mcqs:100, minutes:90, solved:true, subjects:["GK","Pak Studies","Urdu","English"] },
+      { id:"ppsc-education-2025",    title:"PPSC Education Dept — ESE Teacher 2025",         year:2025, dept:"Education Department",     deptSlug:"education",        mcqs:100, minutes:90, solved:true, subjects:["GK","Islamiyat","English","Urdu"] },
+      { id:"ppsc-health-2025",       title:"PPSC Health Dept — LHW Supervisor 2025",         year:2025, dept:"Health Department",        deptSlug:"health",           mcqs:100, minutes:90, solved:true, subjects:["GK","General Science","Islamiyat"] },
+      { id:"ppsc-pfa-2025",          title:"PPSC Punjab Food Authority — Inspector 2025",    year:2025, dept:"Punjab Food Authority",    deptSlug:"pfa",              mcqs:100, minutes:90, solved:true, subjects:["GK","General Science","Pak Studies"] },
+      { id:"ppsc-irrigation-2025",   title:"PPSC Irrigation Dept — Canal Patwari 2025",      year:2025, dept:"Irrigation Department",    deptSlug:"irrigation",       mcqs:100, minutes:90, solved:true, subjects:["GK","Urdu","Islamiyat","Maps"] },
+      { id:"ppsc-excise-2025",       title:"PPSC Excise & Taxation Officer 2025",            year:2025, dept:"Excise & Taxation",        deptSlug:"excise-taxation",  mcqs:100, minutes:90, solved:true, subjects:["GK","Pak Studies","English","Current Affairs"] },
+      { id:"ppsc-ace-2024",          title:"PPSC Anti-Corruption Inspector 2024",            year:2024, dept:"Anti-Corruption (ACE)",    deptSlug:"ace",              mcqs:100, minutes:90, solved:true, subjects:["GK","Islamiyat","Pak Studies","English"] },
+      { id:"ppsc-lgcd-2024",         title:"PPSC Local Govt — Municipal Inspector 2024",     year:2024, dept:"Local Government",         deptSlug:"local-government", mcqs:100, minutes:90, solved:true, subjects:["GK","Pak Studies","Urdu","Islamiyat"] },
+      { id:"ppsc-agriculture-2024",  title:"PPSC Agriculture Dept — Field Assistant 2024",   year:2024, dept:"Agriculture Department",   deptSlug:"agriculture",      mcqs:100, minutes:90, solved:true, subjects:["GK","General Science","Islamiyat"] },
+      { id:"ppsc-prison-2024",       title:"PPSC Prison Department — Warder 2024",           year:2024, dept:"Prison Department",        deptSlug:"prison",           mcqs:100, minutes:90, solved:true, subjects:["GK","Islamiyat","Urdu","Pak Studies"] },
+      { id:"ppsc-labour-2024",       title:"PPSC Labour & HR — Labour Inspector 2024",       year:2024, dept:"Labour & Human Resource",  deptSlug:"labour",           mcqs:100, minutes:90, solved:true, subjects:["GK","English","Islamiyat","Pak Studies"] },
+    ];
+
+    // ── DEPT ICONS & DISPLAY NAMES ───────────────────────────────
+    const deptMeta = {
+      "police":               { icon:"👮",  name:"Punjab Police" },
+      "tehsildar":            { icon:"🏛️",  name:"Revenue / Tehsildar" },
+      "asf":                  { icon:"✈️",  name:"Airport Security Force" },
+      "finance":              { icon:"💼",  name:"Finance Department" },
+      "education":            { icon:"📚",  name:"Education Department" },
+      "health":               { icon:"🏥",  name:"Health Department" },
+      "pfa":                  { icon:"🍽️",  name:"Punjab Food Authority" },
+      "irrigation":           { icon:"💧",  name:"Irrigation Department" },
+      "excise-taxation":      { icon:"🧾",  name:"Excise & Taxation" },
+      "ace":                  { icon:"⚖️",  name:"Anti-Corruption (ACE)" },
+      "local-government":     { icon:"🏙️",  name:"Local Government" },
+      "agriculture":          { icon:"🌾",  name:"Agriculture Department" },
+      "prison":               { icon:"🔒",  name:"Prison Department" },
+      "labour":               { icon:"🔧",  name:"Labour & HR Dept" },
+      "social-welfare":       { icon:"🤝",  name:"Social Welfare" },
+      "forest":               { icon:"🌳",  name:"Forests & Wildlife" },
+      "planning-development": { icon:"📊",  name:"Planning & Development" },
+      "auqaf":                { icon:"🕌",  name:"Auqaf Department" },
+      "transport":            { icon:"🚌",  name:"Transport Department" },
+      "home":                 { icon:"🛡️",  name:"Home Department" },
+    };
+
+    function renderDepartments() {
+      const map = {};
+      papersData.forEach(p => {
+        if (!map[p.deptSlug]) {
+          const m = deptMeta[p.deptSlug] || { icon:"🏢", name:p.dept };
+          map[p.deptSlug] = { slug:p.deptSlug, ...m, count:0 };
+        }
+        map[p.deptSlug].count++;
+      });
+      const grid = document.getElementById('depts-grid');
+      if (!grid) return;
+      grid.innerHTML = Object.values(map)
+        .sort((a,b) => b.count - a.count)
+        .map(d => `
+          <a href="/past-papers/department/${d.slug}" class="dept-card" role="listitem">
+            <span class="dept-emoji" aria-hidden="true">${d.icon}</span>
+            <div class="dept-title">${d.name}</div>
+          </a>`)
+        .join('');
+    }
+
+    function renderLatestPapers() {
+      const grid = document.getElementById('papers-grid');
+      if (!grid) return;
+      grid.innerHTML = [...papersData]
+        .sort((a,b) => b.year - a.year)
+        .slice(0, 6)
+        .map(p => `
+          <article class="paper-card" role="listitem">
+            <div class="paper-card-header">
+              <span class="dept-badge">${p.dept.split(' ')[0]}</span>
+              <span class="paper-year">${p.year}</span>
+            </div>
+            <h3 class="paper-title">${p.title}</h3>
+            <div class="paper-info">
+              <span>📄 ${p.mcqs} MCQs</span>
+              <span>⏱ ${p.minutes} Min</span>
+              <span>${p.solved ? '✅ Solved' : '📋 Unsolved'}</span>
+            </div>
+            <div class="paper-tags">${p.subjects.map(s=>`<span class="paper-tag">${s}</span>`).join('')}</div>
+            <div class="paper-actions">
+              <a href="/past-papers/${p.id}"  class="btn btn-ghost btn-sm">View Paper</a>
+              <a href="/quiz/paper/${p.id}"   class="btn btn-navy btn-sm">⏱ Attempt with Timer</a>
+            </div>
+          </article>`)
+        .join('');
+    }
+
+    // ── MOTIVATION QUOTES ────────────────────────────────────────
+    const quotes = [
+      { text:"The secret of getting ahead is getting started.",                     author:"Mark Twain" },
+      { text:"Success is the sum of small efforts, repeated day in and day out.",   author:"Robert Collier" },
+      { text:"Don't watch the clock; do what it does. Keep going.",                 author:"Sam Levenson" },
+      { text:"Hard work beats talent when talent doesn't work hard.",               author:"Tim Notke" },
+    ];
+    let currentQuote = 0;
+
+    function setQuote(i) {
+      const qEl = document.getElementById('motivation-quote');
+      const aEl = document.getElementById('motivation-author');
+      const dots = document.querySelectorAll('.motivation-dots span');
+      if (!qEl || !aEl) return;
+      qEl.style.opacity = aEl.style.opacity = '0';
+      setTimeout(() => {
+        qEl.textContent = `"${quotes[i].text}"`;
+        aEl.textContent = quotes[i].author;
+        qEl.style.opacity = aEl.style.opacity = '1';
+      }, 320);
+      dots.forEach((d, idx) => {
+        d.classList.toggle('active', idx === i);
+        d.setAttribute('aria-selected', String(idx === i));
+      });
+      currentQuote = i;
+    }
+
+    // ── MOBILE NAV ───────────────────────────────────────────────
+    function initMobileNav() {
+      const btn   = document.querySelector('.nav-hamburger');
+      const links = document.querySelector('.nav-links');
+      if (!btn || !links) return;
+      btn.addEventListener('click', () => {
+        const open = links.style.display === 'flex';
+        links.style.cssText = open ? '' :
+          'display:flex;flex-direction:column;position:absolute;top:66px;left:0;right:0;background:white;padding:16px 24px;border-bottom:1px solid #E2D9C6;z-index:99;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);';
+        btn.setAttribute('aria-expanded', String(!open));
+      });
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      // Smooth quote transitions
+      ['motivation-quote','motivation-author'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.transition = 'opacity 0.32s ease';
+      });
+
+      // Dot click
+      document.querySelectorAll('.motivation-dots span').forEach((dot, i) => {
+        dot.addEventListener('click', () => setQuote(i));
+        dot.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') setQuote(i);
+        });
+      });
+
+      // Auto-rotate
+      setInterval(() => setQuote((currentQuote + 1) % quotes.length), 6000);
+
+      renderDepartments();
+      renderLatestPapers();
+      initMobileNav();
+    });
+  </script>
+
+</BaseLayout>
