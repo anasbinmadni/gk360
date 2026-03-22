@@ -1,0 +1,270 @@
+---
+// src/pages/past-papers/department/[dept].astro
+// Individual department page — auto-generated for every entry in departments.ts
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { DEPARTMENTS, getDept } from '../../../data/departments';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  return DEPARTMENTS.map(dept => ({
+    params: { dept: dept.slug },
+    props:  { dept },
+  }));
+}
+
+const { dept } = Astro.props;
+
+// Get all papers for this department
+const allPapers = await getCollection('past-papers');
+const deptPapers = allPapers
+  .filter(p => p.data.deptSlug === dept.slug)
+  .sort((a, b) => b.data.year - a.data.year);
+
+// Year breakdown
+const yearMap: Record<number, number> = {};
+deptPapers.forEach(p => { yearMap[p.data.year] = (yearMap[p.data.year] || 0) + 1; });
+const years = Object.keys(yearMap).map(Number).sort((a,b) => b-a);
+
+const title       = `${dept.name} Past Papers — All Years Solved | GK360.pk`;
+const description = `Download and attempt all ${dept.name} past papers with answer keys. ${deptPapers.length > 0 ? deptPapers.length + ' solved papers' : 'Papers coming soon'} — year-wise, MCQs, and timed practice tests.`;
+
+const deptSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": `${dept.name} Past Papers`,
+  "description": description,
+  "url": `https://gk360.pk/past-papers/department/${dept.slug}/`,
+  "provider": { "@type": "Organization", "name": "GK360.pk" }
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={`${dept.name} past papers, ${dept.short} PPSC papers, ${dept.name} solved papers, ${dept.name} MCQs`}
+  schema={deptSchema}
+>
+
+<!-- BREADCRUMB -->
+<nav class="bc-nav" aria-label="Breadcrumb">
+  <div class="container">
+    <ol class="bc-ol">
+      <li><a href="/">Home</a></li><li aria-hidden="true">›</li>
+      <li><a href="/past-papers/">Past Papers</a></li><li aria-hidden="true">›</li>
+      <li><a href="/past-papers/department/">All Departments</a></li><li aria-hidden="true">›</li>
+      <li class="bc-current">{dept.short}</li>
+    </ol>
+  </div>
+</nav>
+
+<!-- DEPT HEADER -->
+<div class="dh-hero">
+  <div class="container">
+    <div class="dh-inner">
+      <div class="dh-icon-wrap" aria-hidden="true">{dept.icon}</div>
+      <div class="dh-info">
+        <p class="label label-light">{dept.category}</p>
+        <h1>{dept.name}</h1>
+        <p class="dh-sub">All solved past papers from this department — with answer keys and timed quiz mode.</p>
+        <div class="dh-stats">
+          <span class="dhs-item">📄 <b>{deptPapers.length}</b> Paper{deptPapers.length !== 1 ? 's' : ''}</span>
+          {years.length > 0 && <span class="dhs-sep">·</span>}
+          {years.length > 0 && <span class="dhs-item">📅 {years[years.length-1]}–{years[0]}</span>}
+          <span class="dhs-sep">·</span>
+          <span class="dhs-item">✅ Solved with Answer Keys</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dp-page">
+  <div class="container">
+    <div class="dp-layout">
+
+      <!-- MAIN: PAPERS LIST -->
+      <main class="dp-main">
+
+        {deptPapers.length === 0 ? (
+          <!-- Empty state -->
+          <div class="dp-empty">
+            <div class="dp-empty-icon">📂</div>
+            <h2>Papers Coming Soon</h2>
+            <p>We're adding {dept.name} past papers. Check back soon or join our WhatsApp channel to get notified.</p>
+            <a href="https://wa.me/channel/gk360pk" target="_blank" rel="noopener noreferrer" class="btn-gold" style="margin-top:20px;display:inline-flex;">
+              📲 Join Channel for Updates
+            </a>
+          </div>
+        ) : (
+          <>
+            <!-- Year filter tabs -->
+            {years.length > 1 && (
+              <div class="year-tabs" role="tablist" aria-label="Filter by year">
+                <button class="year-tab active" data-year="all" role="tab" aria-selected="true">
+                  All Years
+                </button>
+                {years.map(y => (
+                  <button class="year-tab" data-year={y} role="tab" aria-selected="false">
+                    {y} <span class="year-tab-count">{yearMap[y]}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <!-- Papers grid -->
+            <div class="dp-grid" id="dp-grid">
+              {deptPapers.map(p => (
+                <a href={`/past-papers/${p.data.slug}/`} class="dp-card" data-year={p.data.year} aria-label={p.data.titleFull}>
+                  <div class="dpc-header">
+                    <div class="dpc-year">{p.data.year}</div>
+                    {p.data.solved && <span class="dpc-solved">✅ Solved</span>}
+                  </div>
+                  <h3 class="dpc-title">{p.data.titleFull}</h3>
+                  <div class="dpc-meta">
+                    <span>📄 {p.data.totalQuestions} MCQs</span>
+                    <span>⏱ {p.data.timeMinutes} min</span>
+                    <span>📅 {new Date(p.data.date).toLocaleDateString('en-PK',{month:'short',year:'numeric'})}</span>
+                  </div>
+                  <div class="dpc-subjects">
+                    {p.data.subjectBreakdown.slice(0,4).map((s: any) => (
+                      <span class="dpc-subj">{s.label}</span>
+                    ))}
+                  </div>
+                  <div class="dpc-footer">
+                    <span class="dpc-attempt">⏱ Attempt with Timer</span>
+                    <span class="dpc-view">View Paper →</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </>
+        )}
+
+      </main>
+
+      <!-- SIDEBAR -->
+      <aside class="dp-sidebar">
+
+        <!-- Other departments -->
+        <div class="sb-card">
+          <h3 class="sb-title">Other Departments</h3>
+          <div class="sb-links">
+            <a href="/past-papers/department/punjab-police/"        class="sb-link">👮 Punjab Police <span>→</span></a>
+            <a href="/past-papers/department/board-of-revenue/"     class="sb-link">🏛️ Board of Revenue <span>→</span></a>
+            <a href="/past-papers/department/asf/"                  class="sb-link">✈️ ASF <span>→</span></a>
+            <a href="/past-papers/department/education/"            class="sb-link">📚 Education <span>→</span></a>
+            <a href="/past-papers/department/finance-audit-accounts/" class="sb-link">💼 Finance & Accounts <span>→</span></a>
+            <a href="/past-papers/department/anti-corruption/"      class="sb-link">⚖️ Anti-Corruption <span>→</span></a>
+            <a href="/past-papers/department/"                      class="sb-link sb-link--all">View All Departments →</a>
+          </div>
+        </div>
+
+        <!-- Quick links -->
+        <div class="sb-card">
+          <h3 class="sb-title">Quick Prep</h3>
+          <div class="sb-links">
+            <a href="/subjects/general-knowledge/"  class="sb-link">🌍 General Knowledge</a>
+            <a href="/subjects/islamiyat/"           class="sb-link">☪️ Islamiyat</a>
+            <a href="/subjects/pakistan-studies/"    class="sb-link">🗺️ Pakistan Studies</a>
+            <a href="/subjects/english/"             class="sb-link">📝 English</a>
+            <a href="/current-affairs/"              class="sb-link">📰 Current Affairs</a>
+            <a href="/course/"                       class="sb-link sb-link--cta">🎯 Join Full Course →</a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+/* Hero */
+.dh-hero { background:var(--navy); padding:60px 24px 72px; position:relative; overflow:hidden; }
+.dh-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.04) 1px,transparent 1px); background-size:56px 56px; pointer-events:none; }
+.dh-inner { position:relative; z-index:1; display:flex; align-items:flex-start; gap:24px; max-width:800px; }
+.dh-icon-wrap { font-size:52px; background:rgba(197,150,58,.1); border:1px solid rgba(197,150,58,.2); border-radius:16px; width:80px; height:80px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.dh-info .label { color:rgba(197,150,58,.85); }
+.dh-info h1 { font-family:'Playfair Display',Georgia,serif; color:var(--white); font-size:clamp(22px,3vw,36px); font-weight:700; margin-bottom:10px; text-align:left; line-height:1.25; }
+.dh-sub { font-size:15px; color:rgba(255,255,255,.65); margin-bottom:16px; text-align:left; line-height:1.7; }
+.dh-stats { display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-size:14px; color:rgba(255,255,255,.75); }
+.dhs-item b { color:var(--gold-light); }
+.dhs-sep { color:rgba(255,255,255,.25); }
+
+/* Page layout */
+.dp-page { background:var(--cream); padding:40px 0 72px; }
+.dp-layout { display:grid; grid-template-columns:1fr 270px; gap:24px; align-items:start; }
+
+/* Year tabs */
+.year-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+.year-tab { font-size:13px; font-weight:600; padding:7px 14px; border-radius:100px; border:1.5px solid var(--border); background:var(--white); color:var(--text-muted); cursor:pointer; transition:all .18s; font-family:'Plus Jakarta Sans',system-ui,sans-serif; display:flex; align-items:center; gap:6px; }
+.year-tab:hover { border-color:var(--navy); color:var(--navy); }
+.year-tab.active { background:var(--navy); color:var(--white); border-color:var(--navy); }
+.year-tab-count { font-size:11px; background:rgba(255,255,255,.2); padding:1px 6px; border-radius:10px; }
+.year-tab:not(.active) .year-tab-count { background:var(--cream); color:var(--text-muted); }
+
+/* Papers grid */
+.dp-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.dp-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:22px; text-decoration:none; display:flex; flex-direction:column; gap:12px; transition:all .22s; }
+.dp-card:hover { border-color:var(--gold); box-shadow:var(--shadow-md); transform:translateY(-2px); }
+.dpc-header { display:flex; justify-content:space-between; align-items:center; }
+.dpc-year   { font-size:12px; font-weight:700; padding:4px 10px; background:var(--navy); color:var(--gold-light); border-radius:6px; }
+.dpc-solved { font-size:11px; font-weight:700; padding:3px 9px; background:rgba(26,122,64,.08); border:1px solid rgba(26,122,64,.2); color:#1A7A40; border-radius:5px; }
+.dpc-title  { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); line-height:1.35; text-align:left; margin:0; }
+.dpc-meta   { display:flex; gap:10px; flex-wrap:wrap; font-size:12px; color:var(--text-muted); font-weight:500; }
+.dpc-subjects { display:flex; gap:6px; flex-wrap:wrap; }
+.dpc-subj   { font-size:11px; font-weight:500; padding:3px 8px; background:var(--cream); border:1px solid var(--border); color:var(--text-body); border-radius:4px; }
+.dpc-footer { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid var(--border); margin-top:auto; font-size:12px; font-weight:600; }
+.dpc-attempt { color:var(--gold-dark); }
+.dpc-view    { color:var(--navy); }
+
+/* Empty state */
+.dp-empty { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:60px 40px; text-align:center; }
+.dp-empty-icon { font-size:52px; margin-bottom:16px; }
+.dp-empty h2 { font-family:'Playfair Display',Georgia,serif; font-size:24px; color:var(--navy); margin-bottom:10px; text-align:center; }
+.dp-empty p  { color:var(--text-muted); font-size:15px; max-width:400px; margin:0 auto; text-align:center; }
+
+/* Sidebar cards */
+.dp-sidebar { display:flex; flex-direction:column; gap:18px; }
+.sb-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:22px 24px; }
+.sb-title { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:16px; text-align:left; }
+.sb-links { display:flex; flex-direction:column; gap:8px; }
+.sb-link { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--cream); border:1px solid var(--border); border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; color:var(--navy); transition:all .18s; }
+.sb-link:hover { background:var(--cream-dark); border-color:var(--navy); }
+.sb-link--all { background:transparent; border-color:var(--navy); color:var(--navy); }
+.sb-link--cta { background:var(--navy); color:var(--gold-light); border-color:var(--navy); }
+.sb-link--cta:hover { background:var(--navy-light); }
+
+/* btn-gold for empty state */
+.btn-gold { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--gold); color:var(--navy); border:2px solid var(--gold); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:15px; font-weight:700; padding:13px 28px; border-radius:var(--radius); cursor:pointer; transition:all .22s; white-space:nowrap; text-decoration:none; }
+.btn-gold:hover { background:var(--gold-light); border-color:var(--gold-light); transform:translateY(-1px); }
+
+/* Responsive */
+@media (max-width:960px) { .dp-layout { grid-template-columns:1fr; } .dp-sidebar { display:grid; grid-template-columns:1fr 1fr; gap:16px; } }
+@media (max-width:640px) {
+  .dh-inner { flex-direction:column; gap:16px; }
+  .dh-icon-wrap { width:60px; height:60px; font-size:32px; }
+  .dp-grid { grid-template-columns:1fr; }
+  .dp-sidebar { grid-template-columns:1fr; }
+}
+</style>
+
+<script>
+// Year filter
+const yearTabs  = document.querySelectorAll('.year-tab');
+const paperCards = document.querySelectorAll('.dp-card') as NodeListOf<HTMLElement>;
+
+yearTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    yearTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected','true');
+    const year = (tab as HTMLElement).dataset.year;
+    paperCards.forEach(card => {
+      card.style.display = (year === 'all' || card.dataset.year === year) ? '' : 'none';
+    });
+  });
+});
+</script>
+
+</BaseLayout>

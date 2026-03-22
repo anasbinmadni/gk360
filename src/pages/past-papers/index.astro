@@ -1,0 +1,176 @@
+---
+// src/pages/past-papers/index.astro
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { DEPARTMENTS } from '../../data/departments';
+
+const allPapers = await getCollection('past-papers');
+const sorted    = [...allPapers].sort((a,b) => b.data.year - a.data.year);
+
+// Paper count per dept for homepage cards
+const deptCount: Record<string,number> = {};
+allPapers.forEach(p => { deptCount[p.data.deptSlug] = (deptCount[p.data.deptSlug]||0)+1; });
+
+// Year list
+const years = [...new Set(allPapers.map(p => p.data.year))].sort((a,b)=>b-a);
+
+const title       = "PPSC Past Papers — 10,000+ Solved Papers by Year & Department | GK360.pk";
+const description = "Download and attempt 10,000+ PPSC past papers for all departments — Police, Tehsildar, Education, Finance, ASF and 40+ more. Free, solved, with answer keys and timed quiz mode.";
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "PPSC Past Papers — All Departments & Years",
+  "description": description,
+  "url": "https://gk360.pk/past-papers/",
+  "provider": { "@type": "Organization", "name": "GK360.pk" }
+});
+---
+
+<BaseLayout title={title} description={description}
+  keywords="PPSC past papers, PPSC solved papers, PPSC MCQs, past papers by department, past papers by year, free PPSC papers"
+  schema={schema}>
+
+<nav class="bc-nav" aria-label="Breadcrumb">
+  <div class="container">
+    <ol class="bc-ol">
+      <li><a href="/">Home</a></li><li aria-hidden="true">›</li>
+      <li class="bc-current">Past Papers</li>
+    </ol>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="pp-hero">
+  <div class="container">
+    <div class="pp-hero-inner">
+      <p class="label label-light">Free PPSC Past Papers</p>
+      <h1>10,000+ Solved Past Papers</h1>
+      <p class="pp-hero-sub">Every PPSC exam paper — solved, with answer keys, and a built-in timer. Browse by year, department, or subject.</p>
+      <div class="pp-hero-stats">
+        <span>📄 <b>{allPapers.length}</b> Papers Available</span>
+        <span class="ph-dot">·</span>
+        <span>🏛️ <b>{Object.keys(deptCount).length}</b> Departments</span>
+        <span class="ph-dot">·</span>
+        <span>⏱ Timed Quiz Mode</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3 BROWSE OPTIONS -->
+<div class="pp-browse-section">
+  <div class="container">
+    <div class="pp-browse-grid">
+      <a href="/past-papers/department/" class="pp-browse-card">
+        <div class="ppbc-icon">🏛️</div>
+        <h2>By Department</h2>
+        <p>Browse papers by the government department you're applying to — Police, Education, Finance and 40+ more.</p>
+        <span class="ppbc-cta">Browse Departments →</span>
+      </a>
+      <a href="/past-papers/year/" class="pp-browse-card">
+        <div class="ppbc-icon">📅</div>
+        <h2>By Year</h2>
+        <p>Find all PPSC exam papers from a specific year. Latest papers from 2026, 2025, 2024 and older.</p>
+        <span class="ppbc-cta">Browse by Year →</span>
+      </a>
+      <a href="/subjects/" class="pp-browse-card">
+        <div class="ppbc-icon">📘</div>
+        <h2>By Subject</h2>
+        <p>Practice one subject at a time — GK, Islamiyat, Pakistan Studies, English, Maths across all papers.</p>
+        <span class="ppbc-cta">Browse Subjects →</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- LATEST PAPERS -->
+<div class="pp-latest-section">
+  <div class="container">
+    <div class="flex-between" style="margin-bottom:28px;">
+      <div>
+        <p class="label">Freshly Added</p>
+        <h2 style="text-align:left; margin-bottom:4px;">Latest Past Papers</h2>
+        <p style="font-size:14px; color:var(--text-muted); text-align:left;">Most recently added — all solved with answer keys.</p>
+      </div>
+      <a href="/past-papers/department/" class="view-all-link">All Departments →</a>
+    </div>
+
+    <div class="ppl-grid">
+      {sorted.slice(0, 9).map(p => (
+        <a href={`/past-papers/${p.data.slug}/`} class="ppl-card" aria-label={p.data.titleFull}>
+          <div class="pplc-top">
+            <span class="pplc-dept">{p.data.departmentShort}</span>
+            <span class="pplc-year">{p.data.year}</span>
+          </div>
+          <h3 class="pplc-title">{p.data.titleFull}</h3>
+          <div class="pplc-meta">
+            <span>📄 {p.data.totalQuestions} MCQs</span>
+            <span>⏱ {p.data.timeMinutes} min</span>
+            {p.data.solved && <span>✅ Solved</span>}
+          </div>
+          <div class="pplc-subjects">
+            {p.data.subjectBreakdown.slice(0,3).map((s: any) => (
+              <span class="pplc-subj">{s.label}</span>
+            ))}
+          </div>
+          <div class="pplc-footer">
+            <span class="pplc-attempt">⏱ Attempt Now</span>
+            <span class="pplc-view">View →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    {sorted.length === 0 && (
+      <div style="text-align:center; padding:60px 20px; color:var(--text-muted);">
+        Papers coming soon. Check back shortly.
+      </div>
+    )}
+
+  </div>
+</div>
+
+<style is:global>
+.pp-hero { background:var(--navy); padding:72px 24px 80px; position:relative; overflow:hidden; }
+.pp-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(197,150,58,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(197,150,58,.04) 1px,transparent 1px); background-size:56px 56px; pointer-events:none; }
+.pp-hero-inner { position:relative; z-index:1; text-align:center; max-width:680px; margin:0 auto; }
+.pp-hero .label { color:rgba(197,150,58,.85); }
+.pp-hero h1 { font-family:'Playfair Display',Georgia,serif; color:var(--white); font-size:clamp(28px,4vw,48px); font-weight:700; margin-bottom:14px; text-align:center; }
+.pp-hero-sub { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:20px; line-height:1.75; text-align:center; }
+.pp-hero-stats { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; font-size:14px; color:rgba(255,255,255,.7); }
+.pp-hero-stats b { color:var(--gold-light); }
+.ph-dot { color:rgba(255,255,255,.25); }
+
+.pp-browse-section { background:var(--white); padding:56px 24px; }
+.pp-browse-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.pp-browse-card { background:var(--cream); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:32px; text-decoration:none; display:block; transition:all .25s; position:relative; overflow:hidden; }
+.pp-browse-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+.pp-browse-card:hover::before { transform:scaleX(1); }
+.pp-browse-card:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); border-color:var(--border-dark); }
+.ppbc-icon { font-size:36px; margin-bottom:16px; }
+.pp-browse-card h2 { font-family:'Playfair Display',Georgia,serif; font-size:22px; color:var(--navy); margin-bottom:10px; text-align:left; }
+.pp-browse-card p  { font-size:14px; color:var(--text-muted); line-height:1.7; margin-bottom:20px; text-align:left; }
+.ppbc-cta { font-size:14px; font-weight:700; color:var(--navy); border-bottom:1.5px solid var(--navy); padding-bottom:1px; }
+
+.pp-latest-section { background:var(--cream); padding:56px 24px 72px; }
+.ppl-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.ppl-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:22px; text-decoration:none; display:flex; flex-direction:column; gap:12px; transition:all .22s; }
+.ppl-card:hover { border-color:var(--gold); box-shadow:var(--shadow-md); transform:translateY(-2px); }
+.pplc-top  { display:flex; justify-content:space-between; align-items:center; }
+.pplc-dept { font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; padding:4px 10px; background:var(--navy); color:var(--gold-light); border-radius:5px; }
+.pplc-year { font-size:12px; font-weight:700; padding:4px 10px; background:var(--cream); border:1px solid var(--border); color:var(--navy); border-radius:5px; }
+.pplc-title { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); line-height:1.35; text-align:left; margin:0; }
+.pplc-meta  { display:flex; gap:10px; flex-wrap:wrap; font-size:12px; color:var(--text-muted); font-weight:500; }
+.pplc-subjects { display:flex; gap:6px; flex-wrap:wrap; }
+.pplc-subj  { font-size:11px; padding:3px 8px; background:var(--cream); border:1px solid var(--border); color:var(--text-body); border-radius:4px; font-weight:500; }
+.pplc-footer { display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--border); font-size:12px; font-weight:600; margin-top:auto; }
+.pplc-attempt { color:var(--gold-dark); }
+.pplc-view    { color:var(--navy); }
+
+@media (max-width:900px) { .pp-browse-grid { grid-template-columns:1fr; } .ppl-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .ppl-grid { grid-template-columns:1fr; } }
+</style>
+
+</BaseLayout>
