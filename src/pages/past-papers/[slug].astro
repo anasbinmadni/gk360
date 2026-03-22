@@ -1,7 +1,4 @@
 ---
-// src/pages/past-papers/[slug].astro
-// Rename this file to [slug].astro when placing in src/pages/past-papers/
-
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -14,6 +11,10 @@ export async function getStaticPaths() {
 }
 
 const { paper } = Astro.props;
+
+// Count static vs dynamic for summary cards
+const staticCount  = paper.questions.filter((q: any) => q.type === 'static').length;
+const dynamicCount = paper.questions.filter((q: any) => q.type === 'dynamic').length;
 
 const paperSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -36,51 +37,58 @@ const breadcrumbSchema = JSON.stringify({
   ]
 });
 
-const combinedSchema = `[${paperSchema},${breadcrumbSchema}]`;
 const shareUrl  = `https://gk360.pk/past-papers/${paper.slug}/`;
 const shareText = encodeURIComponent(`${paper.titleFull} — Attempt this solved paper on GK360.pk`);
+
+const SUBJECT_LABELS: Record<string, string> = {
+  'pera-law':          'PERA Law',
+  'english':           'English',
+  'basic-mathematics': 'Mathematics',
+  'pakistan-studies':  'Pakistan Studies',
+  'general-science':   'General Science',
+  'computer-basics':   'Computer / IT',
+  'current-affairs':   'Current Affairs',
+  'geography-maps':    'Geography & Maps',
+  'general-knowledge': 'General Knowledge',
+};
 ---
 
 <BaseLayout
   title={paper.seoTitle}
   description={paper.seoDescription}
-  keywords={`${paper.title}, ${paper.department}, PPSC past paper ${paper.year}, solved`}
-  schema={combinedSchema}
+  keywords={`${paper.title}, ${paper.department}, PPSC past paper ${paper.year}, solved past paper MCQs`}
+  schema={`[${paperSchema},${breadcrumbSchema}]`}
 >
 
-<!-- BREADCRUMB -->
-<nav class="pp-breadcrumb" aria-label="Breadcrumb">
+<!-- ══ BREADCRUMB ══════════════════════════════════════════ -->
+<nav class="bc-nav" aria-label="Breadcrumb">
   <div class="container">
-    <ol>
-      <li><a href="/">Home</a></li>
-      <li aria-hidden="true">›</li>
-      <li><a href="/past-papers/">Past Papers</a></li>
-      <li aria-hidden="true">›</li>
-      <li><a href={`/past-papers/department/${paper.deptSlug}/`}>{paper.departmentShort}</a></li>
-      <li aria-hidden="true">›</li>
-      <li class="current">{paper.title} {paper.year}</li>
+    <ol class="bc-ol">
+      <li><a href="/">Home</a></li><li aria-hidden="true">›</li>
+      <li><a href="/past-papers/">Past Papers</a></li><li aria-hidden="true">›</li>
+      <li><a href={`/past-papers/department/${paper.deptSlug}/`}>{paper.departmentShort}</a></li><li aria-hidden="true">›</li>
+      <li class="bc-current">{paper.title} {paper.year}</li>
     </ol>
   </div>
 </nav>
 
-<div class="pp-page">
+<div class="pp-wrap">
   <div class="container">
-    <div class="pp-layout">
+    <div class="pp-grid">
 
-      <!-- ══ LEFT: PAPER INFO + QUIZ ══════════════════════════ -->
-      <div class="pp-main">
+      <!-- ══ MAIN COLUMN ══════════════════════════════════ -->
+      <main class="pp-main">
 
-        <!-- PAPER HEADER CARD -->
-        <div class="pp-header-card">
-          <div class="pp-header-top">
-            <div class="pp-badges">
-              <span class="pp-dept-badge">{paper.departmentShort}</span>
-              <span class="pp-year-badge">{paper.year}</span>
-              {paper.solved && <span class="pp-solved-badge">✅ Solved</span>}
+        <!-- ── PAPER HEADER ── -->
+        <div class="ph-card">
+          <div class="ph-top">
+            <div class="ph-badges">
+              <span class="ph-dept">{paper.departmentShort}</span>
+              <span class="ph-year">{paper.year}</span>
+              {paper.solved && <span class="ph-solved">✅ Solved</span>}
             </div>
-            <!-- SHARE BUTTON -->
-            <button class="pp-share-btn" onclick="toggleShare()" aria-label="Share paper" aria-expanded="false" id="share-btn">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <button class="ph-share-btn" id="js-share-btn" aria-label="Share" aria-expanded="false">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
                 <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
               </svg>
@@ -88,157 +96,158 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Attempt this solved
             </button>
           </div>
 
-          <h1 class="pp-title">{paper.titleFull}</h1>
+          <h1 class="ph-title">{paper.titleFull}</h1>
 
-          <div class="pp-meta-row">
-            <span class="pp-meta-item">📄 <strong>{paper.totalQuestions}</strong> MCQs</span>
-            <span class="pp-meta-sep">·</span>
-            <span class="pp-meta-item">⏱ <strong>{paper.timeMinutes}</strong> Minutes</span>
-            <span class="pp-meta-sep">·</span>
-            <span class="pp-meta-item">📅 {new Date(paper.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-            <span class="pp-meta-sep">·</span>
-            <span class="pp-meta-item">🏛️ {paper.conductedBy}</span>
+          <div class="ph-meta">
+            <span>📄 <b>{paper.totalQuestions}</b> MCQs</span>
+            <span class="ph-dot">·</span>
+            <span>⏱ <b>{paper.timeMinutes}</b> min</span>
+            <span class="ph-dot">·</span>
+            <span>📅 {new Date(paper.date).toLocaleDateString('en-PK',{day:'numeric',month:'long',year:'numeric'})}</span>
+            <span class="ph-dot">·</span>
+            <span>🏛️ {paper.conductedBy}</span>
           </div>
 
-          <!-- SHARE PANEL -->
-          <div class="pp-share-panel" id="share-panel" hidden>
-            <p class="pp-share-title">Share this paper:</p>
-            <div class="pp-share-row">
+          <!-- Share panel -->
+          <div class="ph-share-panel" id="js-share-panel" hidden>
+            <p class="ph-share-label">Share this paper with friends:</p>
+            <div class="ph-share-btns">
               <a href={`https://api.whatsapp.com/send?text=${shareText}%0A${encodeURIComponent(shareUrl)}`}
-                 target="_blank" rel="noopener noreferrer" class="pp-share-wa">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.78L0 24l6.375-1.5A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.653-.494-5.188-1.362L3 22l1.388-3.742A9.936 9.936 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                 target="_blank" rel="noopener noreferrer" class="shr-wa">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.78L0 24l6.375-1.5A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+                </svg>
                 WhatsApp
               </a>
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="pp-share-fb">📘 Facebook</a>
-              <a href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" class="pp-share-tw">𝕏 Twitter</a>
-              <button class="pp-share-copy" onclick="copyLink()">🔗 Copy Link</button>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                 target="_blank" rel="noopener noreferrer" class="shr-fb">📘 Facebook</a>
+              <a href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`}
+                 target="_blank" rel="noopener noreferrer" class="shr-tw">𝕏 Twitter</a>
+              <button class="shr-copy" id="js-copy-btn">🔗 Copy Link</button>
             </div>
-            <p class="pp-copy-confirm" id="copy-confirm" hidden>✅ Link copied to clipboard!</p>
+            <p class="shr-copied" id="js-copy-confirm" hidden>✅ Link copied!</p>
           </div>
 
-          <!-- ACTION BUTTONS -->
-          <div class="pp-action-row">
-            <button class="pp-btn-timer" onclick="startQuiz(true)">⏱ Attempt with Timer</button>
-            <button class="pp-btn-view"  onclick="startQuiz(false)">👁 View Paper</button>
-          </div>
-        </div>
-
-        <!-- SUBJECT BREAKDOWN -->
-        <div class="pp-breakdown-card">
-          <h2 class="pp-section-title">Subject-Wise Breakdown</h2>
-          <div class="pp-breakdown-grid">
-            {paper.subjectBreakdown.map((s: any) => (
-              <a href={`/subjects/${s.subject}/`} class="pp-breakdown-item">
-                <div class="pp-bi-top">
-                  <span class="pp-bi-name">{s.label}</span>
-                  <span class="pp-bi-count">{s.count} Qs · {s.percentage}%</span>
-                </div>
-                <div class="pp-bi-track">
-                  <div class="pp-bi-fill" style={`width:${s.percentage}%`}></div>
-                </div>
-              </a>
-            ))}
+          <!-- CTA buttons -->
+          <div class="ph-cta">
+            <button class="btn-gold" id="js-start-timer">⏱ Attempt with Timer</button>
+            <button class="btn-navy" id="js-start-view">👁 View Paper</button>
           </div>
         </div>
 
-        <!-- QUIZ AREA -->
-        <div class="pp-quiz-area" id="quiz-area">
+        <!-- ── STATS CARDS ── -->
+        <div class="stats-row">
+          <!-- Subject breakdown -->
+          {paper.subjectBreakdown.map((s: any) => (
+            <a href={`/subjects/${s.subject}/`} class="stat-card">
+              <div class="sc-top">
+                <span class="sc-name">{s.label}</span>
+                <span class="sc-count">{s.count}</span>
+              </div>
+              <div class="sc-track"><div class="sc-fill" style={`width:${s.percentage}%`}></div></div>
+              <span class="sc-pct">{s.percentage}%</span>
+            </a>
+          ))}
+          <!-- Static / Dynamic summary cards -->
+          <div class="stat-card stat-card--static">
+            <div class="sc-top">
+              <span class="sc-name">📌 Memorise (Static)</span>
+              <span class="sc-count">{staticCount}</span>
+            </div>
+            <div class="sc-track"><div class="sc-fill sc-fill--green" style={`width:${Math.round(staticCount/paper.totalQuestions*100)}%`}></div></div>
+            <span class="sc-pct sc-pct--green">{Math.round(staticCount/paper.totalQuestions*100)}% of paper</span>
+          </div>
+          <div class="stat-card stat-card--dynamic">
+            <div class="sc-top">
+              <span class="sc-name">🔄 Stay Updated (Current)</span>
+              <span class="sc-count">{dynamicCount}</span>
+            </div>
+            <div class="sc-track"><div class="sc-fill sc-fill--orange" style={`width:${Math.round(dynamicCount/paper.totalQuestions*100)}%`}></div></div>
+            <span class="sc-pct sc-pct--orange">{Math.round(dynamicCount/paper.totalQuestions*100)}% of paper</span>
+          </div>
+        </div>
 
-          <!-- START SCREEN -->
-          <div class="pp-start-screen" id="start-screen">
-            <div class="pp-start-icon">📋</div>
+        <!-- ── QUIZ AREA ── -->
+        <div class="qa-wrap" id="js-quiz-area">
+
+          <!-- Start screen -->
+          <div class="qa-start" id="js-start-screen">
+            <div class="qa-start-icon">📋</div>
             <h2>Ready to Attempt?</h2>
-            <p><strong>{paper.totalQuestions} questions · {paper.timeMinutes} minutes</strong></p>
-            <p style="margin-top:8px;font-size:14px;color:var(--text-muted);">Choose timed mode to simulate real exam conditions, or view mode to study at your own pace.</p>
-            <div class="pp-start-btns">
-              <button class="pp-btn-timer" onclick="startQuiz(true)">⏱ Start with Timer</button>
-              <button class="pp-btn-view"  onclick="startQuiz(false)">👁 View Without Timer</button>
+            <p>{paper.totalQuestions} questions &nbsp;·&nbsp; {paper.timeMinutes} minutes</p>
+            <p class="qa-start-hint">Timed mode simulates real exam conditions. View mode lets you study at your own pace.</p>
+            <div class="qa-start-btns">
+              <button class="btn-gold" id="js-start-timer-2">⏱ Start with Timer</button>
+              <button class="btn-navy" id="js-start-view-2">👁 View Without Timer</button>
             </div>
           </div>
 
-          <!-- TIMER BAR -->
-          <div class="pp-timer-bar" id="timer-bar" hidden>
-            <div class="pp-timer-left">
-              <span class="pp-timer-icon">⏱</span>
-              <span class="pp-timer-time" id="timer-display">90:00</span>
-              <span class="pp-timer-label">remaining</span>
+          <!-- Timer bar -->
+          <div class="qa-timer" id="js-timer" hidden>
+            <div class="qa-timer-left">
+              <span class="qa-timer-icon">⏱</span>
+              <span class="qa-timer-time" id="js-timer-display">90:00</span>
+              <span class="qa-timer-label">remaining</span>
             </div>
-            <div class="pp-timer-track">
-              <div class="pp-timer-fill" id="timer-fill"></div>
+            <div class="qa-timer-track"><div class="qa-timer-fill" id="js-timer-fill"></div></div>
+            <div class="qa-timer-right">
+              <span class="qa-answered-count" id="js-ans-count">0 / {paper.totalQuestions} answered</span>
+              <button class="btn-gold btn-sm" id="js-submit-btn">Submit Paper →</button>
             </div>
-            <button class="pp-btn-submit" id="submit-btn" onclick="submitQuiz()">Submit Paper</button>
           </div>
 
-          <!-- QUESTIONS LIST -->
-          <div class="pp-questions" id="questions-list" hidden></div>
+          <!-- Questions (rendered by JS) -->
+          <div id="js-questions" hidden></div>
 
-          <!-- RESULTS PANEL -->
-          <div class="pp-results" id="results-panel" hidden>
-            <div class="pp-results-score-ring">
-              <span class="pp-rs-num" id="results-score">0</span>
-              <span class="pp-rs-total">/{paper.totalQuestions}</span>
+          <!-- Results panel -->
+          <div class="qa-results" id="js-results" hidden>
+            <div class="qar-ring" id="js-ring">
+              <span class="qar-score" id="js-score">0</span>
+              <span class="qar-total">/ {paper.totalQuestions}</span>
             </div>
-            <h2 class="pp-results-title" id="results-title">Your Result</h2>
-            <p class="pp-results-msg" id="results-msg"></p>
-            <div class="pp-results-stats" id="results-stats"></div>
-            <div class="pp-results-actions">
-              <button class="pp-btn-timer" onclick="retryQuiz()">🔄 Try Again</button>
-              <button class="pp-btn-view"  onclick="reviewAnswers()">✅ Review Answers</button>
-              <a href="/past-papers/" class="pp-btn-back">← More Papers</a>
+            <h2 class="qar-title" id="js-res-title">Your Result</h2>
+            <p class="qar-msg" id="js-res-msg"></p>
+            <div class="qar-stats" id="js-res-stats"></div>
+            <div class="qar-actions">
+              <button class="btn-gold"  id="js-retry-btn">🔄 Try Again</button>
+              <button class="btn-navy"  id="js-review-btn">✅ Review Answers</button>
+              <a href="/past-papers/"   class="btn-ghost-link">← More Papers</a>
             </div>
           </div>
 
         </div>
-      </div>
+      </main>
 
-      <!-- ══ RIGHT: SIDEBAR ════════════════════════════════════ -->
+      <!-- ══ SIDEBAR ════════════════════════════════════════ -->
       <aside class="pp-sidebar">
 
-        <!-- QUICK STATS -->
-        <div class="pp-sidebar-card">
-          <h3 class="pp-sidebar-title">Paper Details</h3>
-          <ul class="pp-details-list">
-            <li><span class="pdl-key">Department</span><span class="pdl-val">{paper.department}</span></li>
-            <li><span class="pdl-key">Post</span><span class="pdl-val">{paper.post}</span></li>
-            <li><span class="pdl-key">Year</span><span class="pdl-val">{paper.year}</span></li>
-            <li><span class="pdl-key">Date</span><span class="pdl-val">{new Date(paper.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' })}</span></li>
-            <li><span class="pdl-key">Total Questions</span><span class="pdl-val">{paper.totalQuestions}</span></li>
-            <li><span class="pdl-key">Time Allowed</span><span class="pdl-val">{paper.timeMinutes} min</span></li>
-            <li><span class="pdl-key">Conducted By</span><span class="pdl-val">{paper.conductedBy}</span></li>
-            <li><span class="pdl-key">Difficulty</span><span class="pdl-val" style="text-transform:capitalize">{paper.difficulty}</span></li>
+        <div class="sb-card">
+          <h3 class="sb-title">Paper Details</h3>
+          <ul class="sb-list">
+            <li><span>Department</span><span>{paper.department}</span></li>
+            <li><span>Post</span><span>{paper.post}</span></li>
+            <li><span>Year</span><span>{paper.year}</span></li>
+            <li><span>Questions</span><span>{paper.totalQuestions}</span></li>
+            <li><span>Time</span><span>{paper.timeMinutes} min</span></li>
+            <li><span>Conducted By</span><span>{paper.conductedBy}</span></li>
+            <li><span>Difficulty</span><span style="text-transform:capitalize">{paper.difficulty}</span></li>
           </ul>
         </div>
 
-        <!-- MORE PAPERS -->
-        <div class="pp-sidebar-card">
-          <h3 class="pp-sidebar-title">More Papers</h3>
-          <div class="pp-more-links">
-            <a href={`/past-papers/department/${paper.deptSlug}/`} class="pp-more-link">
-              <span>🏛️ All {paper.departmentShort} Papers</span>
-              <span>→</span>
-            </a>
-            <a href={`/past-papers/year/${paper.year}/`} class="pp-more-link">
-              <span>📅 All {paper.year} Papers</span>
-              <span>→</span>
-            </a>
-            <a href="/past-papers/" class="pp-more-link">
-              <span>📚 All Past Papers</span>
-              <span>→</span>
-            </a>
-            <a href="/quiz/" class="pp-more-link">
-              <span>⚡ Subject-Wise Quiz</span>
-              <span>→</span>
-            </a>
+        <div class="sb-card">
+          <h3 class="sb-title">More Papers</h3>
+          <div class="sb-links">
+            <a href={`/past-papers/department/${paper.deptSlug}/`} class="sb-link">🏛️ All {paper.departmentShort} Papers <span>→</span></a>
+            <a href={`/past-papers/year/${paper.year}/`}          class="sb-link">📅 All {paper.year} Papers <span>→</span></a>
+            <a href="/past-papers/"                               class="sb-link">📚 All Past Papers <span>→</span></a>
+            <a href="/course/"                                    class="sb-link sb-link--cta">🎯 Join Full Course <span>→</span></a>
           </div>
         </div>
 
-        <!-- TAGS -->
-        <div class="pp-sidebar-card">
-          <h3 class="pp-sidebar-title">Topics in this Paper</h3>
-          <div class="pp-tags-wrap">
-            {paper.tags.map((tag: string) => (
-              <span class="pp-tag">{tag}</span>
-            ))}
+        <div class="sb-card">
+          <h3 class="sb-title">Topics</h3>
+          <div class="sb-tags">
+            {paper.tags.map((t: string) => <span class="sb-tag">{t}</span>)}
           </div>
         </div>
 
@@ -247,480 +256,471 @@ const shareText = encodeURIComponent(`${paper.titleFull} — Attempt this solved
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════
-     STYLES
-     ════════════════════════════════════════════════════ -->
+<!-- ══ STYLES ══════════════════════════════════════════════ -->
 <style>
-/* ── PAGE WRAPPER ── */
-.pp-breadcrumb { background: var(--cream); border-bottom: 1px solid var(--border); padding: 10px 0; }
-.pp-breadcrumb ol { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; list-style: none; font-size: 13px; color: var(--text-muted); }
-.pp-breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
-.pp-breadcrumb a:hover { color: var(--navy); }
-.pp-breadcrumb .current { color: var(--navy); font-weight: 600; }
 
-.pp-page { padding: 40px 0 72px; background: var(--cream); min-height: 60vh; }
+/* Breadcrumb */
+.bc-nav { background: var(--cream); border-bottom: 1px solid var(--border); padding: 10px 0; }
+.bc-ol  { display:flex; align-items:center; gap:7px; flex-wrap:wrap; list-style:none; font-size:13px; color:var(--text-muted); }
+.bc-ol a { color:var(--text-muted); transition:color .2s; }
+.bc-ol a:hover { color:var(--navy); }
+.bc-current { color:var(--navy); font-weight:600; }
 
-.pp-layout { display: grid; grid-template-columns: 1fr 300px; gap: 28px; align-items: start; }
+/* Page wrapper */
+.pp-wrap { background:var(--cream); padding:36px 0 72px; min-height:60vh; }
+.pp-grid { display:grid; grid-template-columns:1fr 290px; gap:24px; align-items:start; }
 
-/* ── HEADER CARD ── */
-.pp-header-card {
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 32px;
-  margin-bottom: 20px;
-}
-.pp-header-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
-.pp-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-.pp-dept-badge  { font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 12px; background: var(--navy); color: var(--gold-light); border-radius: 6px; }
-.pp-year-badge  { font-size: 12px; font-weight: 700; padding: 5px 12px; background: var(--cream); border: 1.5px solid var(--border); color: var(--navy); border-radius: 6px; }
-.pp-solved-badge { font-size: 12px; font-weight: 700; padding: 5px 12px; background: rgba(26,122,64,0.08); border: 1.5px solid rgba(26,122,64,0.2); color: #1A7A40; border-radius: 6px; }
-
-.pp-share-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--navy); background: var(--cream); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 14px; cursor: pointer; transition: all 0.2s; }
-.pp-share-btn:hover { background: var(--cream-dark); border-color: var(--navy); }
-
-.pp-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(20px, 2.8vw, 30px); font-weight: 700; color: var(--navy); margin-bottom: 16px; text-align: left; line-height: 1.3; }
-
-.pp-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
-.pp-meta-item { display: flex; align-items: center; gap: 5px; }
-.pp-meta-sep  { color: var(--border-dark); }
+/* ── PAPER HEADER ── */
+.ph-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:32px; margin-bottom:20px; }
+.ph-top  { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+.ph-badges { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.ph-dept   { font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:5px 12px; background:var(--navy); color:var(--gold-light); border-radius:6px; }
+.ph-year   { font-size:12px; font-weight:700; padding:5px 12px; background:var(--cream); border:1.5px solid var(--border); color:var(--navy); border-radius:6px; }
+.ph-solved { font-size:12px; font-weight:700; padding:5px 12px; background:rgba(26,122,64,.08); border:1.5px solid rgba(26,122,64,.2); color:#1A7A40; border-radius:6px; }
+.ph-share-btn { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--navy); background:var(--cream); border:1.5px solid var(--border); border-radius:8px; padding:8px 14px; cursor:pointer; transition:all .2s; }
+.ph-share-btn:hover { background:var(--cream-dark); border-color:var(--navy); }
+.ph-title { font-family:'Playfair Display',Georgia,serif; font-size:clamp(20px,2.6vw,30px); font-weight:700; color:var(--navy); margin-bottom:14px; text-align:left; line-height:1.3; }
+.ph-meta  { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px; color:var(--text-muted); margin-bottom:22px; }
+.ph-dot   { color:var(--border-dark); }
 
 /* Share panel */
-.pp-share-panel { background: var(--cream); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 20px; }
-.pp-share-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; }
-.pp-share-row   { display: flex; gap: 8px; flex-wrap: wrap; }
-.pp-share-wa, .pp-share-fb, .pp-share-tw, .pp-share-copy {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 700; padding: 8px 14px;
-  border-radius: 8px; text-decoration: none; cursor: pointer;
-  border: 1.5px solid transparent; transition: all 0.2s;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-}
-.pp-share-wa   { background: #1A7A40; color: white; border-color: #1A7A40; }
-.pp-share-wa:hover { background: #155f32; }
-.pp-share-fb   { background: #1877F2; color: white; border-color: #1877F2; }
-.pp-share-fb:hover { background: #0d63d0; }
-.pp-share-tw   { background: #000; color: white; border-color: #000; }
-.pp-share-tw:hover { background: #333; }
-.pp-share-copy { background: var(--white); color: var(--navy); border-color: var(--border); }
-.pp-share-copy:hover { background: var(--cream-dark); border-color: var(--navy); }
-.pp-copy-confirm { font-size: 13px; color: #1A7A40; font-weight: 600; margin-top: 10px; }
+.ph-share-panel { background:var(--cream); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:18px 20px; margin-bottom:20px; }
+.ph-share-label { font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:12px; }
+.ph-share-btns  { display:flex; gap:8px; flex-wrap:wrap; }
+.shr-wa,.shr-fb,.shr-tw,.shr-copy { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; padding:9px 15px; border-radius:8px; text-decoration:none; cursor:pointer; border:1.5px solid transparent; transition:all .2s; font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
+.shr-wa   { background:#1A7A40; color:white; border-color:#1A7A40; }
+.shr-wa:hover { background:#155f32; }
+.shr-fb   { background:#1877F2; color:white; border-color:#1877F2; }
+.shr-fb:hover { background:#0d63d0; }
+.shr-tw   { background:#000; color:white; border-color:#000; }
+.shr-tw:hover { background:#333; }
+.shr-copy { background:var(--white); color:var(--navy); border-color:var(--border); }
+.shr-copy:hover { background:var(--cream-dark); border-color:var(--navy); }
+.shr-copied { font-size:13px; color:#1A7A40; font-weight:600; margin-top:10px; }
 
-/* Action buttons */
-.pp-action-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.pp-btn-timer {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: var(--gold); color: var(--navy);
-  border: 2px solid var(--gold);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 15px; font-weight: 700;
-  padding: 13px 28px; border-radius: var(--radius);
-  cursor: pointer; transition: all 0.2s; white-space: nowrap;
-  text-decoration: none;
-}
-.pp-btn-timer:hover { background: var(--gold-light); border-color: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(197,150,58,0.3); }
+/* CTA buttons */
+.ph-cta { display:flex; gap:12px; flex-wrap:wrap; }
+.btn-gold { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--gold); color:var(--navy); border:2px solid var(--gold); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:15px; font-weight:700; padding:13px 28px; border-radius:var(--radius); cursor:pointer; transition:all .22s; white-space:nowrap; text-decoration:none; }
+.btn-gold:hover { background:var(--gold-light); border-color:var(--gold-light); transform:translateY(-1px); box-shadow:0 6px 20px rgba(197,150,58,.3); }
+.btn-navy { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--navy); color:var(--white); border:2px solid var(--navy); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:15px; font-weight:600; padding:13px 28px; border-radius:var(--radius); cursor:pointer; transition:all .22s; white-space:nowrap; text-decoration:none; }
+.btn-navy:hover { background:var(--navy-light); border-color:var(--navy-light); transform:translateY(-1px); }
+.btn-sm { font-size:13px !important; padding:9px 18px !important; }
+.btn-ghost-link { display:inline-flex; align-items:center; gap:6px; background:transparent; color:var(--navy); border:1.5px solid var(--border); padding:13px 20px; border-radius:var(--radius); font-size:14px; font-weight:600; font-family:'Plus Jakarta Sans',system-ui,sans-serif; cursor:pointer; text-decoration:none; transition:all .2s; }
+.btn-ghost-link:hover { background:var(--cream); border-color:var(--navy); }
 
-.pp-btn-view {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: var(--navy); color: var(--white);
-  border: 2px solid var(--navy);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 15px; font-weight: 600;
-  padding: 13px 28px; border-radius: var(--radius);
-  cursor: pointer; transition: all 0.2s; white-space: nowrap;
-  text-decoration: none;
-}
-.pp-btn-view:hover { background: var(--navy-light); border-color: var(--navy-light); transform: translateY(-1px); }
-
-/* ── BREAKDOWN CARD ── */
-.pp-breakdown-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 28px 32px; margin-bottom: 20px; }
-.pp-section-title  { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 20px; text-align: left; }
-.pp-breakdown-grid { display: flex; flex-direction: column; gap: 12px; }
-.pp-breakdown-item { text-decoration: none; display: block; }
-.pp-bi-top  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.pp-bi-name { font-size: 13px; font-weight: 700; color: var(--navy); }
-.pp-bi-count { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-.pp-bi-track { height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
-.pp-bi-fill  { height: 100%; background: linear-gradient(to right, var(--gold), var(--gold-light)); border-radius: 3px; transition: width 0.8s ease; }
-.pp-breakdown-item:hover .pp-bi-name { color: var(--gold-dark); }
+/* ── STATS CARDS ROW ── */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+.stat-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:14px 16px; text-decoration:none; display:block; transition:all .2s; }
+.stat-card:hover { border-color:var(--navy); box-shadow:var(--shadow); }
+.stat-card--static  { border-left:3px solid #1A7A40; }
+.stat-card--dynamic { border-left:3px solid var(--gold); }
+.sc-top   { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:6px; }
+.sc-name  { font-size:12px; font-weight:700; color:var(--navy); line-height:1.3; }
+.sc-count { font-size:18px; font-weight:800; color:var(--navy); font-family:'Playfair Display',Georgia,serif; flex-shrink:0; }
+.sc-track { height:5px; background:var(--cream-dark); border-radius:3px; overflow:hidden; margin-bottom:5px; }
+.sc-fill  { height:100%; background:linear-gradient(to right,var(--gold),var(--gold-light)); border-radius:3px; }
+.sc-fill--green  { background:linear-gradient(to right,#1A7A40,#22a05a); }
+.sc-fill--orange { background:linear-gradient(to right,var(--gold-dark),var(--gold)); }
+.sc-pct  { font-size:11px; color:var(--text-muted); font-weight:600; }
+.sc-pct--green  { color:#1A7A40; }
+.sc-pct--orange { color:var(--gold-dark); }
 
 /* ── START SCREEN ── */
-.pp-start-screen { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 52px 40px; text-align: center; }
-.pp-start-icon { font-size: 56px; margin-bottom: 18px; }
-.pp-start-screen h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; text-align: center; }
-.pp-start-screen p  { color: var(--text-muted); font-size: 15px; text-align: center; }
-.pp-start-btns { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+.qa-wrap { }
+.qa-start { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:56px 40px; text-align:center; }
+.qa-start-icon { font-size:60px; margin-bottom:18px; }
+.qa-start h2   { font-family:'Playfair Display',Georgia,serif; font-size:28px; color:var(--navy); margin-bottom:8px; text-align:center; }
+.qa-start p    { font-size:15px; color:var(--text-muted); text-align:center; }
+.qa-start-hint { font-size:13px; color:var(--text-light); margin-top:8px; }
+.qa-start-btns { display:flex; gap:12px; justify-content:center; margin-top:28px; flex-wrap:wrap; }
 
 /* ── TIMER BAR ── */
-.pp-timer-bar { background: var(--navy); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.pp-timer-left  { display: flex; align-items: center; gap: 10px; }
-.pp-timer-icon  { font-size: 20px; }
-.pp-timer-time  { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 700; color: var(--gold-light); min-width: 72px; }
-.pp-timer-label { font-size: 12px; color: rgba(255,255,255,0.6); letter-spacing: 0.05em; text-transform: uppercase; }
-.pp-timer-track { flex: 1; height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; min-width: 80px; }
-.pp-timer-fill  { height: 100%; background: var(--gold); border-radius: 4px; transition: width 1s linear, background 1s; width: 100%; }
-/* Submit button — clearly gold, never hidden */
-.pp-btn-submit {
-  background: var(--gold); color: var(--navy);
-  border: 2px solid var(--gold);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 14px; font-weight: 700;
-  padding: 10px 20px; border-radius: 8px;
-  cursor: pointer; transition: all 0.2s;
-  white-space: nowrap; flex-shrink: 0;
-}
-.pp-btn-submit:hover { background: var(--gold-light); border-color: var(--gold-light); }
+.qa-timer { background:var(--navy); border-radius:var(--radius-lg); padding:14px 20px; margin-bottom:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.qa-timer-left  { display:flex; align-items:center; gap:10px; }
+.qa-timer-icon  { font-size:20px; }
+.qa-timer-time  { font-family:'Playfair Display',Georgia,serif; font-size:28px; font-weight:700; color:var(--gold-light); min-width:70px; }
+.qa-timer-label { font-size:11px; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:.06em; }
+.qa-timer-track { flex:1; height:8px; background:rgba(255,255,255,.15); border-radius:4px; overflow:hidden; min-width:80px; }
+.qa-timer-fill  { height:100%; background:var(--gold); border-radius:4px; transition:width 1s linear, background 1s; width:100%; }
+.qa-timer-right { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-left:auto; }
+.qa-answered-count { font-size:12px; font-weight:600; color:rgba(255,255,255,.7); white-space:nowrap; }
 
 /* ── QUESTION CARDS ── */
-.pp-questions { display: flex; flex-direction: column; gap: 0; }
-
-.pp-q-card {
+/* All questions rendered by JS. Styles here for JS-injected HTML */
+.qcard {
   background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: 0;
-  padding: 24px 28px;
+  border-left: 1.5px solid var(--border);
+  border-right: 1.5px solid var(--border);
+  border-top: 1.5px solid var(--border);
   border-bottom: none;
-  transition: background 0.2s;
+  padding: 26px 28px 22px;
+  transition: background .18s;
 }
-.pp-q-card:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-.pp-q-card:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg); border-bottom: 1.5px solid var(--border); }
-.pp-q-card:only-child  { border-radius: var(--radius-lg); border-bottom: 1.5px solid var(--border); }
-.pp-q-card.pp-answered { background: rgba(11,29,58,0.02); border-color: rgba(11,29,58,0.25); }
-.pp-q-card.pp-correct  { background: rgba(26,122,64,0.03); border-color: rgba(26,122,64,0.35); }
-.pp-q-card.pp-wrong    { background: rgba(220,38,38,0.03); border-color: rgba(220,38,38,0.35); }
+.qcard:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.qcard:last-child  { border-bottom: 1.5px solid var(--border); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+.qcard:only-child  { border-bottom: 1.5px solid var(--border); border-radius: var(--radius-lg); }
+.qcard + .qcard    { border-top: 1px solid var(--border); }
+.qcard.q-done      { background:rgba(11,29,58,.02); }
+.qcard.q-correct   { background:rgba(26,122,64,.03); border-left-color:#1A7A40; border-right-color:#1A7A40; border-top-color:#1A7A40; }
+.qcard.q-wrong     { background:rgba(220,38,38,.03); border-left-color:#dc2626; border-right-color:#dc2626; border-top-color:#dc2626; }
+.qcard:last-child.q-correct { border-bottom-color:#1A7A40; }
+.qcard:last-child.q-wrong   { border-bottom-color:#dc2626; }
 
-/* Question header */
-.pp-q-hdr { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
-.pp-q-num {
-  font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
-  background: var(--navy); color: var(--gold-light);
-  padding: 4px 10px; border-radius: 5px;
-  white-space: nowrap; flex-shrink: 0;
-  margin-top: 2px;
-}
-.pp-q-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.pp-q-subj {
-  font-size: 10px; font-weight: 700; padding: 3px 8px;
-  background: var(--cream); border: 1px solid var(--border);
-  color: var(--text-muted); border-radius: 4px;
-}
-.pp-q-type-static  { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(26,122,64,0.08); color: #1A7A40; border: 1px solid rgba(26,122,64,0.2); }
-.pp-q-type-dynamic { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(139,105,20,0.1); color: var(--gold-dark); border: 1px solid rgba(139,105,20,0.2); }
+.qhdr { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.qnum { font-size:11px; font-weight:800; letter-spacing:.06em; background:var(--navy); color:var(--gold-light); padding:4px 10px; border-radius:5px; }
+.qsubj { font-size:11px; font-weight:700; padding:3px 8px; background:var(--cream); border:1px solid var(--border); color:var(--text-muted); border-radius:4px; }
 
-/* Question text */
-.pp-q-text {
-  font-size: 15px; font-weight: 600; color: var(--navy);
-  line-height: 1.6; margin-bottom: 16px;
+.qtext {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.6;
+  margin-bottom: 18px;
   text-align: left;
 }
 
-/* Options — THE KEY FIX: proper 2-column grid, clear A B C D */
-.pp-options {
+/* OPTIONS GRID — 2 per row, beautiful */
+.qopts {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-.pp-opt {
+
+.qopt {
   display: flex;
-  align-items: flex-start;
-  gap: 0;
-  background: var(--cream);
-  border: 1.5px solid var(--border);
+  align-items: stretch;
   border-radius: var(--radius);
   overflow: hidden;
+  border: 2px solid var(--border);
   cursor: pointer;
-  transition: all 0.18s;
+  transition: all .18s;
+  background: var(--white);
   text-align: left;
   width: 100%;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  position: relative;
 }
-.pp-opt:hover:not(:disabled) { border-color: var(--navy); background: var(--white); box-shadow: var(--shadow-sm); }
-.pp-opt:disabled { cursor: default; }
+/* Hover */
+.qopt:hover:not([disabled]):not(.qopt-sel):not(.qopt-ok):not(.qopt-no) {
+  border-color: var(--navy);
+  box-shadow: 0 2px 12px rgba(11,29,58,.1);
+}
+.qopt[disabled] { cursor: default; }
 
-/* Option key (A/B/C/D box on the left) */
-.pp-opt-key {
-  background: var(--navy);
-  color: var(--gold-light);
-  font-size: 13px; font-weight: 800;
-  padding: 12px 14px;
-  flex-shrink: 0;
-  display: flex; align-items: flex-start;
-  line-height: 1.4;
-  min-width: 42px;
+/* Option letter bubble */
+.qopt-key {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  min-width: 46px;
+  background: var(--cream);
+  border-right: 2px solid var(--border);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+  transition: all .18s;
+  flex-shrink: 0;
+  padding: 14px 12px;
 }
+
 /* Option text */
-.pp-opt-text {
-  font-size: 14px; font-weight: 500; color: var(--text-body);
-  padding: 12px 14px;
-  line-height: 1.45;
+.qopt-val {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-body);
+  padding: 14px 16px;
+  line-height: 1.5;
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 
-/* Selected state */
-.pp-opt.pp-selected .pp-opt-key { background: var(--navy-light); }
-.pp-opt.pp-selected .pp-opt-text { color: var(--navy); font-weight: 600; background: rgba(11,29,58,0.05); }
-.pp-opt.pp-selected { border-color: var(--navy); }
+/* ── SELECTED state ── */
+.qopt-sel {
+  border-color: var(--navy);
+  background: rgba(11,29,58,.04);
+}
+.qopt-sel .qopt-key {
+  background: var(--navy);
+  border-right-color: var(--navy);
+  color: var(--gold-light);
+}
+.qopt-sel .qopt-val {
+  color: var(--navy);
+  font-weight: 600;
+}
 
-/* Correct state (shown after submit) */
-.pp-opt.pp-opt-correct .pp-opt-key { background: #1A7A40; color: white; }
-.pp-opt.pp-opt-correct .pp-opt-text { background: rgba(26,122,64,0.06); color: #1A7A40; font-weight: 600; }
-.pp-opt.pp-opt-correct { border-color: #1A7A40; }
+/* ── CORRECT state (shown after review) ── */
+.qopt-ok {
+  border-color: #1A7A40;
+  background: rgba(26,122,64,.05);
+}
+.qopt-ok .qopt-key {
+  background: #1A7A40;
+  border-right-color: #1A7A40;
+  color: white;
+}
+.qopt-ok .qopt-val {
+  color: #1A7A40;
+  font-weight: 600;
+}
 
-/* Wrong state */
-.pp-opt.pp-opt-wrong .pp-opt-key { background: #dc2626; color: white; }
-.pp-opt.pp-opt-wrong .pp-opt-text { background: rgba(220,38,38,0.06); color: #dc2626; font-weight: 600; }
-.pp-opt.pp-opt-wrong { border-color: #dc2626; }
+/* ── WRONG state ── */
+.qopt-no {
+  border-color: #dc2626;
+  background: rgba(220,38,38,.04);
+}
+.qopt-no .qopt-key {
+  background: #dc2626;
+  border-right-color: #dc2626;
+  color: white;
+}
+.qopt-no .qopt-val {
+  color: #dc2626;
+  font-weight: 600;
+}
 
 /* ── RESULTS ── */
-.pp-results { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 48px 32px; text-align: center; margin-top: 20px; }
-.pp-results-score-ring { display: inline-flex; align-items: center; justify-content: center; background: var(--navy); border-radius: 50%; width: 120px; height: 120px; margin-bottom: 20px; flex-direction: column; }
-.pp-rs-num   { font-family: 'Playfair Display', Georgia, serif; font-size: 40px; font-weight: 700; color: var(--gold-light); line-height: 1; }
-.pp-rs-total { font-size: 14px; color: rgba(255,255,255,0.6); }
-.pp-results-title { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; text-align: center; }
-.pp-results-msg   { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; text-align: center; }
-.pp-results-stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
-.pp-rs-stat { font-size: 14px; font-weight: 700; padding: 8px 16px; border-radius: 8px; }
-.pp-rs-correct { background: rgba(26,122,64,0.1); color: #1A7A40; }
-.pp-rs-wrong   { background: rgba(220,38,38,0.1); color: #dc2626; }
-.pp-rs-skip    { background: var(--cream); color: var(--text-muted); }
-.pp-rs-pct     { background: var(--navy); color: var(--gold-light); }
-.pp-results-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.pp-btn-back { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--navy); border: 1.5px solid var(--border); padding: 13px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 600; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-.pp-btn-back:hover { background: var(--cream); border-color: var(--navy); }
+.qa-results { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:52px 32px; text-align:center; margin-top:16px; }
+.qar-ring   { display:inline-flex; align-items:center; justify-content:center; flex-direction:column; background:var(--navy); border-radius:50%; width:128px; height:128px; margin-bottom:22px; }
+.qar-score  { font-family:'Playfair Display',Georgia,serif; font-size:42px; font-weight:700; color:var(--gold-light); line-height:1; }
+.qar-total  { font-size:14px; color:rgba(255,255,255,.6); }
+.qar-title  { font-family:'Playfair Display',Georgia,serif; font-size:28px; color:var(--navy); margin-bottom:10px; text-align:center; }
+.qar-msg    { font-size:15px; color:var(--text-muted); margin-bottom:22px; text-align:center; }
+.qar-stats  { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:28px; }
+.qar-stat   { font-size:14px; font-weight:700; padding:9px 18px; border-radius:8px; }
+.qar-c      { background:rgba(26,122,64,.1); color:#1A7A40; }
+.qar-w      { background:rgba(220,38,38,.1); color:#dc2626; }
+.qar-s      { background:var(--cream); color:var(--text-muted); }
+.qar-p      { background:var(--navy); color:var(--gold-light); }
+.qar-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 
 /* ── SIDEBAR ── */
-.pp-sidebar-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 22px 24px; margin-bottom: 20px; }
-.pp-sidebar-title { font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 16px; text-align: left; }
-.pp-details-list { display: flex; flex-direction: column; gap: 10px; }
-.pp-details-list li { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; font-size: 13px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-.pp-details-list li:last-child { border-bottom: none; padding-bottom: 0; }
-.pdl-key { color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
-.pdl-val { color: var(--navy); font-weight: 600; text-align: right; }
-.pp-more-links { display: flex; flex-direction: column; gap: 8px; }
-.pp-more-link { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--cream); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--navy); transition: all 0.18s; }
-.pp-more-link:hover { background: var(--cream-dark); border-color: var(--navy); }
-.pp-tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-.pp-tag { font-size: 12px; font-weight: 600; padding: 4px 10px; background: var(--cream); border: 1.5px solid var(--border); color: var(--text-muted); border-radius: 100px; }
+.pp-sidebar { display:flex; flex-direction:column; gap:18px; }
+.sb-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:22px 24px; }
+.sb-title { font-family:'Playfair Display',Georgia,serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:16px; text-align:left; }
+.sb-list  { display:flex; flex-direction:column; gap:0; }
+.sb-list li { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; font-size:13px; padding:9px 0; border-bottom:1px solid var(--border); }
+.sb-list li:last-child { border-bottom:none; padding-bottom:0; }
+.sb-list li span:first-child { color:var(--text-muted); font-weight:500; }
+.sb-list li span:last-child  { color:var(--navy); font-weight:600; text-align:right; }
+.sb-links { display:flex; flex-direction:column; gap:8px; }
+.sb-link  { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--cream); border:1px solid var(--border); border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; color:var(--navy); transition:all .18s; }
+.sb-link:hover { background:var(--cream-dark); border-color:var(--navy); }
+.sb-link--cta  { background:var(--navy); color:var(--gold-light); border-color:var(--navy); }
+.sb-link--cta:hover { background:var(--navy-light); }
+.sb-tags { display:flex; flex-wrap:wrap; gap:8px; }
+.sb-tag  { font-size:11px; font-weight:600; padding:4px 10px; background:var(--cream); border:1.5px solid var(--border); color:var(--text-muted); border-radius:100px; }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 960px) {
-  .pp-layout { grid-template-columns: 1fr; }
-  .pp-sidebar { order: -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .pp-sidebar-card { margin-bottom: 0; }
-}
-@media (max-width: 640px) {
-  .pp-header-card, .pp-breakdown-card, .pp-start-screen, .pp-results { padding: 20px; }
-  .pp-title { font-size: 20px; }
-  .pp-meta-row { gap: 6px; font-size: 13px; }
-  .pp-action-row { flex-direction: column; }
-  .pp-action-row .pp-btn-timer, .pp-action-row .pp-btn-view { width: 100%; }
-  .pp-options { grid-template-columns: 1fr; } /* single column on mobile */
-  .pp-start-btns { flex-direction: column; align-items: center; }
-  .pp-results-actions { flex-direction: column; align-items: center; }
-  .pp-timer-bar { flex-wrap: wrap; gap: 10px; }
-  .pp-btn-submit { width: 100%; justify-content: center; }
-  .pp-sidebar { grid-template-columns: 1fr; }
-  .pp-q-card { padding: 18px 16px; }
-  .pp-share-row { flex-direction: column; }
-  .pp-share-wa, .pp-share-fb, .pp-share-tw, .pp-share-copy { width: 100%; justify-content: center; }
+@media (max-width:960px)  { .pp-grid { grid-template-columns:1fr; } .pp-sidebar { order:-1; display:grid; grid-template-columns:1fr 1fr; gap:16px; } .stats-row { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px)  {
+  .pp-grid { grid-template-columns:1fr; }
+  .pp-sidebar { grid-template-columns:1fr; }
+  .ph-card { padding:20px; }
+  .ph-title { font-size:19px; }
+  .ph-meta  { font-size:13px; gap:7px; }
+  .ph-cta   { flex-direction:column; }
+  .ph-cta .btn-gold, .ph-cta .btn-navy { width:100%; }
+  .qa-start { padding:40px 20px; }
+  .qa-start-btns { flex-direction:column; align-items:center; }
+  .qa-timer { gap:10px; }
+  .qa-timer-right { margin-left:0; width:100%; justify-content:space-between; }
+  .qcard { padding:18px 16px 16px; }
+  .qopts { grid-template-columns:1fr; }  /* single column on mobile */
+  .qar-actions { flex-direction:column; align-items:center; }
+  .qar-actions > * { width:100%; max-width:300px; justify-content:center; }
+  .stats-row { grid-template-columns:1fr; }
+  .ph-share-btns { flex-direction:column; }
+  .ph-share-btns > * { width:100%; justify-content:center; }
 }
 </style>
 
-<!-- ════════════════════════════════════════════════════════
-     QUIZ ENGINE
-     ════════════════════════════════════════════════════ -->
+<!-- ══ QUIZ ENGINE ════════════════════════════════════════ -->
 <script define:vars={{ questions: paper.questions, totalTime: paper.timeMinutes * 60, totalQ: paper.totalQuestions }}>
 
-const SUBJECT_LABELS = {
-  'pera-law':          'PERA Law',
-  'english':           'English',
-  'basic-mathematics': 'Maths',
-  'pakistan-studies':  'Pak Studies',
-  'general-science':   'Gen. Science',
-  'computer-basics':   'Computer/IT',
-  'current-affairs':   'Current Affairs',
-  'geography-maps':    'Geography',
-  'general-knowledge': 'General Knowledge',
+const SL = {
+  'pera-law':'PERA Law','english':'English','basic-mathematics':'Maths',
+  'pakistan-studies':'Pak Studies','general-science':'Gen. Science',
+  'computer-basics':'Computer/IT','current-affairs':'Current Affairs',
+  'geography-maps':'Geography','general-knowledge':'Gen. Knowledge',
 };
 
-let userAnswers  = {};
-let timerRef     = null;
-let timeLeft     = totalTime;
-let timedMode    = false;
-let submitted    = false;
+let ans = {}, timerRef = null, timeLeft = totalTime, timed = false, done = false, answered = 0;
 
-// ── START ────────────────────────────────────────────────
-function startQuiz(timed) {
-  timedMode  = timed;
-  submitted  = false;
-  userAnswers = {};
-  timeLeft   = totalTime;
-  if (timerRef) clearInterval(timerRef);
+function el(id){ return document.getElementById(id); }
 
-  document.getElementById('start-screen').hidden  = true;
-  document.getElementById('questions-list').hidden = false;
-  document.getElementById('results-panel').hidden  = true;
-  document.getElementById('timer-bar').hidden      = !timed;
+// ── BOOT: wire up all buttons after DOM ready ─────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Top header buttons
+  el('js-start-timer')  ?.addEventListener('click', () => boot(true));
+  el('js-start-view')   ?.addEventListener('click', () => boot(false));
+  // Start screen buttons
+  el('js-start-timer-2')?.addEventListener('click', () => boot(true));
+  el('js-start-view-2') ?.addEventListener('click', () => boot(false));
+  // Timer submit
+  el('js-submit-btn')   ?.addEventListener('click', () => finish());
+  // Results buttons
+  el('js-retry-btn')    ?.addEventListener('click', () => boot(timed));
+  el('js-review-btn')   ?.addEventListener('click', () => review());
+  // Share
+  el('js-share-btn')    ?.addEventListener('click', () => {
+    const p = el('js-share-panel');
+    const b = el('js-share-btn');
+    if (!p) return;
+    p.hidden = !p.hidden;
+    b?.setAttribute('aria-expanded', String(!p.hidden));
+  });
+  // Copy link
+  el('js-copy-btn')?.addEventListener('click', () => {
+    const url = window.location.href;
+    (navigator.clipboard?.writeText(url) ?? Promise.reject())
+      .then(confirmCopy)
+      .catch(() => { const t=document.createElement('textarea'); t.value=url; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); confirmCopy(); });
+  });
+  // Question option delegation — single listener on document
+  document.addEventListener('click', (e) => {
+    const opt = e.target.closest('.qopt');
+    if (!opt || opt.disabled || done) return;
+    const qNo = parseInt(opt.dataset.q);
+    const key  = opt.dataset.k;
+    if (!qNo || !key) return;
+    select(qNo, key, opt.closest('.qcard'));
+  });
+});
 
-  if (timed) {
-    tickTimer();
-    timerRef = setInterval(tickTimer, 1000);
-  }
-
-  renderQs(false);
-  const area = document.getElementById('quiz-area');
-  if (area) area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+function confirmCopy() {
+  const c = el('js-copy-confirm');
+  if (c) { c.hidden=false; setTimeout(()=>c.hidden=true, 3000); }
 }
 
-// ── RENDER QUESTIONS ─────────────────────────────────────
-function renderQs(showAns) {
-  const list = document.getElementById('questions-list');
-  if (!list) return;
+// ── BOOT ─────────────────────────────────────────────────
+function boot(timedMode) {
+  timed = timedMode; done = false; ans = {}; answered = 0;
+  timeLeft = totalTime;
+  if (timerRef) clearInterval(timerRef);
 
-  list.innerHTML = questions.map(q => {
-    const ua = userAnswers[q.no];
-    let cardCls = 'pp-q-card';
-    if (showAns && ua) cardCls += ua === q.correct ? ' pp-correct' : ' pp-wrong';
-    else if (ua) cardCls += ' pp-answered';
+  el('js-start-screen').hidden = true;
+  el('js-questions').hidden    = false;
+  el('js-results').hidden      = true;
+  el('js-timer').hidden        = !timedMode;
 
-    const opts = Object.entries(q.options).map(([k, v]) => {
-      let cls = 'pp-opt';
+  if (timedMode) { tick(); timerRef = setInterval(tick, 1000); }
+
+  buildQs(false);
+  updateAnsweredCount();
+  el('js-quiz-area')?.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ── BUILD QUESTIONS ───────────────────────────────────────
+function buildQs(showAns) {
+  const wrap = el('js-questions');
+  if (!wrap) return;
+  wrap.innerHTML = questions.map(q => {
+    const ua = ans[q.no];
+    let cardCls = 'qcard';
+    if (showAns && ua) cardCls += ua===q.correct ? ' q-correct' : ' q-wrong';
+    else if (ua) cardCls += ' q-done';
+
+    const opts = Object.entries(q.options).map(([k,v]) => {
+      let cls = 'qopt';
       if (showAns) {
-        if (k === q.correct) cls += ' pp-opt-correct';
-        else if (k === ua)   cls += ' pp-opt-wrong';
-      } else if (k === ua) cls += ' pp-selected';
+        if (k===q.correct) cls+=' qopt-ok';
+        else if (k===ua)   cls+=' qopt-no';
+      } else if (k===ua) cls+=' qopt-sel';
 
-      return `<button
-        class="${cls}"
-        onclick="pickOpt(${q.no},'${k}')"
-        ${(showAns || submitted) ? 'disabled' : ''}
-        aria-label="Option ${k}: ${v}"
-      >
-        <span class="pp-opt-key">${k}</span>
-        <span class="pp-opt-text">${v}${showAns && k === q.correct ? ' ✅' : ''}${showAns && k === ua && k !== q.correct ? ' ❌' : ''}</span>
+      const tick = showAns && k===q.correct ? ' ✅' : (showAns && k===ua && k!==q.correct ? ' ❌' : '');
+      return `<button class="${cls}" data-q="${q.no}" data-k="${k}" ${(showAns||done)?'disabled':''} aria-label="Option ${k}">
+        <span class="qopt-key">${k}</span>
+        <span class="qopt-val">${v}${tick}</span>
       </button>`;
     }).join('');
 
-    const typeClass = q.type === 'static' ? 'pp-q-type-static' : 'pp-q-type-dynamic';
-    const typeLabel = q.type === 'static' ? '📌 Static' : '🔄 Current';
-
-    return `<div class="${cardCls}" id="qc-${q.no}">
-      <div class="pp-q-hdr">
-        <span class="pp-q-num">Q.${q.no}</span>
-        <div class="pp-q-badges">
-          <span class="pp-q-subj">${SUBJECT_LABELS[q.subject] || q.subject}</span>
-          <span class="${typeClass}">${typeLabel}</span>
-        </div>
+    return `<div class="${cardCls}" id="qc${q.no}">
+      <div class="qhdr">
+        <span class="qnum">Q.${q.no}</span>
+        <span class="qsubj">${SL[q.subject]||q.subject}</span>
       </div>
-      <p class="pp-q-text">${q.question}</p>
-      <div class="pp-options">${opts}</div>
+      <p class="qtext">${q.question}</p>
+      <div class="qopts">${opts}</div>
     </div>`;
   }).join('');
 }
 
-// ── PICK OPTION ──────────────────────────────────────────
-function pickOpt(qNo, key) {
-  if (submitted) return;
-  userAnswers[qNo] = key;
-  const card = document.getElementById(`qc-${qNo}`);
-  if (!card) return;
-  card.classList.add('pp-answered');
-  card.querySelectorAll('.pp-opt').forEach(btn => {
-    const k = btn.querySelector('.pp-opt-key').textContent.trim();
-    btn.classList.toggle('pp-selected', k === key);
+// ── SELECT ────────────────────────────────────────────────
+function select(qNo, key, card) {
+  const wasNew = !ans[qNo];
+  ans[qNo] = key;
+  if (wasNew) { answered++; updateAnsweredCount(); }
+
+  // Update card class
+  if (card) { card.className = card.className.replace(/\bq-done\b/,''); card.classList.add('q-done'); }
+
+  // Update buttons within this card only — no re-render
+  card?.querySelectorAll('.qopt').forEach(btn => {
+    btn.classList.remove('qopt-sel');
+    if (btn.dataset.k === key) btn.classList.add('qopt-sel');
   });
 }
 
-// ── TIMER ────────────────────────────────────────────────
-function tickTimer() {
-  timeLeft = Math.max(0, timeLeft - 1);
-  const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-  const s = (timeLeft % 60).toString().padStart(2, '0');
-  const disp = document.getElementById('timer-display');
-  const fill = document.getElementById('timer-fill');
-  if (disp) disp.textContent = `${m}:${s}`;
-  if (fill) {
-    const pct = (timeLeft / totalTime) * 100;
-    fill.style.width = `${pct}%`;
-    fill.style.background = pct > 50 ? 'var(--gold)' : pct > 20 ? '#f97316' : '#dc2626';
-  }
-  if (timeLeft <= 0) { clearInterval(timerRef); submitQuiz(true); }
+function updateAnsweredCount() {
+  const c = el('js-ans-count');
+  if (c) c.textContent = `${answered} / ${totalQ} answered`;
 }
 
-// ── SUBMIT ───────────────────────────────────────────────
-function submitQuiz(timeUp = false) {
+// ── TIMER ─────────────────────────────────────────────────
+function tick() {
+  timeLeft = Math.max(0, timeLeft-1);
+  const m = String(Math.floor(timeLeft/60)).padStart(2,'0');
+  const s = String(timeLeft%60).padStart(2,'0');
+  const td = el('js-timer-display'); if (td) td.textContent=`${m}:${s}`;
+  const tf = el('js-timer-fill');
+  if (tf) {
+    const pct=(timeLeft/totalTime)*100;
+    tf.style.width=`${pct}%`;
+    tf.style.background = pct>50?'var(--gold)':pct>20?'#f97316':'#dc2626';
+  }
+  if (timeLeft<=0) { clearInterval(timerRef); finish(true); }
+}
+
+// ── FINISH ────────────────────────────────────────────────
+function finish(timeUp=false) {
   if (timerRef) clearInterval(timerRef);
-  submitted = true;
-
-  let correct = 0, wrong = 0, skipped = 0;
+  done = true;
+  let c=0, w=0, sk=0;
   questions.forEach(q => {
-    const a = userAnswers[q.no];
-    if (!a) skipped++;
-    else if (a === q.correct) correct++;
-    else wrong++;
+    const a=ans[q.no]; if (!a) sk++; else if (a===q.correct) c++; else w++;
   });
-
-  const pct = Math.round((correct / totalQ) * 100);
-  const levels = [
-    { min: 80, title: 'Excellent! 🎉', msg: 'Outstanding score. You are exam-ready!' },
-    { min: 60, title: 'Good Result! 👍', msg: 'Solid effort. A bit more practice and you\'ll be fully prepared.' },
-    { min: 40, title: 'Keep Going! 📚', msg: 'Review your weak subjects and practice more.' },
-    { min: 0,  title: 'Keep Trying! 💪', msg: 'Don\'t give up. Review the answer key below and try again.' },
+  const pct=Math.round((c/totalQ)*100);
+  const msgs=[
+    {min:80,title:'Excellent! 🎉',msg:'Outstanding performance. You are fully exam-ready!'},
+    {min:60,title:'Good Result! 👍',msg:'Solid score. A bit more practice and you\'ll nail it.'},
+    {min:40,title:'Keep Going! 📚',msg:'Focus on your weak subjects and attempt again.'},
+    {min:0, title:'Keep Trying! 💪',msg:'Don\'t give up — review the answer key and try again.'},
   ];
-  const lv = levels.find(l => pct >= l.min);
-
-  document.getElementById('timer-bar').hidden    = true;
-  document.getElementById('results-panel').hidden = false;
-  document.getElementById('results-score').textContent = correct;
-  document.getElementById('results-title').textContent = timeUp ? '⏱ Time Up!' : lv.title;
-  document.getElementById('results-msg').textContent   = lv.msg;
-  document.getElementById('results-stats').innerHTML = `
-    <span class="pp-rs-stat pp-rs-correct">✅ ${correct} Correct</span>
-    <span class="pp-rs-stat pp-rs-wrong">❌ ${wrong} Wrong</span>
-    <span class="pp-rs-stat pp-rs-skip">⏭ ${skipped} Skipped</span>
-    <span class="pp-rs-stat pp-rs-pct">${pct}%</span>
-  `;
-  document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const lv=msgs.find(m=>pct>=m.min);
+  el('js-timer').hidden   = true;
+  el('js-results').hidden = false;
+  el('js-score').textContent = c;
+  el('js-res-title').textContent = timeUp?'⏱ Time Up!':lv.title;
+  el('js-res-msg').textContent   = lv.msg;
+  el('js-res-stats').innerHTML = `
+    <span class="qar-stat qar-c">✅ ${c} Correct</span>
+    <span class="qar-stat qar-w">❌ ${w} Wrong</span>
+    <span class="qar-stat qar-s">⏭ ${sk} Skipped</span>
+    <span class="qar-stat qar-p">${pct}%</span>`;
+  // Color the score ring
+  const ring=el('js-ring');
+  if (ring) ring.style.background = pct>=60?'#1A3A2A':pct>=40?'#3A2A0A':'#3A0A0A';
+  el('js-results')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function retryQuiz()    { startQuiz(timedMode); }
-function reviewAnswers() {
-  document.getElementById('results-panel').hidden = true;
-  renderQs(true);
-  document.getElementById('questions-list').scrollIntoView({ behavior: 'smooth' });
+// ── REVIEW ────────────────────────────────────────────────
+function review() {
+  el('js-results').hidden = true;
+  buildQs(true);
+  el('js-questions')?.scrollIntoView({behavior:'smooth'});
 }
-
-// ── SHARE ────────────────────────────────────────────────
-function toggleShare() {
-  const p = document.getElementById('share-panel');
-  const b = document.getElementById('share-btn');
-  if (!p) return;
-  p.hidden = !p.hidden;
-  if (b) b.setAttribute('aria-expanded', String(!p.hidden));
-}
-
-function copyLink() {
-  const url = window.location.href;
-  (navigator.clipboard?.writeText(url) ?? Promise.reject()).then(done).catch(() => {
-    const t = document.createElement('textarea');
-    t.value = url; document.body.appendChild(t); t.select();
-    document.execCommand('copy'); document.body.removeChild(t); done();
-  });
-  function done() {
-    const el = document.getElementById('copy-confirm');
-    if (el) { el.hidden = false; setTimeout(() => { el.hidden = true; }, 3000); }
-  }
-}
-
-// Expose to global scope for inline onclick
-window.startQuiz     = startQuiz;
-window.pickOpt       = pickOpt;
-window.submitQuiz    = submitQuiz;
-window.retryQuiz     = retryQuiz;
-window.reviewAnswers = reviewAnswers;
-window.toggleShare   = toggleShare;
-window.copyLink      = copyLink;
 </script>
 
 </BaseLayout>
