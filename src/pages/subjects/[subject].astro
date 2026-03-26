@@ -10,7 +10,11 @@ export async function getStaticPaths() {
   }));
 }
 
-const { sub: subject } = Astro.props;
+// 1. FIX: Added Proper TypeScript Interface for Astro.props
+interface Props {
+  sub: any;
+}
+const { sub: subject } = Astro.props as Props;
 
 const allPapers = await getCollection('past-papers');
 
@@ -84,7 +88,6 @@ const schema = JSON.stringify({
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="sh-hero">
   <div class="container">
     <div class="sh-hero-inner">
@@ -306,50 +309,65 @@ const schema = JSON.stringify({
 
 <script>
 document.addEventListener('click', (e) => {
-  const opt = e.target.closest('.sp-opt');
-  if (!opt || opt.disabled) return;
+  const target = e.target as HTMLElement;
+  const opt = target.closest('.sp-opt') as HTMLElement | null;
+  if (!opt || opt.hasAttribute('disabled')) return;
+
   const idx     = opt.dataset.q;
   const chosen  = opt.dataset.k;
   const correct = opt.dataset.correct;
   const wrap    = document.getElementById(`so-${idx}`);
   const ans     = document.getElementById(`sa-${idx}`);
   const card    = opt.closest('.sp-mcq-card');
+
   if (!wrap || !ans) return;
+
   wrap.querySelectorAll('.sp-opt').forEach(b => {
-    b.setAttribute('disabled','');
-    const k = b.dataset.k;
-    b.classList.remove('sp-opt-sel');
-    if (k === correct)               b.classList.add('sp-opt-ok');
-    else if (k === chosen)           b.classList.add('sp-opt-no');
+    const btn = b as HTMLElement;
+    btn.setAttribute('disabled','true');
+    const k = btn.dataset.k;
+    btn.classList.remove('sp-opt-sel');
+    if (k === correct)               btn.classList.add('sp-opt-ok');
+    else if (k === chosen)           btn.classList.add('sp-opt-no');
   });
+
   ans.hidden = false;
   card?.classList.add('sp-answered');
 });
 
 const filterBtns = document.querySelectorAll('.sp-filter-btn');
 const cards = document.querySelectorAll('.sp-mcq-card');
+
 filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', (e) => {
+    const currentBtn = e.currentTarget as HTMLElement;
     filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.filter;
-    cards.forEach(c => { c.style.display = (f === 'all' || c.dataset.type === f) ? '' : 'none'; });
+    currentBtn.classList.add('active');
+
+    const f = currentBtn.dataset.filter;
+    cards.forEach(c => { 
+      const card = c as HTMLElement;
+      card.style.display = (f === 'all' || card.dataset.type === f) ? '' : 'none'; 
+    });
   });
 });
 
 const BATCH = 20;
 let shown = Math.min(BATCH, cards.length);
 if (cards.length > BATCH) {
-  cards.forEach((c, i) => { if (i >= BATCH) c.style.display = 'none'; });
+  cards.forEach((c, i) => { 
+    if (i >= BATCH) (c as HTMLElement).style.display = 'none'; 
+  });
   const wrap = document.getElementById('sp-load-more');
   if (wrap) wrap.style.display = '';
 } else {
   const wrap = document.getElementById('sp-load-more');
   if (wrap) wrap.style.display = 'none';
 }
+
 document.getElementById('sp-load-btn')?.addEventListener('click', () => {
-  const hidden = [...cards].filter(c => c.style.display === 'none');
-  hidden.slice(0, BATCH).forEach(c => { c.style.display = ''; });
+  const hiddenCards = Array.from(cards).filter(c => (c as HTMLElement).style.display === 'none');
+  hiddenCards.slice(0, BATCH).forEach(c => { (c as HTMLElement).style.display = ''; });
   shown = Math.min(shown + BATCH, cards.length);
   if (shown >= cards.length) {
     const wrap = document.getElementById('sp-load-more');
@@ -357,5 +375,4 @@ document.getElementById('sp-load-btn')?.addEventListener('click', () => {
   }
 });
 </script>
-
 </BaseLayout>
